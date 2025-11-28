@@ -1,0 +1,6 @@
+---
+title: "Final-Project"
+author: "Barbarit Clara and Duyck Louna"
+format: html
+editor: visual
+---
