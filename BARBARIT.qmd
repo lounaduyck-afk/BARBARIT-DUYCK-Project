@@ -6,3 +6,356 @@ format:
   pdf: default
 editor: visual
 ---
+
+# Libraries
+
+```{r, warning=FALSE, message=FALSE}
+here::i_am("BARBARIT-DUYCK-Project.Rproj")
+library(here)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(vroom)
+library(purrr)
+library(stringr)
+```
+
+# Loading and describing the data
+
+## Link to the github project
+
+https://github.com/lounaduyck-afk/BARBARIT-DUYCK-Project.git
+
+## Residential property market data
+
+https://www.data.gouv.fr/datasets/indicateurs-immobiliers-par-commune-et-par-annee-prix-et-volumes-sur-la-periode-2014-2024
+
+From this website, we downloaded 11 csv files, each file corresponding to a specific year from 2014 to 2024. Each file gathers aggregate variables related to residential property market at the municipality scale.
+
+The data have been collected by the government, from 2014 to 2024. The latest update was on the 7th of July 2025.
+
+### Methodology
+
+Data come from the treatment of another datagouv database regarding the Request for Property Values. From this initial database, they took only single-sale transfers, for which the values lied between 15,000€ and 10,000,000€, the surface between 10m² and 250m² for apartments, and between 10m² and 400m² for houses.
+
+The population is the residential property transactions in Mainland France. The transactions have been aggregated at the municipalities level, which means that each line corresponds to a municipality for a unique year. Each municipality is identified by its INSEE code.
+
+### Data merging
+
+```{r, warning=FALSE, message=FALSE}
+DVF2014 <- vroom(here("Data","dvf2014.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2015 <- vroom(here("Data","dvf2015.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2016 <- vroom(here("Data","dvf2016.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2017 <- vroom(here("Data","dvf2017.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2018 <- vroom(here("Data","dvf2018.csv")) %>%
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2019 <- vroom(here("Data","dvf2019.csv")) %>%
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2020 <- vroom(here("Data","dvf2020.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2021 <- vroom(here("Data","dvf2021.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2022 <- vroom(here("Data","dvf2022.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2023 <- vroom(here("Data","dvf2023.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2024 <- vroom(here("Data","dvf2024.csv")) |>
+  rename(Annee = annee,
+         Nb_mutations = nb_mutations)
+```
+
+```{r, warning=FALSE, message=FALSE}
+DVF_panel <- bind_rows(
+  DVF2014, DVF2015, DVF2016, DVF2017, DVF2018,
+  DVF2019, DVF2020, DVF2021, DVF2022, DVF2023, DVF2024) |>
+  select(-1)
+```
+
+Explanations: after standardizing the labels, we merge our data using bind_rows in order to get panel data.
+
+### Changing the columns type
+
+```{r}
+DVF_panel <- DVF_panel |>
+  mutate(Annee = as.integer(Annee))
+```
+
+### Data descriptions
+
+#### Basic Information
+
+```{r, warning=FALSE, message=FALSE}
+nb_columns <- ncol(DVF_panel)
+
+nb_rows <- nrow(DVF_panel)
+
+obs_by_year <- DVF_panel |>
+  group_by(Annee) |>
+  summarise(n_obs = n()) |>
+  arrange(Annee)
+
+summary_table <- tibble(
+  Type = c("Columns", "Total Rows", paste("Observations", obs_by_year$Annee, sep=" ")),
+  Number = c(nb_columns, nb_rows, obs_by_year$n_obs)
+)
+
+summary_table |>
+  knitr::kable()
+```
+
+#### Variables descriptions
+
+-   INSEE code: a qualitative variable which is unique for each municipality
+-   Year
+-   The number of transfers: quantitative variable which is the sum of the house sales and flat sales
+-   The number of house sales: quantitative variable
+-   The number of flat sales: quantitative variable
+-   The proportion of house sales in percentage: quantitative variable
+-   The proportion of flat sales in percentage: quantitative variable
+-   The average price of properties sold in €: quantitative variable
+-   The average price per square metre of properties sold in €: quantitative variable
+-   The average surface area of properties sold in square metre: quantitative variable
+
+## Population evolution and stucture by municipalities
+
+https://www.insee.fr/fr/statistiques/8581696?sommaire=8581933
+
+From this website, we downloaded csv file corresponding to "Évolution et structure de la population en 2022 - Commune - France hors Mayotte"
+
+We have population statistics in 2011, 2016 and 2022 for each municipality in France, except Mayotte, corresponding to the January 2025 geography.
+
+They have been collected by the INSEE during the census.
+
+The data cover population distribution by sex, age, occupations but also housing conditions and relocation.
+
+```{r, warning=FALSE, message=FALSE}
+Population <- vroom(here("Data","base-cc-evol-struct-pop-2022.csv"))
+Labels <- vroom(here("Data","meta_base-cc-evol-struct-pop-2022.csv"))
+```
+
+### Data cleaning
+
+#### Standardizing the labels
+
+```{r, warning=FALSE, message=FALSE}
+new_names <- setNames(Labels$COD_VAR, Labels$LIB_VAR)
+Population <- Population |>
+  rename(!!!new_names)
+Population <- Population |>
+  rename(INSEE_COM = `Arrondissement municipal`)
+```
+
+Explanations: When we downloaded the data sets, we had two csv files, one with the data we want to look at, in which the labels had a specific code, and the other with the labels' code and their meaning. Then, we changed the code labels of our data set of interest to get their meaning.
+
+### Modificating the structure of the dataset
+
+```{r, warning=FALSE, message=FALSE}
+Population <- Population |>
+  pivot_longer(
+    cols = -INSEE_COM,
+    names_to = "temp",
+    values_to = "value"
+  ) |>
+  mutate(
+    Annee = str_extract(temp, "\\d{4}"),                
+    Variable = str_remove(temp, " en \\d{4}.*$")               
+  ) |>
+  select(INSEE_COM, Annee, Variable, value) |>
+  pivot_wider(
+    names_from = Variable,
+    values_from = value
+  ) |>
+  arrange(INSEE_COM, Annee)
+```
+
+Explanations:
+
+Initially, we had one row for each municipality and the variables for each year. For example, we have 3 columns related to the number of men in the municipality, one for 2022, 2016 and 2011 ("Pop Homme en 2022", "Pop Homme en 2016", "Pop Homme en 2011"). Therefore, in order to get a panel data structure as the DVF data set we uploaded in the first part, we used at first pivot longer and we extract the year in each initial label. Then we create an additional column "Annee" and we used pivot wider to have the panel structure.
+
+### Changing the columns type
+
+```{r}
+Population <- Population |>
+  mutate(Annee = as.integer(Annee))
+```
+
+### Data descriptions
+
+#### Basic Information
+
+```{r, warning=FALSE, message=FALSE}
+nb_columns <- ncol(Population)
+
+nb_rows <- nrow(Population)
+
+obs_by_year <- Population |>
+  group_by(Annee) |>
+  summarise(n_obs = n()) |>
+  arrange(Annee)
+
+summary_table <- tibble(
+  Type = c("Columns", "Total Rows", paste("Observations", obs_by_year$Annee, sep=" ")),
+  Number = c(nb_columns, nb_rows, obs_by_year$n_obs)
+)
+
+summary_table |>
+  knitr::kable()
+```
+
+#### Variables description
+
+-   Population: quantitative variable - number of residents in each municipality
+-   Per age range population (0-14, 15-29, 30-44, 45-59, 60-74, 75-89, 90+)
+-   Men population
+-   Per age range men population (0-14, 15-29, 30-44, 45-59, 60-74, 75-89, 90+)
+-   Women population
+-   Per age range women population (0-14, 15-29, 30-44, 45-59, 60-74, 75-89, 90+)
+-   Number of residents who live in the municipality for more than 1 year and who live in the same accommodation than 1 year ago
+-   Number of residents who live in the municipality for more than 1 year and who live in a different accommodation than 1 year ago
+-   Number of residents who lived outside the municipality 1 year ago (in a different department, in a different region, in Mainland France or in DOM) and their distribution by age and by sex.
+-   Number of residents in each CSP for every age range and sex.
+
+## Unemployment
+
+https://www.observatoire-des-territoires.gouv.fr/taux-de-chomage-des-15-64-ans-rp
+
+From this website, we downloaded the file corresponding to "Taux de chômage des 15-64 ans", which was initially in the xlsx format. We therefore opened it on Excel and stored it as a csv file.
+
+The data have been collected by the Insee, using the census in 2011, 2012, 2016 and 2022.
+
+The data set gather, for each municipality and for each year of census, the total number of unemployed residents, the female unemployed residents and the male unemployed residents.
+
+```{r, warning=FALSE, message=FALSE}
+Unemployment <- vroom(here("Data","indic_sex_rp.csv"),
+  delim = ";",
+  skip = 4,
+  col_names = TRUE,
+  col_types = cols(
+    codgeo = col_character(),
+    libgeo = col_character(),
+    an = col_integer(),
+    sexe = col_factor(),
+    nb_chom1564 = col_integer())) |>
+  rename(INSEE_COM = codgeo,
+         Annee = an,
+         Chomeur = nb_chom1564)
+```
+
+```{r}
+Unemployment |>
+  filter(Annee == 2012) |>
+  summarise(na_chomeur = sum(is.na(Chomeur)),
+    obs = n()) |>
+  knitr::kable()
+```
+
+Since all the observations in 2012 are NA, we apply a filter to remove them.
+
+```{r}
+Unemployment <- Unemployment |>
+  filter(!Annee==2012)
+```
+
+### Modificating the structure of the dataset
+
+```{r}
+Unemployment <- Unemployment |>
+  mutate(sexe = case_when(
+    sexe == "F" ~ "chomeur_femme",
+    sexe == "H" ~ "chomeur_homme",
+    sexe == "T" ~ "chomeur_total"
+  )) |>
+  pivot_wider(
+    names_from = sexe,
+    values_from = Chomeur
+  )
+```
+
+Initially, for each year, each municipality had three rows: \* Total number of unemployed residents \* The number of female unemployed residents \* The number of male unemployed residents To get a consistent panel structure, we created additional columns, that specify to what each number refers, and we used pivot wider.
+
+### Data description
+
+#### Basic information
+
+```{r, warning=FALSE, message=FALSE}
+nb_columns <- ncol(Unemployment)
+
+nb_rows <- nrow(Unemployment)
+
+obs_by_year <- Unemployment |>
+  group_by(Annee) |>
+  summarise(n_obs = n()) |>
+  arrange(Annee)
+
+summary_table <- tibble(
+  Type = c("Columns", "Total Rows", paste("Observations", obs_by_year$Annee, sep=" ")),
+  Number = c(nb_columns, nb_rows, obs_by_year$n_obs)
+)
+
+summary_table |>
+  knitr::kable()
+```
+
+#### Variables description
+
+-   INSEE_COM: as the previous data bases, this one uses the Insee code to classify the municipality
+-   libgeo: it corresponds to the name of the municipality associated with the INSEE code
+-   Annee
+-   Sex: coded as a factor, it expresses the gender category of the observation, distinguishing between females, males, and the total population
+-   Chomeur: number of unemployed people (based on the INSEE's definition of unemployment)
+
+# Merging the databases
+
+## Code
+
+```{r}
+DVFcensus <- DVF_panel |>
+  filter(Annee %in% c(2022, 2016))
+
+Population_filtered <- Population |>
+  filter(Annee %in% c(2022, 2016))
+
+Unemployment_filtered <- Unemployment |>
+  filter(Annee%in%c(2016,2022))
+```
+
+```{r}
+Merge <- left_join(
+  DVFcensus,
+  Population_filtered,
+  by = join_by(INSEE_COM, Annee)
+)
+
+Merge <- Merge |>
+  left_join(
+    Unemployment_filtered,
+    by = join_by(INSEE_COM, Annee))
+```
+
+## Description
+
+From the 3 data bases, we only kept data from 2016 and 2022, years of census and common to all bases. Using left join, because we wanted to keep all the observations we have in the initial panel set and match them with additional data we have from the two other data sets, we merged the data sets. Before merging, we ensured that the structure of the three data sets where coherent to be merged. We did this work in previous sections.
