@@ -395,3 +395,14 @@ The ADMIN EXPRESS product line centralizes five related datasets: ADMIN EXPRESS,
 The main product, ADMIN EXPRESS, provides large-scale administrative boundaries and is updated monthly. An additional edition, ADMIN EXPRESS COG, is aligned with the Code Officiel Géographique (COG) published annually by INSEE.
 
 This product line facilitates combining administrative boundaries with external datasets to build thematic representations of the French territory at different administrative levels. For our project, we mainly rely on the commune layer, as it gives the spatial unit necessary to merge geographic boundaries with demographic, employment, and real-estate datasets at the municipal level.
+
+Here, we import both layers using `st_read()`, then standardize their INSEE municipality codes by trimming extra spaces and ensuring they always have five digits. This harmonization is essential for correctly joining the geographic layers with our DVF database, which also uses INSEE codes as identifiers.
+
+```{r}
+gpkg_path <- "Data/ADE_4-0_GPKG_LAMB93_FXX-ED2025-10-15.gpkg"
+communes_sf <- st_read(gpkg_path, layer = "chef_lieu_de_commune") |>
+mutate(code_insee_de_la_commune = sprintf("%05s", trimws(code_insee_de_la_commune)))
+
+communes_poly <- st_read(gpkg_path, layer = "commune") |>
+mutate(code_insee = sprintf("%05s", trimws(code_insee)))
+```
