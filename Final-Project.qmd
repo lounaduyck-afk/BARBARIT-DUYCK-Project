@@ -345,7 +345,7 @@ summary_table |>
 
 ## Code
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 DVFcensus <- DVF_panel |>
   filter(Annee %in% c(2022, 2016))
 
@@ -356,7 +356,7 @@ Unemployment_filtered <- Unemployment |>
   filter(Annee%in%c(2016,2022))
 ```
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 Merge <- left_join(
   DVFcensus,
   Population_filtered,
@@ -399,7 +399,7 @@ This product line facilitates combining administrative boundaries with external 
 
 Here, we import both layers using `st_read()`, then standardize their INSEE municipality codes by trimming extra spaces and ensuring they always have five digits. This harmonization is essential for correctly joining the geographic layers with our DVF database, which also uses INSEE codes as identifiers.
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 gpkg_path <- "Data/ADE_4-0_GPKG_LAMB93_FXX-ED2025-10-15.gpkg"
 communes_sf <- st_read(gpkg_path, layer = "chef_lieu_de_commune") |>
 mutate(code_insee_de_la_commune = sprintf("%05s", trimws(code_insee_de_la_commune)))
@@ -412,7 +412,7 @@ mutate(code_insee = sprintf("%05s", trimws(code_insee)))
 
 ## 2024 (points)
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 df_2024 <- DVF_panel |>
 filter(Annee == 2024)
 
@@ -427,7 +427,7 @@ labs(title = "Average Price per Municipality (2024)", color = "Average prices (â
 theme_minimal()
 ```
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 df_2014 <- DVF_panel |>
 filter(Annee == 2014)
 
@@ -442,7 +442,7 @@ labs(title = "Average Price per Municipality (2014)", color = "Average Price (â‚
 theme_minimal()
 ```
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 departements_idf <- c("75","92","93","94","91","77","78","95")
 
 communes_idf <- communes_poly |>
@@ -461,7 +461,7 @@ labs(title = "Average Price â€” ÃŽle-de-France (2024)", fill = "Average Price (â
 
 ### Graphic of the evolution of the average property price
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 DVF_panel |>
   group_by(Annee) |>
   summarise(prix_moyen = mean(PrixMoyen, na.rm = TRUE)) |>
