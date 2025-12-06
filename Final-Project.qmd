@@ -35,3 +35,119 @@ library(stringr)
 # Link to the github project
 
 <https://github.com/lounaduyck-afk/BARBARIT-DUYCK-Project.git>
+
+# Loading and describing the data
+
+## 1) Residential property market data
+
+<https://www.data.gouv.fr/datasets/indicateurs-immobiliers-par-commune-et-par-annee-prix-et-volumes-sur-la-periode-2014-2024>
+
+From this website, we downloaded 11 csv files, each file corresponding to a specific year from 2014 to 2024. Each file gathers aggregate variables related to residential property market at the municipality scale.
+
+The data have been collected by the government, from 2014 to 2024. The latest update was on the 7th of July 2025.
+
+### Methodology
+
+Data come from the treatment of another datagouv database regarding the Request for Property Values. From this initial database, they took only single-sale transfers, for which the values lied between 15,000€ and 10,000,000€, the surface between 10m² and 250m² for apartments, and between 10m² and 400m² for houses.
+
+The population is the residential property transactions in Mainland France. The transactions have been aggregated at the municipalities level, which means that each line corresponds to a municipality for a unique year. Each municipality is identified by its INSEE code.
+
+### Data merging
+
+```{r, warning=FALSE, message=FALSE}
+DVF2014 <- vroom(here("Data","dvf2014.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2015 <- vroom(here("Data","dvf2015.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2016 <- vroom(here("Data","dvf2016.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2017 <- vroom(here("Data","dvf2017.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2018 <- vroom(here("Data","dvf2018.csv")) %>%
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2019 <- vroom(here("Data","dvf2019.csv")) %>%
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2020 <- vroom(here("Data","dvf2020.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2021 <- vroom(here("Data","dvf2021.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2022 <- vroom(here("Data","dvf2022.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2023 <- vroom(here("Data","dvf2023.csv")) |>
+  rename(PropMaison = propmaison,
+         PropAppart = propappart)
+
+DVF2024 <- vroom(here("Data","dvf2024.csv")) |>
+  rename(Annee = annee,
+         Nb_mutations = nb_mutations)
+```
+
+```{r, warning=FALSE, message=FALSE}
+DVF_panel <- bind_rows(
+  DVF2014, DVF2015, DVF2016, DVF2017, DVF2018,
+  DVF2019, DVF2020, DVF2021, DVF2022, DVF2023, DVF2024) |>
+  select(-1)
+```
+
+Explanations: after standardizing the labels, we merge our data using bind_rows in order to get panel data.
+
+### Changing the columns type
+
+```{r}
+DVF_panel <- DVF_panel |>
+  mutate(Annee = as.integer(Annee))
+```
+
+### Data descriptions
+
+#### Basic Information
+
+```{r, warning=FALSE, message=FALSE}
+nb_columns <- ncol(DVF_panel)
+
+nb_rows <- nrow(DVF_panel)
+
+obs_by_year <- DVF_panel |>
+  group_by(Annee) |>
+  summarise(n_obs = n()) |>
+  arrange(Annee)
+
+summary_table <- tibble(
+  Type = c("Columns", "Total Rows", paste("Observations", obs_by_year$Annee, sep=" ")),
+  Number = c(nb_columns, nb_rows, obs_by_year$n_obs)
+)
+
+summary_table |>
+  knitr::kable()
+```
+
+#### Variables descriptions
+
+-   INSEE code: a qualitative variable which is unique for each municipality
+-   Year
+-   The number of transfers: quantitative variable which is the sum of the house sales and flat sales
+-   The number of house sales: quantitative variable
+-   The number of flat sales: quantitative variable
+-   The proportion of house sales in percentage: quantitative variable
+-   The proportion of flat sales in percentage: quantitative variable
+-   The average price of properties sold in €: quantitative variable
+-   The average price per square metre of properties sold in €: quantitative variable
+-   The average surface area of properties sold in square metre: quantitative variable
