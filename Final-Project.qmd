@@ -441,3 +441,20 @@ scale_color_viridis_c(trans = "log") +
 labs(title = "Average Price per Municipality (2014)", color = "Average Price (€)") +
 theme_minimal()
 ```
+
+```{r}
+departements_idf <- c("75","92","93","94","91","77","78","95")
+
+communes_idf <- communes_poly |>
+mutate(code_insee = sprintf("%05s", trimws(code_insee))) |>
+filter(substr(code_insee, 1, 2) %in% departements_idf)
+
+carte_idf_2024 <- communes_idf |>
+left_join(df_2024, by = c("code_insee" = "INSEE_COM"))
+
+ggplot(carte_idf_2024) +
+geom_sf(aes(fill = PrixMoyen), color = "white", size = 0.1) +
+scale_fill_viridis_c(trans = "log") +
+theme_minimal() +
+labs(title = "Average Price — Île-de-France (2024)", fill = "Average Price (€)")
+```
