@@ -151,3 +151,102 @@ summary_table |>
 -   The average price of properties sold in €: quantitative variable
 -   The average price per square metre of properties sold in €: quantitative variable
 -   The average surface area of properties sold in square metre: quantitative variable
+
+## 2) Population evolution and stucture by municipalities
+
+<https://www.insee.fr/fr/statistiques/8581696?sommaire=8581933>
+
+From this website, we downloaded csv file corresponding to "Évolution et structure de la population en 2022 - Commune - France hors Mayotte"
+
+We have population statistics in 2011, 2016 and 2022 for each municipality in France, except Mayotte, corresponding to the January 2025 geography.
+
+They have been collected by the INSEE during the census.
+
+The data cover population distribution by sex, age, occupations but also housing conditions and relocation.
+
+```{r, warning=FALSE, message=FALSE}
+Population <- vroom(here("Data","base-cc-evol-struct-pop-2022.csv"))
+Labels <- vroom(here("Data","meta_base-cc-evol-struct-pop-2022.csv"))
+```
+
+### Data cleaning
+
+#### Standardizing the labels
+
+```{r, warning=FALSE, message=FALSE}
+new_names <- setNames(Labels$COD_VAR, Labels$LIB_VAR)
+Population <- Population |>
+  rename(!!!new_names)
+Population <- Population |>
+  rename(INSEE_COM = `Arrondissement municipal`)
+```
+
+Explanations: When we downloaded the data sets, we had two csv files, one with the data we want to look at, in which the labels had a specific code, and the other with the labels' code and their meaning. Then, we changed the code labels of our data set of interest to get their meaning.
+
+### Modificating the structure of the dataset
+
+```{r, warning=FALSE, message=FALSE}
+Population <- Population |>
+  pivot_longer(
+    cols = -INSEE_COM,
+    names_to = "temp",
+    values_to = "value"
+  ) |>
+  mutate(
+    Annee = str_extract(temp, "\\d{4}"),                
+    Variable = str_remove(temp, " en \\d{4}.*$")               
+  ) |>
+  select(INSEE_COM, Annee, Variable, value) |>
+  pivot_wider(
+    names_from = Variable,
+    values_from = value
+  ) |>
+  arrange(INSEE_COM, Annee)
+```
+
+Explanations:
+
+Initially, we had one row for each municipality and the variables for each year. For example, we have 3 columns related to the number of men in the municipality, one for 2022, 2016 and 2011 ("Pop Homme en 2022", "Pop Homme en 2016", "Pop Homme en 2011"). Therefore, in order to get a panel data structure as the DVF data set we uploaded in the first part, we used at first pivot longer and we extract the year in each initial label. Then we create an additional column "Annee" and we used pivot wider to have the panel structure.
+
+### Changing the columns type
+
+```{r}
+Population <- Population |>
+  mutate(Annee = as.integer(Annee))
+```
+
+### Data descriptions
+
+#### Basic Information
+
+```{r, warning=FALSE, message=FALSE}
+nb_columns <- ncol(Population)
+
+nb_rows <- nrow(Population)
+
+obs_by_year <- Population |>
+  group_by(Annee) |>
+  summarise(n_obs = n()) |>
+  arrange(Annee)
+
+summary_table <- tibble(
+  Type = c("Columns", "Total Rows", paste("Observations", obs_by_year$Annee, sep=" ")),
+  Number = c(nb_columns, nb_rows, obs_by_year$n_obs)
+)
+
+summary_table |>
+  knitr::kable()
+```
+
+#### Variables description
+
+-   Population: quantitative variable - number of residents in each municipality
+-   Per age range population (0-14, 15-29, 30-44, 45-59, 60-74, 75-89, 90+)
+-   Men population
+-   Per age range men population (0-14, 15-29, 30-44, 45-59, 60-74, 75-89, 90+)
+-   Women population
+-   Per age range women population (0-14, 15-29, 30-44, 45-59, 60-74, 75-89, 90+)
+-   Number of residents who live in the municipality for more than 1 year and who live in the same accommodation than 1 year ago
+-   Number of residents who live in the municipality for more than 1 year and who live in a different accommodation than 1 year ago
+-   Number of residents who lived outside the municipality 1 year ago (in a different department, in a different region, in Mainland France or in DOM) and their distribution by age and by sex.
+-   Number of residents in each CSP for every age range and sex.
