@@ -250,3 +250,92 @@ summary_table |>
 -   Number of residents who live in the municipality for more than 1 year and who live in a different accommodation than 1 year ago
 -   Number of residents who lived outside the municipality 1 year ago (in a different department, in a different region, in Mainland France or in DOM) and their distribution by age and by sex.
 -   Number of residents in each CSP for every age range and sex.
+
+## 3) Unemployment
+
+<https://www.observatoire-des-territoires.gouv.fr/taux-de-chomage-des-15-64-ans-rp>
+
+From this website, we downloaded the file corresponding to "Taux de chômage des 15-64 ans", which was initially in the xlsx format. We therefore opened it on Excel and stored it as a csv file.
+
+The data have been collected by the Insee, using the census in 2011, 2012, 2016 and 2022.
+
+The data set gather, for each municipality and for each year of census, the total number of unemployed residents, the female unemployed residents and the male unemployed residents.
+
+```{r, warning=FALSE, message=FALSE}
+Unemployment <- vroom(here("Data","indic_sex_rp.csv"),
+  delim = ";",
+  skip = 4,
+  col_names = TRUE,
+  col_types = cols(
+    codgeo = col_character(),
+    libgeo = col_character(),
+    an = col_integer(),
+    sexe = col_factor(),
+    nb_chom1564 = col_integer())) |>
+  rename(INSEE_COM = codgeo,
+         Annee = an,
+         Chomeur = nb_chom1564)
+```
+
+```{r}
+Unemployment |>
+  filter(Annee == 2012) |>
+  summarise(na_chomeur = sum(is.na(Chomeur)),
+    obs = n()) |>
+  knitr::kable()
+```
+
+Since all the observations in 2012 are NA, we apply a filter to remove them.
+
+```{r}
+Unemployment <- Unemployment |>
+  filter(!Annee==2012)
+```
+
+### Modificating the structure of the dataset
+
+```{r}
+Unemployment <- Unemployment |>
+  mutate(sexe = case_when(
+    sexe == "F" ~ "chomeur_femme",
+    sexe == "H" ~ "chomeur_homme",
+    sexe == "T" ~ "chomeur_total"
+  )) |>
+  pivot_wider(
+    names_from = sexe,
+    values_from = Chomeur
+  )
+```
+
+Initially, for each year, each municipality had three rows: \* Total number of unemployed residents \* The number of female unemployed residents \* The number of male unemployed residents To get a consistent panel structure, we created additional columns, that specify to what each number refers, and we used pivot wider.
+
+### Data description
+
+#### Basic information
+
+```{r, warning=FALSE, message=FALSE}
+nb_columns <- ncol(Unemployment)
+
+nb_rows <- nrow(Unemployment)
+
+obs_by_year <- Unemployment |>
+  group_by(Annee) |>
+  summarise(n_obs = n()) |>
+  arrange(Annee)
+
+summary_table <- tibble(
+  Type = c("Columns", "Total Rows", paste("Observations", obs_by_year$Annee, sep=" ")),
+  Number = c(nb_columns, nb_rows, obs_by_year$n_obs)
+)
+
+summary_table |>
+  knitr::kable()
+```
+
+#### Variables description
+
+-   INSEE_COM: as the previous data bases, this one uses the Insee code to classify the municipality
+-   libgeo: it corresponds to the name of the municipality associated with the INSEE code
+-   Annee
+-   Sex: coded as a factor, it expresses the gender category of the observation, distinguishing between females, males, and the total population
+-   Chomeur: number of unemployed people (based on the INSEE's definition of unemployment)
