@@ -17,6 +17,20 @@ To explore this question, the project combines several datasets. Housing indicat
 
 Our project is structured as follows. First, we present a descriptive analysis of the main variables in our datasets, using graphical and spatial visualisations to highlight key trends in both housing prices and demographic composition. Then we develop an econometric framework in order to isolate the effect of demographic structure on real estate prices. Finally, we address potential identification challenges, such as reverse causality and omitted variable bias, and discuss how our empirical strategy attempts to mitigate them.
 
+## Libraries
+
+```{r, warning=FALSE, message=FALSE}
+here::i_am("BARBARIT-DUYCK-Project.Rproj")
+library(here)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(vroom)
+library(purrr)
+library(stringr)
+library(sf)
+```
+
 ## Geographical data
 
 ​​<https://geoservices.ign.fr/adminexpress>
