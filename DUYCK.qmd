@@ -56,7 +56,7 @@ mutate(code_insee = sprintf("%05s", trimws(code_insee)))
 
 ## 2024 (points)
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 df_2024 <- DVF_panel |>
 filter(Annee == 2024)
 
@@ -71,7 +71,7 @@ labs(title = "Average Price per Municipality (2024)", color = "Average prices (�
 theme_minimal()
 ```
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 df_2014 <- DVF_panel |>
 filter(Annee == 2014)
 
@@ -86,7 +86,7 @@ labs(title = "Average Price per Municipality (2014)", color = "Average Price (�
 theme_minimal()
 ```
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 departements_idf <- c("75","92","93","94","91","77","78","95")
 
 communes_idf <- communes_poly |>
@@ -101,4 +101,21 @@ geom_sf(aes(fill = PrixMoyen), color = "white", size = 0.1) +
 scale_fill_viridis_c(trans = "log") +
 theme_minimal() +
 labs(title = "Average Price — Île-de-France (2024)", fill = "Average Price (€)")
+```
+
+### Graphic of the evolution of the average property price
+
+```{r, warning=FALSE, message=FALSE}
+DVF_panel |>
+  group_by(Annee) |>
+  summarise(prix_moyen = mean(PrixMoyen, na.rm = TRUE)) |>
+  ggplot(aes(x = Annee, y = prix_moyen)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_point(size = 2, color = "steelblue") +
+  theme_minimal() +
+    labs(
+    title = "Evolution of the Average Property Price",
+    x = "Year",
+    y = "Average Price (€)"
+  )
 ```
