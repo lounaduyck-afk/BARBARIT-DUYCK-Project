@@ -16,3 +16,29 @@ France is a relevant case study for answering our research question because it d
 To explore this question, the project combines several datasets. Housing indicators are available at the municipal level and on an annual basis for the period 2014-2024. Demographic data come from French censuses (2011, 2016 and 2022), which provide detailed information on age structure, household size, employment categories, and other population characteristics. Although census variables are only available for a few reference years, they still enable us to capture the significant changes that have occurred in the demographic composition during the period. Working with panel data allows us to track each municipality over time and to observe how changes in its demographic profile are linked to variations in housing prices. The econometric analysis will rely on fixed-effects models, which help isolate the effect of demographic variables by controlling for characteristics specific to each municipality that do not change over time (geography, local amenities, or long-run development patterns). Although causal inference is challenging due to potential reverse causality (high housing prices may attract or deter certain demographic groups), the panel structure helps reduce this concern by observing demographic changes before and after price movements. Additional strategies may also be considered.
 
 Our project is structured as follows. First, we present a descriptive analysis of the main variables in our datasets, using graphical and spatial visualisations to highlight key trends in both housing prices and demographic composition. Then we develop an econometric framework in order to isolate the effect of demographic structure on real estate prices. Finally, we address potential identification challenges, such as reverse causality and omitted variable bias, and discuss how our empirical strategy attempts to mitigate them.
+
+## Geographical data
+
+​​<https://geoservices.ign.fr/adminexpress>
+
+The ADMIN EXPRESS product line centralizes five related datasets: ADMIN EXPRESS, ADMIN EXPRESS COG, ADMIN EXPRESS COG CARTO, ADMIN EXPRESS COG CARTO Petite Échelle, and ADMIN EXPRESS COG CARTOPLUS PE. Together, these datasets provide detailed administrative boundary layers for France across multiple levels. They include the following geographic units:
+
+-   Arrondissements (departmental and municipal)
+
+-   Cantons
+
+-   Administrative seats (chef-lieux) at various levels: arrondissement, municipal arrondissement, EPCI, canton, territorial collectivity, commune, associated or delegated commune, département, and region
+
+-   Communes and associated or delegated communes
+
+-   Départements
+
+-   EPCIs (public inter-municipal cooperation bodies)
+
+-   Regions
+
+The main product, ADMIN EXPRESS, provides large-scale administrative boundaries and is updated monthly. An additional edition, ADMIN EXPRESS COG, is aligned with the Code Officiel Géographique (COG) published annually by INSEE.
+
+This product line facilitates combining administrative boundaries with external datasets to build thematic representations of the French territory at different administrative levels. For our project, we mainly rely on the commune layer, as it gives the spatial unit necessary to merge geographic boundaries with demographic, employment, and real-estate datasets at the municipal level.
+
+Here, we import both layers using `st_read()`, then standardize their INSEE municipality codes by trimming extra spaces and ensuring they always have five digits. This harmonization is essential for correctly joining the geographic layers with our DVF database, which also uses INSEE codes as identifiers.
