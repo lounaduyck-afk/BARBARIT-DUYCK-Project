@@ -4,3 +4,132 @@ author: "DUYCK Louna"
 format: html
 editor: visual
 ---
+
+# **Effect of Demographic structure on Housing prices - A municipality-level analysis in France from 2014 to 2024**
+
+### Research Question: **How does the demographic composition of a municipality affect local housing prices?**
+
+Understanding the determinants of housing prices has long been a central topic in urban economics. While demand-side factors such as income, interest rates, or credit conditions are often highlighted, demographic composition represents a less explored dimension. Housing demand is affected by demographic structure through household formation, age distribution, family size, and socioeconomic characteristics, which shape the type, size, and location of residences required by local populations. The objective of this project is therefore to study how changes in the demographic structure of French municipalities between 2014 and 2024 have influenced local housing prices.
+
+France is a relevant case study for answering our research question because it displays a wide diversity of spatial and demographic profiles. The French real estate market has undergone significant changes over the past decade, including rising average prices, varying transaction volumes, and growing spatial inequalities. Studying the link between demographic trends and housing prices over a ten-year period can therefore shed light on the mechanisms through which population structure influences local housing markets.
+
+To explore this question, the project combines several datasets. Housing indicators are available at the municipal level and on an annual basis for the period 2014-2024. Demographic data come from French censuses (2011, 2016 and 2022), which provide detailed information on age structure, household size, employment categories, and other population characteristics. Although census variables are only available for a few reference years, they still enable us to capture the significant changes that have occurred in the demographic composition during the period. Working with panel data allows us to track each municipality over time and to observe how changes in its demographic profile are linked to variations in housing prices. The econometric analysis will rely on fixed-effects models, which help isolate the effect of demographic variables by controlling for characteristics specific to each municipality that do not change over time (geography, local amenities, or long-run development patterns). Although causal inference is challenging due to potential reverse causality (high housing prices may attract or deter certain demographic groups), the panel structure helps reduce this concern by observing demographic changes before and after price movements. Additional strategies may also be considered.
+
+Our project is structured as follows. First, we present a descriptive analysis of the main variables in our datasets, using graphical and spatial visualisations to highlight key trends in both housing prices and demographic composition. Then we develop an econometric framework in order to isolate the effect of demographic structure on real estate prices. Finally, we address potential identification challenges, such as reverse causality and omitted variable bias, and discuss how our empirical strategy attempts to mitigate them.
+
+## Libraries
+
+```{r, warning=FALSE, message=FALSE}
+here::i_am("BARBARIT-DUYCK-Project.Rproj")
+library(here)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(vroom)
+library(purrr)
+library(stringr)
+library(sf)
+```
+
+## Geographical data
+
+​​<https://geoservices.ign.fr/adminexpress>
+
+The ADMIN EXPRESS product line centralizes five related datasets: ADMIN EXPRESS, ADMIN EXPRESS COG, ADMIN EXPRESS COG CARTO, ADMIN EXPRESS COG CARTO Petite Échelle, and ADMIN EXPRESS COG CARTOPLUS PE. Together, these datasets provide detailed administrative boundary layers for France across multiple levels. They include the following geographic units:
+
+-   Arrondissements (departmental and municipal)
+
+-   Cantons
+
+-   Administrative seats (chef-lieux) at various levels: arrondissement, municipal arrondissement, EPCI, canton, territorial collectivity, commune, associated or delegated commune, département, and region
+
+-   Communes and associated or delegated communes
+
+-   Départements
+
+-   EPCIs (public inter-municipal cooperation bodies)
+
+-   Regions
+
+The main product, ADMIN EXPRESS, provides large-scale administrative boundaries and is updated monthly. An additional edition, ADMIN EXPRESS COG, is aligned with the Code Officiel Géographique (COG) published annually by INSEE.
+
+This product line facilitates combining administrative boundaries with external datasets to build thematic representations of the French territory at different administrative levels. For our project, we mainly rely on the commune layer, as it gives the spatial unit necessary to merge geographic boundaries with demographic, employment, and real-estate datasets at the municipal level.
+
+Here, we import both layers using `st_read()`, then standardize their INSEE municipality codes by trimming extra spaces and ensuring they always have five digits. This harmonization is essential for correctly joining the geographic layers with our DVF database, which also uses INSEE codes as identifiers.
+
+```{r}
+gpkg_path <- "Data/ADE_4-0_GPKG_LAMB93_FXX-ED2025-10-15.gpkg"
+communes_sf <- st_read(gpkg_path, layer = "chef_lieu_de_commune") |>
+mutate(code_insee_de_la_commune = sprintf("%05s", trimws(code_insee_de_la_commune)))
+
+communes_poly <- st_read(gpkg_path, layer = "commune") |>
+mutate(code_insee = sprintf("%05s", trimws(code_insee)))
+```
+
+# Graphical representations
+
+## 2024 (points)
+
+```{r, warning=FALSE, message=FALSE}
+df_2024 <- DVF_panel |>
+filter(Annee == 2024)
+
+carte_2024 <- communes_sf |>
+mutate(code_insee_de_la_commune = sprintf("%05s", trimws(code_insee_de_la_commune))) |>
+left_join(df_2024, by = c("code_insee_de_la_commune" = "INSEE_COM"))
+
+ggplot(carte_2024) +
+geom_sf(aes(color = PrixMoyen), size = 1, alpha = 0.7) +
+scale_color_viridis_c(trans = "log") +
+labs(title = "Average Price per Municipality (2024)", color = "Average prices (€)") +
+theme_minimal()
+```
+
+```{r, warning=FALSE, message=FALSE}
+df_2014 <- DVF_panel |>
+filter(Annee == 2014)
+
+carte_2014 <- communes_sf |>
+mutate(code_insee_de_la_commune = sprintf("%05s", trimws(code_insee_de_la_commune))) |>
+left_join(df_2014, by = c("code_insee_de_la_commune" = "INSEE_COM"))
+
+ggplot(carte_2014) +
+geom_sf(aes(color = PrixMoyen), size = 1, alpha = 0.7) +
+scale_color_viridis_c(trans = "log") +
+labs(title = "Average Price per Municipality (2014)", color = "Average Price (€)") +
+theme_minimal()
+```
+
+```{r, warning=FALSE, message=FALSE}
+departements_idf <- c("75","92","93","94","91","77","78","95")
+
+communes_idf <- communes_poly |>
+mutate(code_insee = sprintf("%05s", trimws(code_insee))) |>
+filter(substr(code_insee, 1, 2) %in% departements_idf)
+
+carte_idf_2024 <- communes_idf |>
+left_join(df_2024, by = c("code_insee" = "INSEE_COM"))
+
+ggplot(carte_idf_2024) +
+geom_sf(aes(fill = PrixMoyen), color = "white", size = 0.1) +
+scale_fill_viridis_c(trans = "log") +
+theme_minimal() +
+labs(title = "Average Price — Île-de-France (2024)", fill = "Average Price (€)")
+```
+
+### Graphic of the evolution of the average property price
+
+```{r, warning=FALSE, message=FALSE}
+DVF_panel |>
+  group_by(Annee) |>
+  summarise(prix_moyen = mean(PrixMoyen, na.rm = TRUE)) |>
+  ggplot(aes(x = Annee, y = prix_moyen)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_point(size = 2, color = "steelblue") +
+  theme_minimal() +
+    labs(
+    title = "Evolution of the Average Property Price",
+    x = "Year",
+    y = "Average Price (€)"
+  )
+```
