@@ -180,3 +180,56 @@ DVF_panel |>
        y = "Average surface area (m²)") +
   theme_minimal()
 ```
+
+### Distribution of houses vs. apartments by year
+
+```{r, warning=FALSE, message=FALSE}
+DVF_panel |>
+  group_by(Annee) |>
+  summarise(TotalMaisons = sum(NbMaisons, na.rm = TRUE),
+            TotalApparts = sum(NbApparts, na.rm = TRUE)) |>
+  pivot_longer(cols = c(TotalMaisons, TotalApparts),
+               names_to = "TypeBien",
+               values_to = "Nombre") %>%
+  ggplot(aes(x = Annee, y = Nombre, fill = TypeBien)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Distribution of houses and apartments per year",
+       x = "Year",
+       y = "Number of transactions") +
+  scale_fill_manual(values = c("TotalMaisons" = "orange", "TotalApparts" = "purple"),
+                    labels = c("Maisons", "Appartements")) +
+  theme_minimal()
+```
+
+```{r, warning=FALSE, message=FALSE}
+DVF_panel |>
+  group_by(Annee) |>
+  summarise(
+    TotalMaisons = sum(NbMaisons, na.rm = TRUE),
+    TotalApparts = sum(NbApparts, na.rm = TRUE)
+  ) |>
+  mutate(
+    Total = TotalMaisons + TotalApparts,
+    ShareMaisons = TotalMaisons / Total,
+    ShareApparts = TotalApparts / Total
+  ) |>
+  pivot_longer(
+    cols = c(ShareMaisons, ShareApparts),
+    names_to = "TypeBien",
+    values_to = "Share"
+  ) |>
+  ggplot(aes(x = Annee, y = Share, fill = TypeBien)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Distribution of houses and apartments per year",
+    x = "Year",
+    y = "Share of transactions (%)"
+  ) +
+  scale_fill_manual(
+    values = c("ShareMaisons" = "orange", "ShareApparts" = "purple"),
+    labels = c("Houses", "Apartments")
+  ) +
+  theme_minimal()
+
+```
