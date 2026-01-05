@@ -153,7 +153,7 @@ DVF_panel |>
 
 ### Graphic of the evolution of the number of transactions 
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 DVF_panel |>
   group_by(Annee) |>
   summarise(Total_mutations = sum(Nb_mutations, na.rm = TRUE)) |>
@@ -163,5 +163,20 @@ DVF_panel |>
   labs(title = "Evolution of the number of real estate transactions in France (2014-2024)",
        x = "Year",
        y = "Number of transactions") +
+  theme_minimal()
+```
+
+### Graphical representation of the Average property size over time
+
+```{r, warning=FALSE, message=FALSE}
+DVF_panel |>
+  group_by(Annee) |>
+  summarise(SurfaceMoy = mean(SurfaceMoy, na.rm = TRUE)) |>
+  ggplot(aes(x = Annee, y = SurfaceMoy)) +
+  geom_line(color = "darkred", size = 1.2) +
+  geom_point(color = "red", size = 2) +
+  labs(title = "Evolution of the average surface area of properties in France",
+       x = "Year",
+       y = "Average surface area (m²)") +
   theme_minimal()
 ```
