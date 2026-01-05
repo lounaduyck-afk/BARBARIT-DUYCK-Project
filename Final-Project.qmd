@@ -308,7 +308,10 @@ Unemployment <- Unemployment |>
   )
 ```
 
-Initially, for each year, each municipality had three rows: \* Total number of unemployed residents \* The number of female unemployed residents \* The number of male unemployed residents To get a consistent panel structure, we created additional columns, that specify to what each number refers, and we used pivot wider.
+Initially, for each year, each municipality had three rows:
+*Total number of unemployed residents
+*The number of female unemployed residents
+*The number of male unemployed residents To get a consistent panel structure, we created additional columns, that specify to what each number refers, and we used pivot wider.
 
 ### Data description
 
