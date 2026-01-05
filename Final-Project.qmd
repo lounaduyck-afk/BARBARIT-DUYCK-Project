@@ -53,6 +53,10 @@ Data come from the treatment of another datagouv database regarding the Request 
 
 The population is the residential property transactions in Mainland France. The transactions have been aggregated at the municipalities level, which means that each line corresponds to a municipality for a unique year. Each municipality is identified by its INSEE code.
 
+It is important to note that this database covers the whole of metropolitan France, with the exception of the departments of Bas-Rhin, Haut-Rhin, and Moselle, where the relevant data fall under the *livre foncier* (land registry) system.
+
+One of the main strengths of this database is that it provides a common reference framework over a near-national geographical scope, making it possible to compare territories with one another, to understand their specific characteristics, and to produce studies and indicators based on homogeneous methods.
+
 ### Data merging
 
 ```{r, warning=FALSE, message=FALSE}
