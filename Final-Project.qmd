@@ -427,7 +427,6 @@ df_2024 <- DVF_panel |>
 filter(Annee == 2024)
 
 carte_2024 <- communes_sf |>
-mutate(code_insee_de_la_commune = sprintf("%05s", trimws(code_insee_de_la_commune))) |>
 left_join(df_2024, by = c("code_insee_de_la_commune" = "INSEE_COM"))
 
 ggplot(carte_2024) +
@@ -442,7 +441,6 @@ df_2014 <- DVF_panel |>
 filter(Annee == 2014)
 
 carte_2014 <- communes_sf |>
-mutate(code_insee_de_la_commune = sprintf("%05s", trimws(code_insee_de_la_commune))) |>
 left_join(df_2014, by = c("code_insee_de_la_commune" = "INSEE_COM"))
 
 ggplot(carte_2014) +
@@ -456,7 +454,6 @@ theme_minimal()
 departements_idf <- c("75","92","93","94","91","77","78","95")
 
 communes_idf <- communes_poly |>
-mutate(code_insee = sprintf("%05s", trimws(code_insee))) |>
 filter(substr(code_insee, 1, 2) %in% departements_idf)
 
 carte_idf_2024 <- communes_idf |>
