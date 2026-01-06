@@ -880,6 +880,76 @@ ggplot(chom_dep, aes(x = Annee, y = taux_chom, fill = Annee)) +
   )
 ```
 
+```{r}
+# =========================
+# 2022 
+# =========================
+Merge |>
+  filter(Annee == 2022, !is.na(code_departement)) |>
+  mutate(
+    dep_label = paste0(code_departement, " – ", nom_departement),
+    pop2064 = `Pop Hommes 20-64 ans` + `Pop Femmes 20-64 ans`
+  ) |>
+  group_by(dep_label) |>
+  summarise(
+    chomeurs = sum(chomeur_total, na.rm = TRUE),
+    pop2064  = sum(pop2064, na.rm = TRUE),
+    taux_chom = 100 * chomeurs / pop2064,
+    .groups = "drop"
+  ) |>
+  arrange(taux_chom) |>
+  (\(d) bind_cols(
+    d |>
+      slice_head(n = 10) |>
+      transmute(`Lowest rates (2022)` = dep_label,
+                `Rate (%)` = round(taux_chom, 2)),
+    d |>
+      slice_tail(n = 10) |>
+      arrange(desc(taux_chom)) |>
+      transmute(`Highest rates (2022)` = dep_label,
+                `Rate (%)` = round(taux_chom, 2))
+  ))() |>
+  kable(
+    caption = "Unemployment rate by department — 2022 (10 lowest vs 10 highest)",
+    align = "l"
+  )
+
+# =========================
+# 2016
+# =========================
+
+Merge |>
+  filter(Annee == 2016, !is.na(code_departement)) |>
+  mutate(
+    dep_label = paste0(code_departement, " – ", nom_departement),
+    pop2064 = `Pop Hommes 20-64 ans` + `Pop Femmes 20-64 ans`
+  ) |>
+  group_by(dep_label) |>
+  summarise(
+    chomeurs = sum(chomeur_total, na.rm = TRUE),
+    pop2064  = sum(pop2064, na.rm = TRUE),
+    taux_chom = 100 * chomeurs / pop2064,
+    .groups = "drop"
+  ) |>
+  arrange(taux_chom) |>
+  (\(d) bind_cols(
+    d |>
+      slice_head(n = 10) |>
+      transmute(`Lowest rates (2016)` = dep_label,
+                `Rate (%)` = round(taux_chom, 2)),
+    d |>
+      slice_tail(n = 10) |>
+      arrange(desc(taux_chom)) |>
+      transmute(`Highest rates (2016)` = dep_label,
+                `Rate (%)` = round(taux_chom, 2))
+  ))() |>
+  kable(
+    caption = "Unemployment rate by department — 2016 (10 lowest vs 10 highest)",
+    align = "l"
+  )
+
+```
+
 #### Relocation Rate across departments
 
 ```{r}
