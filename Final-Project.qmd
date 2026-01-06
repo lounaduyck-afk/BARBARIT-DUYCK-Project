@@ -591,3 +591,43 @@ DVF_panel |>
   theme_minimal()
 
 ```
+
+
+## Comparison across the 10 largest French metropolitan areas
+
+```{r, warning=FALSE, message=FALSE}
+metro_labels <- tibble::tibble(
+  INSEE_COM = c("75056", "69123", "33063", "13055", "31555",
+                "06088", "44109", "34172", "67482", "59350"),
+  Metro = c("Paris",
+            "Lyon",
+            "Bordeaux",
+            "Marseille",
+            "Toulouse",
+            "Nice",
+            "Nantes",
+            "Montpellier",
+            "Strasbourg",
+            "Lille")
+)
+```
+
+```{r, warning=FALSE, message=FALSE}
+df_comp <- DVF_panel %>%
+  filter(INSEE_COM %in% communes_compare) %>%
+  left_join(metro_labels, by = "INSEE_COM")
+```
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(df_comp, aes(x = Annee, y = Prixm2Moyen, color = Metro)) +
+  geom_line(linewidth = 0.7) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  labs(
+    title = "Comparison across the 10 largest French metropolitan areas (m2)",
+    x = "Year",
+    y = "Average property price (€)",
+    color = "Metropolitan area"
+  ) +
+  scale_color_brewer(palette = "Set2")
+```
