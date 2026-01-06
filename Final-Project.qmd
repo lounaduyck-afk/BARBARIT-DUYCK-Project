@@ -631,3 +631,22 @@ ggplot(df_comp, aes(x = Annee, y = Prixm2Moyen, color = Metro)) +
   ) +
   scale_color_brewer(palette = "Set2")
 ```
+
+
+```{r, warning=FALSE, message=FALSE}
+df_comp %>%
+  filter(!is.na(Nb_mutations)) %>%
+  ggplot(aes(x = Annee, y = Nb_mutations, color = Metro)) +
+  geom_line(linewidth = 0.7) +
+  geom_point(size = 1.8) +
+  theme_minimal() +
+  labs(
+    title = "Comparison of transaction volumes across the 10 French metropolitan areas",
+    x = "Year",
+    y = "Number of transactions",
+    color = "Metropolitan area"
+  ) +
+scale_color_brewer(palette = "Set2")
+```
+
+
