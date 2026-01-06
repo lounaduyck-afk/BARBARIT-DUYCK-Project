@@ -660,12 +660,15 @@ To go further in the data analysis process, we calculate several indicators.
 ### The upper socio-economic group rate representation
 
 ```{r}
+#Merging the geolocalisation dataset with the demographic indicators for each municipality
 map_demo <- communes_sf |>
   left_join(
     Merge |> filter(Annee %in% c(2016, 2022)),
     by = c("code_insee_de_la_commune" = "INSEE_COM")) |>
   select(code_insee_de_la_commune, Annee, TauxCSPsup, TauxChom, TauxDem)
+```
 
+```{r}
 map_demo |>
   filter(!is.na(TauxCSPsup)) |>
   ggplot() +
@@ -675,5 +678,21 @@ map_demo |>
   labs(
     title = "CSP+ rate by municipalities",
     color = "Rate (%)") +
+  theme_minimal()
+```
+
+### The unemployment rate representation
+
+```{r}
+map_demo |>
+  filter(!is.na(TauxChom)) |>
+  ggplot() +
+  geom_sf(aes(color = TauxChom), size = 1, alpha = 0.7) +
+  facet_wrap(~ Annee, ncol = 2, scales = "fixed") +
+  scale_color_viridis_c(direction = -1) +
+  labs(
+    title = "Unemployment rate by municipalities",
+    color = "Rate (%)"
+  ) +
   theme_minimal()
 ```
