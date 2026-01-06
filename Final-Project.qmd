@@ -31,6 +31,7 @@ library(vroom)
 library(purrr)
 library(stringr)
 library(sf)
+library(knitr)
 ```
 
 # Link to the github project
