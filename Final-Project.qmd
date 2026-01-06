@@ -815,18 +815,24 @@ Merge |>
     .groups = "drop"
   ) |>
   filter(is.finite(TauxCSPsup), denom > 0) |>
-  arrange(TauxCSPsup) |>
-  (\(d) bind_cols(
-    d |>
-      slice_head(n = 10) |>
-      transmute(`Lowest shares (2022)` = nom_departement,
-                `CSP+ share` = round(TauxCSPsup, 2)),
-    d |>
-      slice_tail(n = 10) |>
-      arrange(desc(TauxCSPsup)) |>
-      transmute(`Highest shares (2022)` = nom_departement,
-                `CSP+ share` = round(TauxCSPsup, 2))
-  )) |>
+  arrange(TauxCSPsup) -> d_2022
+
+d_2022 |>
+  slice_head(n = 10) |>
+  transmute(
+    `Lowest shares (2022)` = nom_departement,
+    `CSP+ share` = round(TauxCSPsup, 2)
+  ) -> low_2022
+
+d_2022 |>
+  slice_tail(n = 10) |>
+  arrange(desc(TauxCSPsup)) |>
+  transmute(
+    `Highest shares (2022)` = nom_departement,
+    `CSP+ share` = round(TauxCSPsup, 2)
+  ) -> high_2022
+
+bind_cols(low_2022, high_2022) |>
   kable(
     digits = 2,
     caption = "CSP+ — Departments with the lowest and highest shares of executives (2022)"
@@ -835,6 +841,7 @@ Merge |>
 # =========================
 # 2016
 # =========================
+
 Merge |>
   filter(Annee == 2016, !is.na(code_departement)) |>
   group_by(code_departement, nom_departement) |>
@@ -845,23 +852,28 @@ Merge |>
     .groups = "drop"
   ) |>
   filter(is.finite(TauxCSPsup), denom > 0) |>
-  arrange(TauxCSPsup) |>
-  (\(d) bind_cols(
-    d |>
-      slice_head(n = 10) |>
-      transmute(`Lowest shares (2016)` = nom_departement,
-                `CSP+ share` = round(TauxCSPsup, 2)),
-    d |>
-      slice_tail(n = 10) |>
-      arrange(desc(TauxCSPsup)) |>
-      transmute(`Highest shares (2016)` = nom_departement,
-                `CSP+ share` = round(TauxCSPsup, 2))
-  )) |>
+  arrange(TauxCSPsup) -> d_2016
+
+d_2016 |>
+  slice_head(n = 10) |>
+  transmute(
+    `Lowest shares (2016)` = nom_departement,
+    `CSP+ share` = round(TauxCSPsup, 2)
+  ) -> low_2016
+
+d_2016 |>
+  slice_tail(n = 10) |>
+  arrange(desc(TauxCSPsup)) |>
+  transmute(
+    `Highest shares (2016)` = nom_departement,
+    `CSP+ share` = round(TauxCSPsup, 2)
+  ) -> high_2016
+
+bind_cols(low_2016, high_2016) |>
   kable(
     digits = 2,
     caption = "CSP+ — Departments with the lowest and highest shares of executives (2016)"
   )
-
 ```
 
 #### Unemployment rate across departments
@@ -912,7 +924,7 @@ ggplot(chom_dep, aes(x = Annee, y = taux_chom, fill = Annee)) +
 
 ```{r}
 # =========================
-# 2022 
+# 2022
 # =========================
 Merge |>
   filter(Annee == 2022, !is.na(code_departement)) |>
@@ -927,27 +939,33 @@ Merge |>
     taux_chom = 100 * chomeurs / pop2064,
     .groups = "drop"
   ) |>
-  arrange(taux_chom) |>
-  (\(d) bind_cols(
-    d |>
-      slice_head(n = 10) |>
-      transmute(`Lowest rates (2022)` = dep_label,
-                `Rate (%)` = round(taux_chom, 2)),
-    d |>
-      slice_tail(n = 10) |>
-      arrange(desc(taux_chom)) |>
-      transmute(`Highest rates (2022)` = dep_label,
-                `Rate (%)` = round(taux_chom, 2))
-  ))() |>
+  arrange(taux_chom) -> d_2022
+
+d_2022 |>
+  slice_head(n = 10) |>
+  transmute(
+    `Lowest rates (2022)` = dep_label,
+    `Rate (%)` = round(taux_chom, 2)
+  ) -> low_2022
+
+d_2022 |>
+  slice_tail(n = 10) |>
+  arrange(desc(taux_chom)) |>
+  transmute(
+    `Highest rates (2022)` = dep_label,
+    `Rate (%)` = round(taux_chom, 2)
+  ) -> high_2022
+
+bind_cols(low_2022, high_2022) |>
   kable(
     caption = "Unemployment rate by department — 2022 (10 lowest vs 10 highest)",
     align = "l"
   )
 
+
 # =========================
 # 2016
 # =========================
-
 Merge |>
   filter(Annee == 2016, !is.na(code_departement)) |>
   mutate(
@@ -961,23 +979,28 @@ Merge |>
     taux_chom = 100 * chomeurs / pop2064,
     .groups = "drop"
   ) |>
-  arrange(taux_chom) |>
-  (\(d) bind_cols(
-    d |>
-      slice_head(n = 10) |>
-      transmute(`Lowest rates (2016)` = dep_label,
-                `Rate (%)` = round(taux_chom, 2)),
-    d |>
-      slice_tail(n = 10) |>
-      arrange(desc(taux_chom)) |>
-      transmute(`Highest rates (2016)` = dep_label,
-                `Rate (%)` = round(taux_chom, 2))
-  ))() |>
+  arrange(taux_chom) -> d_2016
+
+d_2016 |>
+  slice_head(n = 10) |>
+  transmute(
+    `Lowest rates (2016)` = dep_label,
+    `Rate (%)` = round(taux_chom, 2)
+  ) -> low_2016
+
+d_2016 |>
+  slice_tail(n = 10) |>
+  arrange(desc(taux_chom)) |>
+  transmute(
+    `Highest rates (2016)` = dep_label,
+    `Rate (%)` = round(taux_chom, 2)
+  ) -> high_2016
+
+bind_cols(low_2016, high_2016) |>
   kable(
     caption = "Unemployment rate by department — 2016 (10 lowest vs 10 highest)",
     align = "l"
   )
-
 ```
 
 #### Relocation Rate across departments
@@ -1033,8 +1056,7 @@ ggplot(dem_dep, aes(x = Annee, y = taux_dem, fill = Annee)) +
 # 2022 — Mobility rate
 # =========================
 Merge |>
-  filter(Annee == 2022) |>
-  filter(!is.na(code_departement)) |>
+  filter(Annee == 2022, !is.na(code_departement)) |>
   mutate(
     non_demenage =
       `Pop 1 an ou plus habitant 1 an avt même logt` +
@@ -1047,31 +1069,37 @@ Merge |>
     taux_dem     = 100 * (1 - non_demenage / population),
     .groups = "drop"
   ) |>
-  filter(is.finite(taux_dem)) |>
-  arrange(taux_dem) |>
-  (\(d) bind_cols(
-    d |>
-      slice_head(n = 10) |>
-      transmute(`Lowest rates (2022)` = nom_departement,
-                `Mobility rate (%)` = round(taux_dem, 2)),
-    d |>
-      slice_tail(n = 10) |>
-      arrange(desc(taux_dem)) |>
-      transmute(`Highest rates (2022)` = nom_departement,
-                `Mobility rate (%)` = round(taux_dem, 2))
-  ))() |>
+  filter(is.finite(taux_dem), population > 0) |>
+  arrange(taux_dem) -> d_2022
+
+d_2022 |>
+  slice_head(n = 10) |>
+  transmute(
+    `Lowest rates (2022)` = nom_departement,
+    `Mobility rate (%)`   = round(taux_dem, 2)
+  ) -> low_2022
+
+d_2022 |>
+  slice_tail(n = 10) |>
+  arrange(desc(taux_dem)) |>
+  transmute(
+    `Highest rates (2022)` = nom_departement,
+    `Mobility rate (%)`    = round(taux_dem, 2)
+  ) -> high_2022
+
+bind_cols(low_2022, high_2022) |>
   kable(
     digits = 2,
     caption = "Residential mobility — Departments with the lowest and highest rates (2022)",
     align = "l"
   )
 
+
 # =========================
 # 2016 — Mobility rate
 # =========================
 Merge |>
-  filter(Annee == 2016) |>
-  filter(!is.na(code_departement)) |>
+  filter(Annee == 2016, !is.na(code_departement)) |>
   mutate(
     non_demenage =
       `Pop 1 an ou plus habitant 1 an avt même logt` +
@@ -1084,19 +1112,25 @@ Merge |>
     taux_dem     = 100 * (1 - non_demenage / population),
     .groups = "drop"
   ) |>
-  filter(is.finite(taux_dem)) |>
-  arrange(taux_dem) |>
-  (\(d) bind_cols(
-    d |>
-      slice_head(n = 10) |>
-      transmute(`Lowest rates (2016)` = nom_departement,
-                `Mobility rate (%)` = round(taux_dem, 2)),
-    d |>
-      slice_tail(n = 10) |>
-      arrange(desc(taux_dem)) |>
-      transmute(`Highest rates (2016)` = nom_departement,
-                `Mobility rate (%)` = round(taux_dem, 2))
-  ))() |>
+  filter(is.finite(taux_dem), population > 0) |>
+  arrange(taux_dem) -> d_2016
+
+d_2016 |>
+  slice_head(n = 10) |>
+  transmute(
+    `Lowest rates (2016)` = nom_departement,
+    `Mobility rate (%)`   = round(taux_dem, 2)
+  ) -> low_2016
+
+d_2016 |>
+  slice_tail(n = 10) |>
+  arrange(desc(taux_dem)) |>
+  transmute(
+    `Highest rates (2016)` = nom_departement,
+    `Mobility rate (%)`    = round(taux_dem, 2)
+  ) -> high_2016
+
+bind_cols(low_2016, high_2016) |>
   kable(
     digits = 2,
     caption = "Residential mobility — Departments with the lowest and highest rates (2016)",
