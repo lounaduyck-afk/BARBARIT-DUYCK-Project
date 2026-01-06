@@ -696,3 +696,19 @@ map_demo |>
   ) +
   theme_minimal()
 ```
+
+### The relocation rate representation
+
+```{r}
+map_demo |>
+  filter(!is.na(TauxDem)) |>
+  ggplot() +
+  geom_sf(aes(color = TauxDem), size = 1, alpha = 0.7) +
+  facet_wrap(~ Annee, ncol = 2, scales = "fixed") +
+  scale_color_viridis_c(direction = -1) +
+  labs(
+    title = "Relocation rate by municipalities",
+    color = "Rate (%)"
+  ) +
+  theme_minimal()
+```
