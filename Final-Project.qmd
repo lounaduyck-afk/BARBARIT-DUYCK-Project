@@ -486,3 +486,21 @@ DVF_panel |>
   )
 
 ```
+
+
+### Graphic of the evolution of the average price of real estate per square meter
+
+```{r, warning=FALSE, message=FALSE}
+DVF_panel |>
+  group_by(Annee) |>
+  summarise(prix_moyen_m2 = mean(Prixm2Moyen, na.rm = TRUE)) |>
+  ggplot(aes(x = Annee, y = prix_moyen_m2)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_point(size = 2, color = "steelblue") +
+  theme_minimal() +
+    labs(
+    title = "Evolution of the Average Property Price per square meter",
+    x = "Year",
+    y = "Average price per m² (€)"
+  )
+```
