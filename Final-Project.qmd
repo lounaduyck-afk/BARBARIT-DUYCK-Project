@@ -559,3 +559,35 @@ DVF_panel |>
 ```
 
 
+```{r, warning=FALSE, message=FALSE}
+DVF_panel |>
+  group_by(Annee) |>
+  summarise(
+    TotalMaisons = sum(NbMaisons, na.rm = TRUE),
+    TotalApparts = sum(NbApparts, na.rm = TRUE)
+  ) |>
+  mutate(
+    Total = TotalMaisons + TotalApparts,
+    ShareMaisons = TotalMaisons / Total,
+    ShareApparts = TotalApparts / Total
+  ) |>
+  pivot_longer(
+    cols = c(ShareMaisons, ShareApparts),
+    names_to = "TypeBien",
+    values_to = "Share"
+  ) |>
+  ggplot(aes(x = Annee, y = Share, fill = TypeBien)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Distribution of houses and apartments per year",
+    x = "Year",
+    y = "Share of transactions (%)"
+  ) +
+  scale_fill_manual(
+    values = c("ShareMaisons" = "orange", "ShareApparts" = "purple"),
+    labels = c("Houses", "Apartments")
+  ) +
+  theme_minimal()
+
+```
