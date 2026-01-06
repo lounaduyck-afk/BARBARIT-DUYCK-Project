@@ -183,7 +183,10 @@ new_names <- setNames(Labels$COD_VAR, Labels$LIB_VAR)
 Population <- Population |>
   rename(!!!new_names)
 Population <- Population |>
-  rename(INSEE_COM = `Arrondissement municipal`)
+  rename(INSEE_COM = `Arrondissement municipal`, "Pop 15 ans ou plus Autres personnes sans activité professionnelle en 2016 (compl)" = `Pop 15 ans ou plus Autres en 2016 (compl)`, "Pop 15 ans ou plus Hommes Autres personnes sans activité professionnelle en 2016 (compl)" = `Pop 15 ans ou plus Hommes Autres en 2016 (compl)`, "Pop 15 ans ou plus Femmes Autres personnes sans activité professionnelle en 2016 (compl)
+" = `Pop 15 ans ou plus Femmes Autres en 2016 (compl)`, "Pop 15-24 ans Autres personnes sans activité professionnelle en 2016 (compl)
+" = `Pop 15-24 ans Autres en 2016 (compl)`, "Pop 25-54 ans Autres personnes sans activité professionnelle en 2016 (compl)
+" = `Pop 25-54 ans Autres en 2016 (compl)`, "Pop 55 ans ou plus Autres personnes sans activité professionnelle en 2016 (compl)" = `Pop 55 ans ou plus Autres en 2016 (compl)`)
 ```
 
 Explanations: When we downloaded the data sets, we had two csv files, one with the data we want to look at, in which the labels had a specific code, and the other with the labels' code and their meaning. Then, we changed the code labels of our data set of interest to get their meaning.
