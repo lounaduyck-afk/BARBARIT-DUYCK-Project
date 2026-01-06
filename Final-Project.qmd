@@ -504,3 +504,21 @@ DVF_panel |>
     y = "Average price per m² (€)"
   )
 ```
+
+
+
+### Graphic of the evolution of the number of transactions
+
+```{r, warning=FALSE, message=FALSE}
+DVF_panel |>
+  group_by(Annee) |>
+  summarise(Total_mutations = sum(Nb_mutations, na.rm = TRUE)) |>
+  ggplot(aes(x = Annee, y = Total_mutations)) +
+  geom_line(color = "steelblue", size = 1.2) +
+  geom_point(color = "red", size = 2) +
+  labs(title = "Evolution of the number of real estate transactions in France (2014-2024)",
+       x = "Year",
+       y = "Number of transactions") +
+  theme_minimal()
+```
+
