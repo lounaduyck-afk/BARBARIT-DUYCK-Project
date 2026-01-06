@@ -422,6 +422,12 @@ communes_poly <- st_read(gpkg_path, layer = "commune") |>
 mutate(code_insee = sprintf("%05s", trimws(code_insee)))
 ```
 
+## Department labels data
+
+```{r}
+dep <- vroom(here("Data","departements-france.csv"))
+```
+
 # Graphical representations
 
 ## 2024 (points)
