@@ -771,6 +771,69 @@ Merge |>
   )
 ```
 
+```{r}
+# =========================
+# 2022
+# =========================
+Merge |>
+  filter(Annee == 2022, !is.na(code_departement)) |>
+  group_by(code_departement, nom_departement) |>
+  summarise(
+    cadres = sum(`Pop 15 ans ou plus Cadres, Prof. intel. sup.`, na.rm = TRUE),
+    denom  = sum(`Pop 15 ans ou plus`, na.rm = TRUE),
+    TauxCSPsup = 100 * cadres / denom,
+    .groups = "drop"
+  ) |>
+  filter(is.finite(TauxCSPsup), denom > 0) |>
+  arrange(TauxCSPsup) |>
+  (\(d) bind_cols(
+    d |>
+      slice_head(n = 10) |>
+      transmute(`Lowest shares (2022)` = nom_departement,
+                `CSP+ share` = round(TauxCSPsup, 2)),
+    d |>
+      slice_tail(n = 10) |>
+      arrange(desc(TauxCSPsup)) |>
+      transmute(`Highest shares (2022)` = nom_departement,
+                `CSP+ share` = round(TauxCSPsup, 2))
+  )) |>
+  kable(
+    digits = 2,
+    caption = "CSP+ — Departments with the lowest and highest shares of executives (2022)"
+  )
+
+# =========================
+# 2016
+# =========================
+Merge |>
+  filter(Annee == 2016, !is.na(code_departement)) |>
+  group_by(code_departement, nom_departement) |>
+  summarise(
+    cadres = sum(`Pop 15 ans ou plus Cadres, Prof. intel. sup.`, na.rm = TRUE),
+    denom  = sum(`Pop 15 ans ou plus`, na.rm = TRUE),
+    TauxCSPsup = 100 * cadres / denom,
+    .groups = "drop"
+  ) |>
+  filter(is.finite(TauxCSPsup), denom > 0) |>
+  arrange(TauxCSPsup) |>
+  (\(d) bind_cols(
+    d |>
+      slice_head(n = 10) |>
+      transmute(`Lowest shares (2016)` = nom_departement,
+                `CSP+ share` = round(TauxCSPsup, 2)),
+    d |>
+      slice_tail(n = 10) |>
+      arrange(desc(TauxCSPsup)) |>
+      transmute(`Highest shares (2016)` = nom_departement,
+                `CSP+ share` = round(TauxCSPsup, 2))
+  )) |>
+  kable(
+    digits = 2,
+    caption = "CSP+ — Departments with the lowest and highest shares of executives (2016)"
+  )
+
+```
+
 #### Unemployment rate across departments
 
 ```{r}
