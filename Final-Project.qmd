@@ -816,3 +816,51 @@ ggplot(chom_dep, aes(x = Annee, y = taux_chom, fill = Annee)) +
     panel.grid.major.y = element_blank()
   )
 ```
+
+#### Relocation Rate across departments
+
+```{r}
+dem_dep <- Merge |>
+  filter(Annee %in% c(2016, 2022)) |>
+  filter(!is.na(code_departement)) |>
+  mutate(
+    dep_label = paste0(code_departement, " – ", nom_departement),
+    Annee = factor(Annee),
+    non_demenage = 
+      `Pop 1 an ou plus habitant 1 an avt même logt` +
+      `Pop 1 an ou plus habitant 1 an avt autre logt même commune`
+  ) |>
+  group_by(dep_label, Annee) |>
+  summarise(
+    non_demenage = sum(non_demenage, na.rm = TRUE),
+    population   = sum(Population, na.rm = TRUE),
+    taux_dem = 100 * (1 - non_demenage / population),
+    .groups = "drop"
+  )
+
+
+ggplot(dem_dep, aes(x = Annee, y = taux_dem, fill = Annee)) +
+  geom_col(width = 0.8) +
+  coord_flip() +
+  facet_wrap(~ dep_label, ncol = 6) +
+  scale_fill_manual(
+    values = c(
+      "2016" = "#8DA0CB",  
+      "2022" = "#E78AC3" 
+    )
+  ) +
+  labs(
+    title = "Residential Mobility Rate by Department",
+    subtitle = "2016 vs 2022 Comparison (Resident Population)",
+    x = NULL,
+    y = "Relocation rate (%)",
+    fill = "Year"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    strip.text = element_text(face = "bold", size = 9),
+    axis.text.y = element_text(size = 8),
+    axis.text.x = element_text(size = 8),
+    panel.grid.major.y = element_blank()
+  )
+```
