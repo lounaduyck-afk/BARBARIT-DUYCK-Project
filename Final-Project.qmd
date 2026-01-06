@@ -522,3 +522,17 @@ DVF_panel |>
   theme_minimal()
 ```
 
+### Graphical representation of the Average property size over time
+
+```{r, warning=FALSE, message=FALSE}
+DVF_panel |>
+  group_by(Annee) |>
+  summarise(SurfaceMoy = mean(SurfaceMoy, na.rm = TRUE)) |>
+  ggplot(aes(x = Annee, y = SurfaceMoy)) +
+  geom_line(color = "darkred", size = 1.2) +
+  geom_point(color = "red", size = 2) +
+  labs(title = "Evolution of the average surface area of properties in France",
+       x = "Year",
+       y = "Average surface area (m²)") +
+  theme_minimal()
+```
