@@ -770,3 +770,49 @@ Merge |>
     panel.grid.major.y = element_blank()
   )
 ```
+
+#### Unemployment rate across departments
+
+```{r}
+chom_dep <- Merge |>
+  filter(Annee %in% c(2016, 2022)) |>
+  filter(!is.na(code_departement)) |>
+  mutate(
+    dep_label = paste0(code_departement, " – ", nom_departement),
+    Annee = factor(Annee),
+    pop2064 = `Pop Hommes 20-64 ans` + `Pop Femmes 20-64 ans`
+  ) |>
+  group_by(dep_label, Annee) |>
+  summarise(
+    chomeurs = sum(chomeur_total, na.rm = TRUE),
+    pop2064  = sum(pop2064, na.rm = TRUE),
+    taux_chom = 100 * chomeurs / pop2064,
+    .groups = "drop"
+  )
+
+
+ggplot(chom_dep, aes(x = Annee, y = taux_chom, fill = Annee)) +
+  geom_col(width = 0.8) +
+  coord_flip() +
+  facet_wrap(~ dep_label, ncol = 6) +
+  scale_fill_manual(
+    values = c(
+      "2016" = "#66C2A5",
+      "2022" = "#FC8D62"
+    )
+  ) +
+  labs(
+    title = "Unemployment Rate by Department",
+    subtitle = "Comparison between 2016 and 2022 (ratio of unemployed persons to the population aged 20–64).",
+    x = NULL,
+    y = "Unemployment rate (%)",
+    fill = "Year"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    strip.text = element_text(face = "bold", size = 9),
+    axis.text.y = element_text(size = 8),
+    axis.text.x = element_text(size = 8),
+    panel.grid.major.y = element_blank()
+  )
+```
