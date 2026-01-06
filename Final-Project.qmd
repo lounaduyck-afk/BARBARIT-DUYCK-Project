@@ -712,3 +712,61 @@ map_demo |>
   ) +
   theme_minimal()
 ```
+
+### Analysis per departments
+
+#### Distribution of socio-professional groups across departments
+
+```{r}
+csp_cols <- c(
+  "Pop 15 ans ou plus Agriculteurs exploitants",
+  "Pop 15 ans ou plus Artisans, Comm., Chefs entr.",
+  "Pop 15 ans ou plus Cadres, Prof. intel. sup.",
+  "Pop 15 ans ou plus Prof. intermédiaires ",
+  "Pop 15 ans ou plus Employés",
+  "Pop 15 ans ou plus Ouvriers",
+  "Pop 15 ans ou plus Retraités",
+  "Pop 15 ans ou plus Autres personnes sans activité professionnelle")
+
+Merge |>
+  filter(Annee %in% c(2016, 2022)) |>
+  
+  filter(!is.na(code_departement)) |>
+  mutate(
+    dep_label = paste0(code_departement, " – ", nom_departement),
+    Annee = factor(Annee)
+  ) |>
+  pivot_longer(
+    cols = all_of(csp_cols),
+    names_to = "variable",
+    values_to = "pop"
+  ) |>
+  mutate(
+    CSP = str_remove(variable, "^Pop 15 ans ou plus\\s*"),
+    CSP = str_squish(CSP)
+  ) |>
+  group_by(dep_label, Annee, CSP) |>
+  summarise(pop = sum(pop, na.rm = TRUE), .groups = "drop") |>
+  group_by(dep_label, Annee) |>
+  mutate(part = pop / sum(pop)) |>
+  ggplot(aes(x = Annee, y = part, fill = CSP)) +
+  geom_col(width = 0.8) +
+  coord_flip() +
+  facet_wrap(~ dep_label, ncol = 6) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "Distribution of socio-professional groups across departments.",
+    subtitle = "Comparison between 2016 and 2022 (population aged 15 and over)",
+    x = NULL,
+    y = "Share",
+    fill = "Socio-professional groups"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    strip.text = element_text(face = "bold", size = 9),
+    axis.text.y = element_text(size = 8),
+    axis.text.x = element_text(size = 8),
+    panel.grid.major.y = element_blank()
+  )
+```
