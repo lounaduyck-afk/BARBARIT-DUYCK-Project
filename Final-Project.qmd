@@ -998,3 +998,79 @@ ggplot(dem_dep, aes(x = Annee, y = taux_dem, fill = Annee)) +
     panel.grid.major.y = element_blank()
   )
 ```
+
+```{r}
+# =========================
+# 2022 — Mobility rate
+# =========================
+Merge |>
+  filter(Annee == 2022) |>
+  filter(!is.na(code_departement)) |>
+  mutate(
+    non_demenage =
+      `Pop 1 an ou plus habitant 1 an avt même logt` +
+      `Pop 1 an ou plus habitant 1 an avt autre logt même commune`
+  ) |>
+  group_by(code_departement, nom_departement) |>
+  summarise(
+    non_demenage = sum(non_demenage, na.rm = TRUE),
+    population   = sum(Population, na.rm = TRUE),
+    taux_dem     = 100 * (1 - non_demenage / population),
+    .groups = "drop"
+  ) |>
+  filter(is.finite(taux_dem)) |>
+  arrange(taux_dem) |>
+  (\(d) bind_cols(
+    d |>
+      slice_head(n = 10) |>
+      transmute(`Lowest rates (2022)` = nom_departement,
+                `Mobility rate (%)` = round(taux_dem, 2)),
+    d |>
+      slice_tail(n = 10) |>
+      arrange(desc(taux_dem)) |>
+      transmute(`Highest rates (2022)` = nom_departement,
+                `Mobility rate (%)` = round(taux_dem, 2))
+  ))() |>
+  kable(
+    digits = 2,
+    caption = "Residential mobility — Departments with the lowest and highest rates (2022)",
+    align = "l"
+  )
+
+# =========================
+# 2016 — Mobility rate
+# =========================
+Merge |>
+  filter(Annee == 2016) |>
+  filter(!is.na(code_departement)) |>
+  mutate(
+    non_demenage =
+      `Pop 1 an ou plus habitant 1 an avt même logt` +
+      `Pop 1 an ou plus habitant 1 an avt autre logt même commune`
+  ) |>
+  group_by(code_departement, nom_departement) |>
+  summarise(
+    non_demenage = sum(non_demenage, na.rm = TRUE),
+    population   = sum(Population, na.rm = TRUE),
+    taux_dem     = 100 * (1 - non_demenage / population),
+    .groups = "drop"
+  ) |>
+  filter(is.finite(taux_dem)) |>
+  arrange(taux_dem) |>
+  (\(d) bind_cols(
+    d |>
+      slice_head(n = 10) |>
+      transmute(`Lowest rates (2016)` = nom_departement,
+                `Mobility rate (%)` = round(taux_dem, 2)),
+    d |>
+      slice_tail(n = 10) |>
+      arrange(desc(taux_dem)) |>
+      transmute(`Highest rates (2016)` = nom_departement,
+                `Mobility rate (%)` = round(taux_dem, 2))
+  ))() |>
+  kable(
+    digits = 2,
+    caption = "Residential mobility — Departments with the lowest and highest rates (2016)",
+    align = "l"
+  )
+```
