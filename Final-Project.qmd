@@ -657,4 +657,23 @@ To go further in the data analysis process, we calculate several indicators.
 ```{r} Merge <- Merge |>   mutate(     TauxCSPsup =`Pop 15 ans ou plus Cadres, Prof. intel. sup.`/ `Pop 15 ans ou plus`*100,     TauxChom = chomeur_total /(`Pop Hommes 20-64 ans`+`Pop Femmes 20-64 ans`)*100,     TauxDem = (1 - (`Pop 1 an ou plus habitant 1 an avt même logt`+`Pop 1 an ou plus habitant 1 an avt autre logt même commune`)/Population)*100)}
 ```
 
-## 
+### The upper socio-economic group rate representation
+
+```{r}
+map_demo <- communes_sf |>
+  left_join(
+    Merge |> filter(Annee %in% c(2016, 2022)),
+    by = c("code_insee_de_la_commune" = "INSEE_COM")) |>
+  select(code_insee_de_la_commune, Annee, TauxCSPsup, TauxChom, TauxDem)
+
+map_demo |>
+  filter(!is.na(TauxCSPsup)) |>
+  ggplot() +
+  geom_sf(aes(color = TauxCSPsup), size = 1, alpha = 0.7) +
+  facet_wrap(~ Annee, ncol = 2, scales = "fixed") +
+  scale_color_viridis_c(direction = -1) +
+  labs(
+    title = "CSP+ rate by municipalities",
+    color = "Rate (%)") +
+  theme_minimal()
+```
