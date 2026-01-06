@@ -428,6 +428,25 @@ mutate(code_insee = sprintf("%05s", trimws(code_insee)))
 dep <- vroom(here("Data","departements-france.csv"))
 ```
 
+We add a column into the Merge database, corresponding to the name of the department to which each municipality belongs
+
+```{r}
+Merge <- Merge |>
+  mutate(
+    code_departement = substr(as.character(INSEE_COM), 1, 2)
+  ) |>
+  left_join(
+    dep |> select(code_departement, nom_departement),
+    by = "code_departement"
+  )
+```
+
+```{r}
+sum(is.na(Merge$code_departement))
+```
+
+Only 2 municipalities do not have a departement code. This is due to two NA for INSEE_COM, one for 2016, the other for 2022.
+
 # Graphical representations
 
 ## 2024 (points)
