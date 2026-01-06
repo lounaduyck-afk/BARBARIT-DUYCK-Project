@@ -634,7 +634,7 @@ metro_labels <- tibble::tibble(
 
 ```{r, warning=FALSE, message=FALSE}
 df_comp <- DVF_panel %>%
-  filter(INSEE_COM %in% communes_compare) %>%
+  filter(INSEE_COM %in% metro_labels$INSEE_COM) %>%
   left_join(metro_labels, by = "INSEE_COM")
 ```
 
@@ -680,11 +680,7 @@ To go further in the data analysis process, we calculate several indicators.
 
 -   **The relocation rate**: the percentage of people that initiate a transaction during the year while they were not resident in this municipality previously.
 
-```{r} 
-Merge <- Merge |>   
-  mutate(TauxCSPsup =`Pop 15 ans ou plus Cadres, Prof. intel. sup.`/ `Pop 15 ans ou plus`*100,
-         TauxChom = chomeur_total /(`Pop Hommes 20-64 ans`+`Pop Femmes 20-64 ans`)*100,
-         TauxDem = (1 - (`Pop 1 an ou plus habitant 1 an avt même logt`+`Pop 1 an ou plus habitant 1 an avt autre logt même commune`)/Population)*100)
+```{r} Merge <- Merge |>   mutate(     TauxCSPsup =`Pop 15 ans ou plus Cadres, Prof. intel. sup.`/ `Pop 15 ans ou plus`*100,     TauxChom = chomeur_total /(`Pop Hommes 20-64 ans`+`Pop Femmes 20-64 ans`)*100,     TauxDem = (1 - (`Pop 1 an ou plus habitant 1 an avt même logt`+`Pop 1 an ou plus habitant 1 an avt autre logt même commune`)/Population)*100)}
 ```
 
 ### The upper socio-economic group rate representation
