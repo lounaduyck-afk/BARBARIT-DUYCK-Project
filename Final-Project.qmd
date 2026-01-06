@@ -447,37 +447,47 @@ sum(is.na(Merge$code_departement))
 
 Only 2 municipalities do not have a departement code. This is due to two NA for INSEE_COM, one for 2016, the other for 2022.
 
-# Graphical representations
-
-## 2024 (points)
+# Descriptive analysis of the structure of the French real estate market
 
 ```{r, warning=FALSE, message=FALSE}
-df_2024 <- DVF_panel |>
-filter(Annee == 2024)
 
-carte_2024 <- communes_sf |>
-left_join(df_2024, by = c("code_insee_de_la_commune" = "INSEE_COM"))
+# Données prix (2 années) + nettoyage pour le log (pas de 0 / négatif)
+df_both <- DVF_panel |>
+  filter(Annee %in% c(2016, 2022)) |>
+  select(INSEE_COM, Annee, Prixm2Moyen) |>
+  mutate(Prixm2Moyen = ifelse(Prixm2Moyen <= 0, NA, Prixm2Moyen))
 
-ggplot(carte_2024) +
-geom_sf(aes(color = PrixMoyen), size = 1, alpha = 0.7) +
-scale_color_viridis_c(trans = "log",direction = -1) +
-labs(title = "Average Price per Municipality (2024)", color = "Average prices (€)") +
-theme_minimal()
+# 1) Polygones des communes x {2016, 2022}
+carte_poly_both <- bind_rows(
+  communes_poly |> mutate(Annee = 2016),
+  communes_poly |> mutate(Annee = 2022)
+) |>
+  left_join(
+    df_both,
+    by = c("code_insee" = "INSEE_COM", "Annee" = "Annee")
+  ) |>
+  mutate(Annee = factor(Annee))
+
+# 2) Carte en polygones : NA visibles (gris), même légende pour les 2 années
+ggplot(carte_poly_both) +
+  geom_sf(aes(fill = Prixm2Moyen), color = NA) +
+  scale_fill_viridis_c(
+    trans = "log", direction = -1,
+    na.value = "grey70"
+  ) +
+  facet_wrap(~ Annee) +
+  labs(
+    title = "Average Price per square meter per Municipality",
+    fill  = "Average Price per m² (€)"
+  ) +
+  theme_minimal()
+
 ```
 
-```{r, warning=FALSE, message=FALSE}
-df_2014 <- DVF_panel |>
-filter(Annee == 2014)
+Between 2016 and 2022, the maps reveal an almost global increase in average prices per square meter, particularly marked in and around large metropolitan areas (we can distinguish Paris, Lyon, Marseille, Bordeaux, Toulouse...). This trend is followed by a significant gap between urban and rural areas, reflecting the dynamics of metropolitanization and differentiated attractiveness. The spread of high price levels in cities such as Bordeaux, Annecy, and Nantes suggests that the rise in prices extends beyond the Paris region and reflects common macroeconomic determinants combined with heterogeneous local trends. Coastal municipalities also have high prices per square meter, which can be explained by several factors such as tourist appeal, quality of life, and the presence of many second homes. From an economic point of view, these maps already allow us to make the following assumptions: prices per square meter seem to be correlated with several factors, including urbanity, unemployment, and the attractiveness of different areas.\
+These maps allow us to easily distinguish between attractive areas of France, such as cities and coastal regions, and less attractive areas, known as the “diagonale du vide” (empty diagonal), which stretches from the northeast to the west of the country.
 
-carte_2014 <- communes_sf |>
-left_join(df_2014, by = c("code_insee_de_la_commune" = "INSEE_COM"))
-
-ggplot(carte_2014) +
-geom_sf(aes(color = PrixMoyen), size = 1, alpha = 0.7) +
-scale_color_viridis_c(trans = "log", direction = -1) +
-labs(title = "Average Price per Municipality (2014)", color = "Average Price (€)") +
-theme_minimal()
-```
+### Ile de France map
 
 ```{r, warning=FALSE, message=FALSE}
 departements_idf <- c("75","92","93","94","91","77","78","95")
@@ -485,32 +495,14 @@ departements_idf <- c("75","92","93","94","91","77","78","95")
 communes_idf <- communes_poly |>
 filter(substr(code_insee, 1, 2) %in% departements_idf)
 
-carte_idf_2024 <- communes_idf |>
-left_join(df_2024, by = c("code_insee" = "INSEE_COM"))
+carte_idf_2022 <- communes_idf |>
+left_join(df_2022, by = c("code_insee" = "INSEE_COM"))
 
-ggplot(carte_idf_2024) +
-geom_sf(aes(fill = PrixMoyen), color = "white", size = 0.1) +
+ggplot(carte_idf_2022) +
+geom_sf(aes(fill = Prixm2Moyen), color = "white", size = 0.1) +
 scale_fill_viridis_c(trans = "log", direction = -1) +
 theme_minimal() +
-labs(title = "Average Price — Île-de-France (2024)", fill = "Average Price (€)")
-```
-
-### Graphic of the evolution of the average property price
-
-```{r, warning=FALSE, message=FALSE}
-DVF_panel |>
-  group_by(Annee) |>
-  summarise(prix_moyen = mean(PrixMoyen, na.rm = TRUE)) |>
-  ggplot(aes(x = Annee, y = prix_moyen)) +
-  geom_line(linewidth = 1.2, color = "steelblue") +
-  geom_point(size = 2, color = "steelblue") +
-  theme_minimal() +
-    labs(
-    title = "Evolution of the Average Property Price",
-    x = "Year",
-    y = "Average Price (€)"
-  )
-
+labs(title = "Average price per square meter — Île-de-France (2022)", fill = "Average Price per square meter (€)")
 ```
 
 ### Graphic of the evolution of the average price of real estate per square meter
@@ -530,6 +522,13 @@ DVF_panel |>
   )
 ```
 
+This graph confirms the trend observed on the maps: average real estate prices per square meter rose sharply in France between the mid-2010s and the mid-2020s. In fact, prices remained fairly stable between 2014 and 2019, hovering around €1,600 per square meter, with a slight decline observed in 2018.
+
+Between 2019 and 2023, the average price per square meter in France rose sharply from €1,600 to almost €2,000. \
+This trend probably reflects several factors: very favorable borrowing conditions for most of the period due to low interest rates, stronger demand for real estate after the Covid-19 crisis, and a possible move to more attractive regions.
+
+A downward trend has been observed since 2023. This recent slowdown could be linked to the change in monetary policy and rising interest rates, which have reduced households' purchasing power in the real estate market. Overall, this graph highlights a change in the market regime, which has shifted from a relatively stable situation at the outset to a phase of significant price appreciation that appears to be highly sensitive to macroeconomic and financial shocks.
+
 ### Graphic of the evolution of the number of transactions
 
 ```{r, warning=FALSE, message=FALSE}
@@ -544,6 +543,13 @@ DVF_panel |>
        y = "Number of transactions") +
   theme_minimal()
 ```
+
+In this graphical representation we observe that the volume of transactions increased between 2014 and 2016, suggesting a gradual recovery in the real estate market after the sovereign debt crisis in the eurozone (which peaked in 2010-2012). \
+A sharp decline was observed in 2017-2018, which could reflect regulatory changes, data coverage issues, or tighter credit conditions that temporarily reduced market activity.
+
+From 2019, the number of transactions increased strongly, exceeding one million in 2021 and remaining at a high level in 2022. This expansion is consistent with the exceptionally low interest rates observed before 2022 and with the sharp increase in demand for housing around the Covid-19 crisis, when households sought larger or better-located homes.
+
+After 2022, volumes decline sharply until 2023-2024, indicating a slowdown in the market. This slowdown likely reflects rising mortgage rates and inflation, which have eroded purchasing power and increased the cost of financing.
 
 ### Graphical representation of the Average property size over time
 
@@ -560,24 +566,60 @@ DVF_panel |>
   theme_minimal()
 ```
 
+We see that there was a gradual increase in the average surface area of propeties between 2014 and 2016, with the average size rising from just under 100 m² to around 102 m². This upward trend continued moderately until 2020, suggesting that buyers gradually turned to larger homes, perhaps in response to changing preferences and improved living standards. A peak is observed in 2021, above 103 m², which could reflect the impact of the Covid-19 crisis: lockdowns and teleworking have increased the value of space, encouraging households to look for homes with additional rooms, gardens, or offices.
+
+After 2021, the average surface area decreases, stabilizing at around 100 m² in 2023. This reversal could be linked to rising property prices and mortgage rates, which have stretched budgets and forced households to buy smaller homes.
+
 ### Distribution of houses vs. apartments by year
 
 ```{r, warning=FALSE, message=FALSE}
-DVF_panel |>
+
+# 1) Unique aggregation
+df_agrege <- DVF_panel |>
   group_by(Annee) |>
-  summarise(TotalMaisons = sum(NbMaisons, na.rm = TRUE),
-            TotalApparts = sum(NbApparts, na.rm = TRUE)) |>
-  pivot_longer(cols = c(TotalMaisons, TotalApparts),
-               names_to = "TypeBien",
-               values_to = "Nombre") %>%
-  ggplot(aes(x = Annee, y = Nombre, fill = TypeBien)) +
-  geom_bar(stat = "identity", position = "stack") +
-  labs(title = "Distribution of houses and apartments per year",
-       x = "Year",
-       y = "Number of transactions") +
-  scale_fill_manual(values = c("TotalMaisons" = "orange", "TotalApparts" = "purple"),
-                    labels = c("Maisons", "Appartements")) +
+  summarise(
+    Maisons      = sum(NbMaisons, na.rm = TRUE),
+    Appartements = sum(NbApparts, na.rm = TRUE),
+    Total_mutations = sum(Nb_mutations, na.rm = TRUE),   # <- ton layer courbe
+    .groups = "drop"
+  ) |>
+  mutate(Annee = as.numeric(Annee))
+
+# 2. Long format for the barres
+df_long <- df_agrege |>
+  select(Annee, Maisons, Appartements) |>
+  pivot_longer(
+    cols = c(Maisons, Appartements),
+    names_to  = "TypeBien",
+    values_to = "Nombre"
+  )
+
+# 3. Graph
+ggplot() +
+  geom_col(
+    data = df_long,
+    aes(x = Annee, y = Nombre, fill = TypeBien),
+    position = "stack",
+    alpha = 0.85
+  ) +
+  geom_line(
+    data = df_agrege,
+    aes(x = Annee, y = Total_mutations),
+    size = 1.1
+  ) +
+  geom_point(
+    data = df_agrege,
+    aes(x = Annee, y = Total_mutations),
+    size = 2
+  ) +
+  labs(
+    title = "Distribution of houses and apartments with total transactions",
+    x = "Year",
+    y = "Number of transactions",
+    fill = "Property type"
+  ) +
   theme_minimal()
+
 ```
 
 ```{r, warning=FALSE, message=FALSE}
@@ -589,11 +631,11 @@ DVF_panel |>
   ) |>
   mutate(
     Total = TotalMaisons + TotalApparts,
-    ShareMaisons = TotalMaisons / Total,
-    ShareApparts = TotalApparts / Total
+    Houses = TotalMaisons / Total,
+    Appartments = TotalApparts / Total
   ) |>
   pivot_longer(
-    cols = c(ShareMaisons, ShareApparts),
+    cols = c(Houses, Appartments),
     names_to = "TypeBien",
     values_to = "Share"
   ) |>
@@ -605,13 +647,18 @@ DVF_panel |>
     x = "Year",
     y = "Share of transactions (%)"
   ) +
-  scale_fill_manual(
-    values = c("ShareMaisons" = "orange", "ShareApparts" = "purple"),
-    labels = c("Houses", "Apartments")
-  ) +
   theme_minimal()
 
 ```
+
+In the first graphical representation we observe that the volume of transactions increased between 2014 and 2016, suggesting a gradual recovery in the real estate market after the sovereign debt crisis in the eurozone (which peaked in 2010-2012). \
+A sharp decline was observed in 2017-2018, which could reflect regulatory changes, data coverage issues, or tighter credit conditions that temporarily reduced market activity.
+
+From 2019, the number of transactions increased strongly, exceeding one million in 2021 and remaining at a high level in 2022. This expansion is consistent with the exceptionally low interest rates observed before 2022 and with the sharp increase in demand for housing around the Covid-19 crisis, when households sought larger or better-located homes.
+
+After 2022, volumes decline sharply until 2023-2024, indicating a slowdown in the market. This slowdown likely reflects rising mortgage rates and inflation, which have eroded purchasing power and increased the cost of financing.
+
+However, the composition chart shows that, despite these pronounced fluctuations in activity, the market structure has remained remarkably stable: apartments have consistently accounted for just over half of transactions, around 55-58%, and houses around 42-45%. Only minor variations can be observed from year to year, with no lasting shift in favor of one type of housing over another.
 
 ## Comparison across the 10 largest French metropolitan areas
 
@@ -668,9 +715,7 @@ df_comp %>%
 scale_color_brewer(palette = "Set2")
 ```
 
-
-
-## Exploring joint distributions 
+## Exploring joint distributions
 
 ```{r, warning=FALSE, message=FALSE}
 
@@ -760,8 +805,6 @@ DVF_panel %>%
 
 ```
 
-
-
 ## Demographic indicators
 
 To go further in the data analysis process, we calculate several indicators.
@@ -774,7 +817,7 @@ To go further in the data analysis process, we calculate several indicators.
 
 -   **The relocation rate**: the percentage of people that initiate a transaction during the year while they were not resident in this municipality previously.
 
-```{r} 
+```{r}
 Merge <- Merge |>   
   mutate(TauxCSPsup =`Pop 15 ans ou plus Cadres, Prof. intel. sup.`/ `Pop 15 ans ou plus`*100,
          TauxChom = chomeur_total /(`Pop Hommes 20-64 ans`+`Pop Femmes 20-64 ans`)*100,
@@ -1231,6 +1274,3 @@ bind_cols(low_2016, high_2016) |>
     align = "l"
   )
 ```
-
-
-
