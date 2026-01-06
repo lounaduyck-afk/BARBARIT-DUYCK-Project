@@ -668,6 +668,100 @@ df_comp %>%
 scale_color_brewer(palette = "Set2")
 ```
 
+
+
+## Exploring joint distributions 
+
+```{r, warning=FALSE, message=FALSE}
+
+DVF_panel %>%
+  mutate(dep = substr(INSEE_COM, 1, 2)) %>%
+  filter(
+    !dep %in% c("97", "98", "57", "68"),
+    dep != "2A", dep != "2B",
+    !is.na(Prixm2Moyen),
+    !is.na(SurfaceMoy)
+  ) %>%
+  group_by(dep, Annee) %>%
+  summarise(
+    prix_m2 = mean(Prixm2Moyen, na.rm = TRUE),
+    surface_moy = mean(SurfaceMoy, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  ggplot(aes(x = surface_moy, y = prix_m2)) +
+  geom_point(alpha = 0.7, size = 2, color = "steelblue") +
+  theme_minimal() +
+  labs(
+    title = "Joint distribution of average price per m² and average surface area",
+    x = "Average surface area (sqm)",
+    y = "Average price per m² (€)"
+  ) +
+  geom_smooth(method = "lm", se = FALSE, color = "darkred")
+
+```
+
+```{r, warning=FALSE, message=FALSE}
+DVF_panel %>%
+  mutate(dep = substr(INSEE_COM, 1, 2)) %>%
+  filter(
+    !dep %in% c("97", "98", "57", "68"),
+    dep != "2A", dep != "2B",
+    !is.na(Prixm2Moyen),
+    !is.na(NbApparts),
+    !is.na(Nb_mutations)
+  ) %>%
+  group_by(dep, Annee) %>%
+  summarise(
+    prix_m2 = mean(Prixm2Moyen, na.rm = TRUE),
+    part_apparts = sum(NbApparts, na.rm = TRUE) / sum(Nb_mutations, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  ggplot(aes(x = part_apparts, y = prix_m2)) +
+  geom_point(alpha = 0.7, size = 2, color = "steelblue") +
+  geom_smooth(method = "lm", se = FALSE, color = "darkred") +
+  theme_minimal() +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Joint distribution of average price per m² and share of apartments",
+    subtitle = "Apartment share as a proxy for urban density",
+    x = "Share of apartments (%)",
+    y = "Average price per m² (€)"
+  )
+
+```
+
+```{r, warning=FALSE, message=FALSE}
+
+DVF_panel %>%
+  mutate(dep = substr(INSEE_COM, 1, 2)) %>%
+  filter(
+    !dep %in% c("97", "98", "57", "68"),
+    dep != "2A", dep != "2B",
+    !is.na(Prixm2Moyen),
+    !is.na(Nb_mutations)
+  ) %>%
+  group_by(dep, Annee) %>%
+  summarise(
+    prix_m2 = mean(Prixm2Moyen, na.rm = TRUE),
+    nb_mut = sum(Nb_mutations, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  ggplot(aes(x = nb_mut, y = prix_m2)) +
+  geom_point(alpha = 0.7, size = 2, color = "steelblue") +
+  geom_smooth(method = "lm", se = FALSE, color = "darkred") +
+  theme_minimal() +
+  labs(
+    title = "Joint distribution of average price per m² and number of transactions",
+    subtitle = "Transaction volume as a proxy for market activity",
+    x = "Number of transactions",
+    y = "Average price per m² (€)"
+  )
+
+
+```
+
+
+
 ## Demographic indicators
 
 To go further in the data analysis process, we calculate several indicators.
@@ -1137,3 +1231,6 @@ bind_cols(low_2016, high_2016) |>
     align = "l"
   )
 ```
+
+
+
