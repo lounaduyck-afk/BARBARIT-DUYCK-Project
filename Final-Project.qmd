@@ -487,7 +487,6 @@ DVF_panel |>
 
 ```
 
-
 ### Graphic of the evolution of the average price of real estate per square meter
 
 ```{r, warning=FALSE, message=FALSE}
@@ -504,8 +503,6 @@ DVF_panel |>
     y = "Average price per m² (€)"
   )
 ```
-
-
 
 ### Graphic of the evolution of the number of transactions
 
@@ -537,7 +534,6 @@ DVF_panel |>
   theme_minimal()
 ```
 
-
 ### Distribution of houses vs. apartments by year
 
 ```{r, warning=FALSE, message=FALSE}
@@ -557,7 +553,6 @@ DVF_panel |>
                     labels = c("Maisons", "Appartements")) +
   theme_minimal()
 ```
-
 
 ```{r, warning=FALSE, message=FALSE}
 DVF_panel |>
@@ -591,7 +586,6 @@ DVF_panel |>
   theme_minimal()
 
 ```
-
 
 ## Comparison across the 10 largest French metropolitan areas
 
@@ -632,7 +626,6 @@ ggplot(df_comp, aes(x = Annee, y = Prixm2Moyen, color = Metro)) +
   scale_color_brewer(palette = "Set2")
 ```
 
-
 ```{r, warning=FALSE, message=FALSE}
 df_comp %>%
   filter(!is.na(Nb_mutations)) %>%
@@ -649,4 +642,19 @@ df_comp %>%
 scale_color_brewer(palette = "Set2")
 ```
 
+## Demographic indicators
 
+To go further in the data analysis process, we calculate several indicators.
+
+-   **The upper socio-economic group rate**: percentage of managers and higher intellectual professions among the population of 15+ years old.
+
+-   **The unemployment rate**: the percentage of unemployed people among the active population (between 20 years old and 64 years old).
+
+    It should be noted that this ratio is approximate, as it does not take into account individuals aged 15 to 19. As we did not have the number of inhabitants for each age group in each municipality, we chose the age group closest to the working population.
+
+-   **The relocation rate**: the percentage of people that initiate a transaction during the year while they were not resident in this municipality previously.
+
+```{r} Merge <- Merge |>   mutate(     TauxCSPsup =`Pop 15 ans ou plus Cadres, Prof. intel. sup.`/ `Pop 15 ans ou plus`*100,     TauxChom = chomeur_total /(`Pop Hommes 20-64 ans`+`Pop Femmes 20-64 ans`)*100,     TauxDem = (1 - (`Pop 1 an ou plus habitant 1 an avt même logt`+`Pop 1 an ou plus habitant 1 an avt autre logt même commune`)/Population)*100)}
+```
+
+## 
