@@ -432,7 +432,7 @@ left_join(df_2024, by = c("code_insee_de_la_commune" = "INSEE_COM"))
 
 ggplot(carte_2024) +
 geom_sf(aes(color = PrixMoyen), size = 1, alpha = 0.7) +
-scale_color_viridis_c(trans = "log") +
+scale_color_viridis_c(trans = "log",direction = -1) +
 labs(title = "Average Price per Municipality (2024)", color = "Average prices (€)") +
 theme_minimal()
 ```
@@ -447,7 +447,7 @@ left_join(df_2014, by = c("code_insee_de_la_commune" = "INSEE_COM"))
 
 ggplot(carte_2014) +
 geom_sf(aes(color = PrixMoyen), size = 1, alpha = 0.7) +
-scale_color_viridis_c(trans = "log") +
+scale_color_viridis_c(trans = "log", direction = -1) +
 labs(title = "Average Price per Municipality (2014)", color = "Average Price (€)") +
 theme_minimal()
 ```
@@ -464,7 +464,7 @@ left_join(df_2024, by = c("code_insee" = "INSEE_COM"))
 
 ggplot(carte_idf_2024) +
 geom_sf(aes(fill = PrixMoyen), color = "white", size = 0.1) +
-scale_fill_viridis_c(trans = "log") +
+scale_fill_viridis_c(trans = "log", direction = -1) +
 theme_minimal() +
 labs(title = "Average Price — Île-de-France (2024)", fill = "Average Price (€)")
 ```
