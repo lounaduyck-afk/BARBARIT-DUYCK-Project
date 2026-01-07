@@ -533,12 +533,12 @@ DVF_panel |>
   )
 ```
 
-This graph confirms the trend observed on the maps: average real estate prices per square meter rose sharply in France between the mid-2010s and the mid-2020s. In fact, prices remained fairly stable between 2014 and 2019, hovering around €1,600 per square meter, with a slight decline observed in 2018.
+This graph confirms the trend observed on the maps: average real estate prices per square meter rose sharply in France between the mid-2010s and the mid-2020s. In fact, prices remained fairly stable between 2014 and 2019, hovering around 1600€ per m², with a slight decline observed in 2018.
 
-Between 2019 and 2023, the average price per square meter in France rose sharply from €1,600 to almost €2,000.\
+Between 2019 and 2023, the average price per square meter in France rose sharply from 1600€ to almost 2000€.\
 This trend probably reflects several factors: very favorable borrowing conditions for most of the period due to low interest rates, stronger demand for real estate after the Covid-19 crisis, and a possible move to more attractive regions.
 
-A downward trend has been observed since 2023. This recent slowdown could be linked to the change in monetary policy and rising interest rates, which have reduced households' purchasing power in the real estate market. Overall, this graph highlights a change in the market regime, which has shifted from a relatively stable situation at the outset to a phase of significant price appreciation that appears to be highly sensitive to macroeconomic and financial shocks.
+A downward trend is observed since 2023. This recent slowdown could be linked to the change in monetary policy and rising interest rates, which have reduced households' purchasing power in the real estate market. Overall, this graph highlights a change in the market regime, which has shifted from a relatively stable situation at the outset to a phase of significant price appreciation that appears to be highly sensitive to macroeconomic and financial shocks.
 
 ### Graphic of the evolution of the number of transactions
 
@@ -560,7 +560,7 @@ A sharp decline was observed in 2017-2018, which could reflect regulatory change
 
 From 2019, the number of transactions increased strongly, exceeding one million in 2021 and remaining at a high level in 2022. This expansion is consistent with the exceptionally low interest rates observed before 2022 and with the sharp increase in demand for housing around the Covid-19 crisis, when households sought larger or better-located homes.
 
-After 2022, volumes decline sharply until 2023-2024, indicating a slowdown in the market. This slowdown likely reflects rising mortgage rates and inflation, which have eroded purchasing power and increased the cost of financing.
+After 2022, volumes decline sharply until 2023-2024, indicating a slowdown in the market. This slowdown shows rising mortgage rates and inflation, which have eroded purchasing power and increased the cost of financing.
 
 ### Graphical representation of the Average property size over time
 
@@ -662,12 +662,11 @@ DVF_panel |>
 
 ```
 
-In the first graphical representation we observe that the volume of transactions increased between 2014 and 2016, suggesting a gradual recovery in the real estate market after the sovereign debt crisis in the eurozone (which peaked in 2010-2012).\
-A sharp decline was observed in 2017-2018, which could reflect regulatory changes, data coverage issues, or tighter credit conditions that temporarily reduced market activity.
+In the first graphical representation we observe that the volume of transactions increased between 2014 and 2016, suggesting a gradual recovery in the real estate market after the sovereign debt crisis in the eurozone (which peaked in 2010-2012). A significant decline was observed in 2017-2018, which could reflect regulatory changes, data coverage issues, or tighter credit conditions that temporarily reduced market activity.
 
 From 2019, the number of transactions increased strongly, exceeding one million in 2021 and remaining at a high level in 2022. This expansion is consistent with the exceptionally low interest rates observed before 2022 and with the sharp increase in demand for housing around the Covid-19 crisis, when households sought larger or better-located homes.
 
-After 2022, volumes decline sharply until 2023-2024, indicating a slowdown in the market. This slowdown likely reflects rising mortgage rates and inflation, which have eroded purchasing power and increased the cost of financing.
+After 2022, volumes decline sharply until 2023-2024, indicating a slowdown in the market. This slowdown reflects rising mortgage rates and inflation, which have eroded purchasing power and increased the cost of financing.
 
 However, the composition chart shows that, despite these pronounced fluctuations in activity, the market structure has remained remarkably stable: apartments have consistently accounted for just over half of transactions, around 55-58%, and houses around 42-45%. Only minor variations can be observed from year to year, with no lasting shift in favor of one type of housing over another.
 
@@ -691,8 +690,8 @@ metro_labels <- tibble::tibble(
 ```
 
 ```{r, warning=FALSE, message=FALSE}
-df_comp <- DVF_panel %>%
-  filter(INSEE_COM %in% metro_labels$INSEE_COM) %>%
+df_comp <- DVF_panel |>
+  filter(INSEE_COM %in% metro_labels$INSEE_COM) |>
   left_join(metro_labels, by = "INSEE_COM")
 ```
 
@@ -702,7 +701,7 @@ ggplot(df_comp, aes(x = Annee, y = Prixm2Moyen, color = Metro)) +
   geom_point(size = 2) +
   theme_minimal() +
   labs(
-    title = "Comparison across the 10 largest French metropolitan areas (m2)",
+    title = "Comparison across the 10 largest French metropolitan areas (m²)",
     x = "Year",
     y = "Average property price (€)",
     color = "Metropolitan area"
@@ -711,8 +710,8 @@ ggplot(df_comp, aes(x = Annee, y = Prixm2Moyen, color = Metro)) +
 ```
 
 ```{r, warning=FALSE, message=FALSE}
-df_comp %>%
-  filter(!is.na(Nb_mutations)) %>%
+df_comp |>
+  filter(!is.na(Nb_mutations)) |>
   ggplot(aes(x = Annee, y = Nb_mutations, color = Metro)) +
   geom_line(linewidth = 0.7) +
   geom_point(size = 1.8) +
@@ -726,24 +725,30 @@ df_comp %>%
 scale_color_brewer(palette = "Set2")
 ```
 
+The first graph highlights an upward trend in real estate prices in the ten largest French cities between 2016 and 2022, confirming the previous observations. Paris clearly stands out as an outlier, with prices almost twice as high as those in other cities, reflecting very limited land supply and sustained investor demand. Most regional cities such as Lyon and Nice are also experiencing significant increases, suggesting growing appeal and demographic pressure in major urban centers.
+
+In the second graph we observe that the sharp decline in Paris around 2017, followed by a rebound after 2019, reflects sensitivity to credit conditions and affordability constraints. Regional cities show approximatively the same shape, but in smaller proportions, indicating more elastic supply and a less stained real estate market outside the capital.
+
+Taken together, these figures suggest that the French real estate market is becoming increasingly polarized: high prices in Paris may crowd out some demand, while regional metropolitan areas continue to grow in both value and activity. This requires a differentiated regional analysis when evaluating housing or territorial policies.
+
 ## Exploring joint distributions
 
 ```{r, warning=FALSE, message=FALSE}
 
-DVF_panel %>%
-  mutate(dep = substr(INSEE_COM, 1, 2)) %>%
+DVF_panel |>
+  mutate(dep = substr(INSEE_COM, 1, 2)) |>
   filter(
     !dep %in% c("97", "98", "57", "68"),
     dep != "2A", dep != "2B",
     !is.na(Prixm2Moyen),
     !is.na(SurfaceMoy)
-  ) %>%
-  group_by(dep, Annee) %>%
+  ) |>
+  group_by(dep, Annee) |>
   summarise(
     prix_m2 = mean(Prixm2Moyen, na.rm = TRUE),
     surface_moy = mean(SurfaceMoy, na.rm = TRUE),
     .groups = "drop"
-  ) %>%
+  ) |>
   ggplot(aes(x = surface_moy, y = prix_m2)) +
   geom_point(alpha = 0.7, size = 2, color = "steelblue") +
   theme_minimal() +
@@ -756,22 +761,26 @@ DVF_panel %>%
 
 ```
 
+In this graph, each point represents a department at one precise year. The scatter plot shows a negative relationship, which means that transactions involving larger homes tend to be associated with lower prices per square meter, while smaller properties command higher unit values. The dense scatter plot between approximately 80 and 110 m² shows that most French sales fall within this range, with prices largely clustered around 1500€ to 3000€ per m².
+
+The extreme observations in the upper left correspond to very high prices for relatively small areas, probably reflecting Paris and a few particularly sought-after urban areas where land scarcity and high demand drive up valuations. This trend shows that price heterogeneity is determined not only by location, but also by the composition of the housing stock. Areas with a high proportion of small apartments have higher prices per square meter, while areas where houses and spacious dwellings are the norm have lower unit prices. These data confirm the need to control for average size or type of dwelling in any econometric analysis of real estate prices.
+
 ```{r, warning=FALSE, message=FALSE}
-DVF_panel %>%
-  mutate(dep = substr(INSEE_COM, 1, 2)) %>%
+DVF_panel |>
+  mutate(dep = substr(INSEE_COM, 1, 2)) |>
   filter(
     !dep %in% c("97", "98", "57", "68"),
     dep != "2A", dep != "2B",
     !is.na(Prixm2Moyen),
     !is.na(NbApparts),
     !is.na(Nb_mutations)
-  ) %>%
-  group_by(dep, Annee) %>%
+  ) |>
+  group_by(dep, Annee) |>
   summarise(
     prix_m2 = mean(Prixm2Moyen, na.rm = TRUE),
     part_apparts = sum(NbApparts, na.rm = TRUE) / sum(Nb_mutations, na.rm = TRUE),
     .groups = "drop"
-  ) %>%
+  ) |>
   ggplot(aes(x = part_apparts, y = prix_m2)) +
   geom_point(alpha = 0.7, size = 2, color = "steelblue") +
   geom_smooth(method = "lm", se = FALSE, color = "darkred") +
@@ -786,22 +795,28 @@ DVF_panel %>%
 
 ```
 
+In this graph, the proportion of apartments is used as a proxy of urban density (a high propotion of apartments is the sign of a urbanized area). The scatter plot reveals a positive and approximately linear relationship, showing that municipalities with a higher proportion of apartments tend to have higher prices per m², while areas dominated by low proportions of apartments have the lowest unit prices.
+
+A large number of observations below 25% apartments show that most French municipalities remain relatively low in density, with prices generally below 2000€ per m². The points on the far right, close to 100%, correspond to very dense urban areas, most likely Paris, where land scarcity, amenities, and the concentration of skilled households generate significantly higher valuations.
+
+The slope suggests that price heterogeneity is strongly linked to the structure of the housing stock: compact real estate markets benefit more from location advantages than spacious residential markets. Therefore, any econometric assessment of real estate prices should take into account the proportion of apartments or the composition of the housing stock in order to avoid attributing the effects of density to other variables such as unemployment or income alone.
+
 ```{r, warning=FALSE, message=FALSE}
 
-DVF_panel %>%
-  mutate(dep = substr(INSEE_COM, 1, 2)) %>%
+DVF_panel |>
+  mutate(dep = substr(INSEE_COM, 1, 2)) |>
   filter(
     !dep %in% c("97", "98", "57", "68"),
     dep != "2A", dep != "2B",
     !is.na(Prixm2Moyen),
     !is.na(Nb_mutations)
-  ) %>%
-  group_by(dep, Annee) %>%
+  ) |>
+  group_by(dep, Annee) |>
   summarise(
     prix_m2 = mean(Prixm2Moyen, na.rm = TRUE),
     nb_mut = sum(Nb_mutations, na.rm = TRUE),
     .groups = "drop"
-  ) %>%
+  ) |>
   ggplot(aes(x = nb_mut, y = prix_m2)) +
   geom_point(alpha = 0.7, size = 2, color = "steelblue") +
   geom_smooth(method = "lm", se = FALSE, color = "darkred") +
@@ -815,6 +830,12 @@ DVF_panel %>%
 
 
 ```
+
+Here we can observe a positive relationship showing that, on average, municipalities with higher transaction volumes tend to have higher prices per square meter. A very dense concentration of points below 10000 transactions and 2000€ per m² shows that the majority of French municipalities correspond to small and relatively inexpensive local markets.
+
+The observations between 15000 and 30000 transactions correspond to large metropolitan or suburban areas characterized by high demand and many amenities. However, the cloud becomes increasingly heterogeneous as prices rise. Several high-priced municipalities have limited transaction volumes, which means that expensive markets are not necessarily the most active.
+
+In this graph, we see the coexistence of two mechanisms: in dynamic urban areas, high activity could reflect intense demand that drives up prices, while in expensive locations, affordability constraints and supply rigidity may limit the number of sales.
 
 ## Demographic indicators
 
