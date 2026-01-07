@@ -490,19 +490,30 @@ These maps allow us to easily distinguish between attractive areas of France, su
 ### Ile de France map
 
 ```{r, warning=FALSE, message=FALSE}
-departements_idf <- c("75","92","93","94","91","77","78","95")
 
-communes_idf <- communes_poly |>
-filter(substr(code_insee, 1, 2) %in% departements_idf)
+carte_idf_2016 <- communes_idf |>
+  left_join(DVF_panel |> filter(Annee == 2016),
+            by = c("code_insee" = "INSEE_COM")) |>
+  mutate(Annee = "2016")
 
 carte_idf_2022 <- communes_idf |>
-left_join(df_2022, by = c("code_insee" = "INSEE_COM"))
+  left_join(DVF_panel |> filter(Annee == 2022),
+            by = c("code_insee" = "INSEE_COM")) |>
+  mutate(Annee = "2022")
 
-ggplot(carte_idf_2022) +
-geom_sf(aes(fill = Prixm2Moyen), color = "white", size = 0.1) +
-scale_fill_viridis_c(trans = "log", direction = -1) +
-theme_minimal() +
-labs(title = "Average price per square meter — Île-de-France (2022)", fill = "Average Price per square meter (€)")
+carte_idf_1622 <- bind_rows(carte_idf_2016, carte_idf_2022)
+
+# Graph with facet_wrap
+ggplot(carte_idf_1622) +
+  geom_sf(aes(fill = Prixm2Moyen), color = "white", size = 0.1) +
+  scale_fill_viridis_c(trans = "log", direction = -1) +
+  theme_minimal() +
+  labs(
+    title = "Average price per square meter — Île-de-France",
+    fill  = "Average Price per square meter (€)"
+  ) +
+  facet_wrap(~ Annee)
+
 ```
 
 ### Graphic of the evolution of the average price of real estate per square meter
@@ -524,7 +535,7 @@ DVF_panel |>
 
 This graph confirms the trend observed on the maps: average real estate prices per square meter rose sharply in France between the mid-2010s and the mid-2020s. In fact, prices remained fairly stable between 2014 and 2019, hovering around €1,600 per square meter, with a slight decline observed in 2018.
 
-Between 2019 and 2023, the average price per square meter in France rose sharply from €1,600 to almost €2,000. \
+Between 2019 and 2023, the average price per square meter in France rose sharply from €1,600 to almost €2,000.\
 This trend probably reflects several factors: very favorable borrowing conditions for most of the period due to low interest rates, stronger demand for real estate after the Covid-19 crisis, and a possible move to more attractive regions.
 
 A downward trend has been observed since 2023. This recent slowdown could be linked to the change in monetary policy and rising interest rates, which have reduced households' purchasing power in the real estate market. Overall, this graph highlights a change in the market regime, which has shifted from a relatively stable situation at the outset to a phase of significant price appreciation that appears to be highly sensitive to macroeconomic and financial shocks.
@@ -544,7 +555,7 @@ DVF_panel |>
   theme_minimal()
 ```
 
-In this graphical representation we observe that the volume of transactions increased between 2014 and 2016, suggesting a gradual recovery in the real estate market after the sovereign debt crisis in the eurozone (which peaked in 2010-2012). \
+In this graphical representation we observe that the volume of transactions increased between 2014 and 2016, suggesting a gradual recovery in the real estate market after the sovereign debt crisis in the eurozone (which peaked in 2010-2012).\
 A sharp decline was observed in 2017-2018, which could reflect regulatory changes, data coverage issues, or tighter credit conditions that temporarily reduced market activity.
 
 From 2019, the number of transactions increased strongly, exceeding one million in 2021 and remaining at a high level in 2022. This expansion is consistent with the exceptionally low interest rates observed before 2022 and with the sharp increase in demand for housing around the Covid-19 crisis, when households sought larger or better-located homes.
@@ -651,7 +662,7 @@ DVF_panel |>
 
 ```
 
-In the first graphical representation we observe that the volume of transactions increased between 2014 and 2016, suggesting a gradual recovery in the real estate market after the sovereign debt crisis in the eurozone (which peaked in 2010-2012). \
+In the first graphical representation we observe that the volume of transactions increased between 2014 and 2016, suggesting a gradual recovery in the real estate market after the sovereign debt crisis in the eurozone (which peaked in 2010-2012).\
 A sharp decline was observed in 2017-2018, which could reflect regulatory changes, data coverage issues, or tighter credit conditions that temporarily reduced market activity.
 
 From 2019, the number of transactions increased strongly, exceeding one million in 2021 and remaining at a high level in 2022. This expansion is consistent with the exceptionally low interest rates observed before 2022 and with the sharp increase in demand for housing around the Covid-19 crisis, when households sought larger or better-located homes.
