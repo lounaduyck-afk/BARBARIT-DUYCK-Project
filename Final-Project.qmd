@@ -1359,3 +1359,70 @@ bind_cols(low_2016, high_2016) |>
     align = "l"
   )
 ```
+
+```{r}
+Merge |>
+  filter(Annee %in% c(2016, 2022)) |>
+  filter(!is.na(TauxChom), !is.na(Prixm2Moyen)) |>
+  group_by(Annee) |>
+  mutate(
+    chom_cat = case_when(
+      TauxChom <= quantile(TauxChom, 1/3, na.rm = TRUE) ~ "Low unemployment",
+      TauxChom <= quantile(TauxChom, 2/3, na.rm = TRUE) ~ "Moderate unemployment",
+      TRUE                                                ~ "High unemployment"
+    )
+  ) |>
+  ungroup() -> df_box_chom
+```
+
+```{r}
+df_box_chom |>
+  ggplot(aes(x = factor(Annee), y = Prixm2Moyen, fill = factor(Annee))) +
+  geom_boxplot() +
+  facet_wrap(~ chom_cat, nrow = 1) +
+  scale_fill_brewer(palette = "Set2")+
+  theme_minimal()+
+  labs(
+    title = "Price distribution (€/m²) by unemployment group",
+    x = NULL, y = "Price (€/m²)"
+  )
+```
+
+```{r}
+tab_dist_chom <- df_box_chom |>
+  group_by(Annee, chom_cat) |>
+  summarise(
+    mean   = mean(Prixm2Moyen, na.rm = TRUE),
+    se     = sd(Prixm2Moyen, na.rm = TRUE) / sqrt(sum(!is.na(Prixm2Moyen))),
+    q1     = quantile(Prixm2Moyen, 0.25, na.rm = TRUE),
+    median = median(Prixm2Moyen, na.rm = TRUE),
+    q3     = quantile(Prixm2Moyen, 0.75, na.rm = TRUE),
+    n      = sum(!is.na(Prixm2Moyen)),
+    .groups = "drop"
+  ) |>
+  mutate(across(c(mean, se, q1, median, q3), ~ round(.x, 1))) |>
+  arrange(chom_cat, Annee)
+
+tab_dist_chom_wide <- tab_dist_chom |>
+  select(Annee, chom_cat, mean, se, q1, median, q3) |>
+  pivot_wider(
+    names_from  = Annee,
+    values_from = c(mean, se, q1, median, q3),
+    names_glue  = "{.value}_{Annee}"
+  ) |>
+  arrange(chom_cat)
+
+tab_dist_chom_wide |>
+  kable(
+    caption = "Price distribution summary (€/m²): 2016 vs 2022 within each unemployment group",
+    col.names = c(
+      "Unemployment group",
+      "Mean 2016","Mean 2022",
+      "SE 2016","SE 2022",
+      "Q1 2016","Q1 2022",
+      "Median 2016","Median 2022",
+      "Q3 2016","Q3 2022"
+    )
+  )
+```
+
