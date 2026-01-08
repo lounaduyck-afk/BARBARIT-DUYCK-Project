@@ -422,13 +422,23 @@ communes_poly <- st_read(gpkg_path, layer = "commune") |>
 mutate(code_insee = sprintf("%05s", trimws(code_insee)))
 ```
 
-## Department labels data
+## 4) Department labels data
+
+Source: https://www.data.gouv.fr/datasets/departements-de-france
+
+This file gather:
+- The department code
+- The department name
+- The region code 
+- The region name
+
+We use it here to add to our Merge data set the name of the department to which each municipality belongs. This will be useful latter to do some data visualization at the department level.
 
 ```{r}
 dep <- vroom(here("Data","departements-france.csv"))
 ```
 
-We add a column into the Merge database, corresponding to the name of the department to which each municipality belongs
+We extract from the "INSEE code commune" the numbers linked to the department code. 
 
 ```{r}
 Merge <- Merge |>
@@ -835,7 +845,6 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
-
 ```{r, warning=FALSE, message=FALSE}
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
@@ -934,7 +943,6 @@ bind_cols(low_2016, high_2016) |>
     align = "l"
   )
 ```
-
 
 ## Exploring joint distributions
 
