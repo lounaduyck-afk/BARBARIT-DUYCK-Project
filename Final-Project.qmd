@@ -451,13 +451,11 @@ Only 2 municipalities do not have a departement code. This is due to two NA for 
 
 ```{r, warning=FALSE, message=FALSE}
 
-# Données prix (2 années) + nettoyage pour le log (pas de 0 / négatif)
 df_both <- DVF_panel |>
   filter(Annee %in% c(2016, 2022)) |>
   select(INSEE_COM, Annee, Prixm2Moyen) |>
   mutate(Prixm2Moyen = ifelse(Prixm2Moyen <= 0, NA, Prixm2Moyen))
 
-# 1) Polygones des communes x {2016, 2022}
 carte_poly_both <- bind_rows(
   communes_poly |> mutate(Annee = 2016),
   communes_poly |> mutate(Annee = 2022)
@@ -468,7 +466,6 @@ carte_poly_both <- bind_rows(
   ) |>
   mutate(Annee = factor(Annee))
 
-# 2) Carte en polygones : NA visibles (gris), même légende pour les 2 années
 ggplot(carte_poly_both) +
   geom_sf(aes(fill = Prixm2Moyen), color = NA) +
   scale_fill_viridis_c(
@@ -490,6 +487,11 @@ These maps allow us to easily distinguish between attractive areas of France, su
 ### Ile de France map
 
 ```{r, warning=FALSE, message=FALSE}
+departements_idf <- c("75","92","93","94","91","77","78","95")
+
+communes_idf <- communes_poly |>
+mutate(code_insee = sprintf("%05s", trimws(code_insee))) |>
+filter(substr(code_insee, 1, 2) %in% departements_idf)
 
 carte_idf_2016 <- communes_idf |>
   left_join(DVF_panel |> filter(Annee == 2016),
@@ -913,11 +915,11 @@ Merge <- Merge |>
 
 ```{r}
 #Merging the geolocalisation dataset with the demographic indicators for each municipality
-map_demo <- communes_sf |>
+map_demo <- communes_poly |>
   left_join(
     Merge |> filter(Annee %in% c(2016, 2022)),
-    by = c("code_insee_de_la_commune" = "INSEE_COM")) |>
-  select(code_insee_de_la_commune, Annee, TauxCSPsup, TauxChom, TauxDem)
+    by = c("code_insee" = "INSEE_COM")) |>
+  select(code_insee, Annee, TauxCSPsup, TauxChom, TauxDem)
 ```
 
 ```{r}
@@ -1425,4 +1427,5 @@ tab_dist_chom_wide |>
     )
   )
 ```
+
 
