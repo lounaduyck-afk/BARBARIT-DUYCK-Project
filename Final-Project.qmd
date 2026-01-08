@@ -760,6 +760,82 @@ DVF_panel |>
   )
 ```
 
+```{r}
+# =========================
+# 2022 — Price per m² (Departments)
+# =========================
+Merge |>
+  filter(Annee == 2022, !is.na(code_departement), !is.na(Prixm2Moyen)) |>
+  group_by(code_departement, nom_departement) |>
+  summarise(
+    Prixm2Moyen = mean(Prixm2Moyen, na.rm = TRUE),
+    n_communes  = sum(!is.na(Prixm2Moyen)),
+    .groups = "drop"
+  ) |>
+  filter(is.finite(Prixm2Moyen), n_communes > 0) |>
+  arrange(Prixm2Moyen) -> p_2022
+
+p_2022 |>
+  slice_head(n = 10) |>
+  transmute(
+    `Lowest prices (2022)` = nom_departement,
+    `Avg price (€/m²)`     = round(Prixm2Moyen, 0)
+  ) -> low_2022
+
+p_2022 |>
+  slice_tail(n = 10) |>
+  arrange(desc(Prixm2Moyen)) |>
+  transmute(
+    `Highest prices (2022)` = nom_departement,
+    `Avg price (€/m²)`      = round(Prixm2Moyen, 0)
+  ) -> high_2022
+
+bind_cols(low_2022, high_2022) |>
+  kable(
+    digits = 0,
+    caption = "Housing prices — Departments with the lowest and highest average price per m² (2022)",
+    align = "l"
+  )
+
+
+# =========================
+# 2016 — Price per m² (Departments)
+# =========================
+Merge |>
+  filter(Annee == 2016, !is.na(code_departement), !is.na(Prixm2Moyen)) |>
+  group_by(code_departement, nom_departement) |>
+  summarise(
+    Prixm2Moyen = mean(Prixm2Moyen, na.rm = TRUE),
+    n_communes  = sum(!is.na(Prixm2Moyen)),
+    .groups = "drop"
+  ) |>
+  filter(is.finite(Prixm2Moyen), n_communes > 0) |>
+  arrange(Prixm2Moyen) -> p_2016
+
+p_2016 |>
+  slice_head(n = 10) |>
+  transmute(
+    `Lowest prices (2016)` = nom_departement,
+    `Avg price (€/m²)`     = round(Prixm2Moyen, 0)
+  ) -> low_2016
+
+p_2016 |>
+  slice_tail(n = 10) |>
+  arrange(desc(Prixm2Moyen)) |>
+  transmute(
+    `Highest prices (2016)` = nom_departement,
+    `Avg price (€/m²)`      = round(Prixm2Moyen, 0)
+  ) -> high_2016
+
+bind_cols(low_2016, high_2016) |>
+  kable(
+    digits = 0,
+    caption = "Housing prices — Departments with the lowest and highest average price per m² (2016)",
+    align = "l"
+  )
+```
+
+
 ```{r, warning=FALSE, message=FALSE}
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
