@@ -863,9 +863,6 @@ DVF_panel |>
 ```
 
 ```{r}
-library(dplyr)
-library(knitr)
-
 # =========================
 # 2022 — Number of transactions (mutations)
 # =========================
@@ -928,8 +925,14 @@ m_2016 |>
   transmute(
     `Highest mutations (2016)` = nom_departement,
     `Mutations`                = round(Nb_mutations, 0)
-  ) -> h
+  ) -> high_2016
 
+bind_cols(low_2016, high_2016) |>
+  kable(
+    digits = 0,
+    caption = "Real-estate transactions — Departments with the lowest and highest number of mutations (2016)",
+    align = "l"
+  )
 ```
 
 
