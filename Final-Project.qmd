@@ -862,6 +862,77 @@ DVF_panel |>
 
 ```
 
+```{r}
+library(dplyr)
+library(knitr)
+
+# =========================
+# 2022 — Number of transactions (mutations)
+# =========================
+Merge |>
+  filter(Annee == 2022, !is.na(code_departement), !is.na(Nb_mutations)) |>
+  group_by(code_departement, nom_departement) |>
+  summarise(
+    Nb_mutations = sum(Nb_mutations, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  filter(is.finite(Nb_mutations), Nb_mutations > 0) |>
+  arrange(Nb_mutations) -> m_2022
+
+m_2022 |>
+  slice_head(n = 10) |>
+  transmute(
+    `Lowest mutations (2022)` = nom_departement,
+    `Mutations`               = round(Nb_mutations, 0)
+  ) -> low_2022
+
+m_2022 |>
+  slice_tail(n = 10) |>
+  arrange(desc(Nb_mutations)) |>
+  transmute(
+    `Highest mutations (2022)` = nom_departement,
+    `Mutations`                = round(Nb_mutations, 0)
+  ) -> high_2022
+
+bind_cols(low_2022, high_2022) |>
+  kable(
+    digits = 0,
+    caption = "Real-estate transactions — Departments with the lowest and highest number of mutations (2022)",
+    align = "l"
+  )
+
+
+# =========================
+# 2016 — Number of transactions (mutations)
+# =========================
+Merge |>
+  filter(Annee == 2016, !is.na(code_departement), !is.na(Nb_mutations)) |>
+  group_by(code_departement, nom_departement) |>
+  summarise(
+    Nb_mutations = sum(Nb_mutations, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  filter(is.finite(Nb_mutations), Nb_mutations > 0) |>
+  arrange(Nb_mutations) -> m_2016
+
+m_2016 |>
+  slice_head(n = 10) |>
+  transmute(
+    `Lowest mutations (2016)` = nom_departement,
+    `Mutations`               = round(Nb_mutations, 0)
+  ) -> low_2016
+
+m_2016 |>
+  slice_tail(n = 10) |>
+  arrange(desc(Nb_mutations)) |>
+  transmute(
+    `Highest mutations (2016)` = nom_departement,
+    `Mutations`                = round(Nb_mutations, 0)
+  ) -> h
+
+```
+
+
 ## Exploring joint distributions
 
 ```{r, warning=FALSE, message=FALSE}
