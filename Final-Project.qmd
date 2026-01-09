@@ -1838,3 +1838,19 @@ summary(m_fd)
 
 ```
 
+## Adding department-by-year fixed effects
+Next, we strengthen the identification by replacing the simple fixed effects for the year with fixed effects for department × year. This allows us to absorb shocks common to all municipalities in the same department during a given year, such as local macroeconomic conditions or departmental policies. The remaining variation therefore lies within the municipality, excluding department-specific temporal shocks.
+
+```{r}
+m_depyear <- feols(
+  ln_prix_m2 ~ TauxCSPsup + TauxChom + TauxDem + SurfaceMoy + PropAppart + ln_mut |
+    INSEE_COM + code_departement^Annee,
+  data = Merge_reg,
+  vcov = ~ INSEE_COM
+)
+
+etable(m_twfe, m_depyear)
+
+```
+
+
