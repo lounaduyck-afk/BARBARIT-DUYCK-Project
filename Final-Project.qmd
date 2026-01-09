@@ -188,7 +188,7 @@ Initially, we had one row for each municipality and the variables for each year.
 
 ### Changing the columns type
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Population <- Population |>
   mutate(Annee = as.integer(Annee))
 ```
@@ -255,7 +255,7 @@ Unemployment <- vroom(here("Data","indic_sex_rp.csv"),
          Chomeur = nb_chom1564)
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Unemployment |>
   filter(Annee == 2012) |>
   summarise(na_chomeur = sum(is.na(Chomeur)),
@@ -265,14 +265,14 @@ Unemployment |>
 
 Since all the observations in 2012 are NA, we apply a filter to remove them.
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Unemployment <- Unemployment |>
   filter(!Annee==2012)
 ```
 
 ### Modificating the structure of the dataset
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Unemployment <- Unemployment |>
   mutate(sexe = case_when(
     sexe == "F" ~ "chomeur_femme",
@@ -399,13 +399,13 @@ This file gather: - The department code - The department name - The region code 
 
 We use it here to add to our Merge data set the name of the department to which each municipality belongs. This will be useful latter to do some data visualization at the department level.
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 dep <- vroom(here("Data","departements-france.csv"))
 ```
 
 We extract from the "INSEE code commune" the numbers linked to the department code.
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge <- Merge |>
   mutate(
     code_departement = substr(as.character(INSEE_COM), 1, 2)
@@ -424,7 +424,7 @@ Only 2 municipalities do not have a departement code. This is due to two NA for 
 
 # Descriptive analysis of the structure of the French real estate market
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 
 df_both <- DVF_panel |>
   filter(Annee %in% c(2016, 2022)) |>
@@ -461,7 +461,7 @@ These maps allow us to easily distinguish between attractive areas of France, su
 
 ### Ile de France map
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 departements_idf <- c("75","92","93","94","91","77","78","95")
 
 communes_idf <- communes_poly |>
@@ -710,7 +710,7 @@ Taken together, these figures suggest that the French real estate market is beco
 
 ## Comparison between departments
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
   filter(
@@ -735,7 +735,7 @@ DVF_panel |>
   )
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 # =========================
 # 2022 — Price per m² (Departments)
 # =========================
@@ -810,7 +810,7 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
   filter(
@@ -836,7 +836,7 @@ DVF_panel |>
 
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 # =========================
 # 2022 — Number of transactions (mutations)
 # =========================
@@ -910,7 +910,9 @@ bind_cols(low_2016, high_2016) |>
 ```
 
 ## Exploring joint distributions
+
 ### Joint distribution of average price per m² and average surface area by Department
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 
 DVF_panel |>
@@ -944,7 +946,8 @@ In this graph, each point represents a department at one precise year. The scatt
 The extreme observations in the upper left correspond to very high prices for relatively small areas, probably reflecting Paris and a few particularly sought-after urban areas where land scarcity and high demand drive up valuations. This trend shows that price heterogeneity is determined not only by location, but also by the composition of the housing stock. Areas with a high proportion of small apartments have higher prices per square meter, while areas where houses and spacious dwellings are the norm have lower unit prices. These data confirm the need to control for average size or type of dwelling in any econometric analysis of real estate prices.
 
 ### Joint distribution of average price per m² and average surface area by Communes
-```{r}
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
   filter(
@@ -972,8 +975,8 @@ DVF_panel |>
 
 ```
 
-
 ### Joint distribution of average price per m² and share of apartments by Departments
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
@@ -1011,7 +1014,8 @@ A large number of observations below 25% apartments show that most French munici
 The slope suggests that price heterogeneity is strongly linked to the structure of the housing stock: compact real estate markets benefit more from location advantages than spacious residential markets. Therefore, any econometric assessment of real estate prices should take into account the proportion of apartments or the composition of the housing stock in order to avoid attributing the effects of density to other variables such as unemployment or income alone.
 
 ### Joint distribution of average price per m² and share of apartments by Communes
-```{r}
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
   filter(
@@ -1043,8 +1047,8 @@ DVF_panel |>
 
 ```
 
-
 ### Joint distribution of average price per m² and number of transactions by Department
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 
 DVF_panel |>
@@ -1080,7 +1084,8 @@ The observations between 15000 and 30000 transactions correspond to large metrop
 In this graph, we see the coexistence of two mechanisms: in dynamic urban areas, high activity could reflect intense demand that drives up prices, while in expensive locations, affordability constraints and supply rigidity may limit the number of sales.
 
 ### Joint distribution of average price per m² and number of transactions by Commune
-```{r}
+
+```{r,warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
   filter(
@@ -1110,8 +1115,6 @@ DVF_panel |>
 
 ```
 
-
-
 ## Demographic indicators
 
 To go further in the data analysis process, we calculate several indicators.
@@ -1124,7 +1127,7 @@ To go further in the data analysis process, we calculate several indicators.
 
 -   **The relocation rate**: the percentage of people that initiate a transaction during the year while they were not resident in this municipality previously.
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge <- Merge |>   
   mutate(TauxCSPsup =`Pop 15 ans ou plus Cadres, Prof. intel. sup.`/ `Pop 15 ans ou plus`*100,
          TauxChom = chomeur_total /(`Pop Hommes 20-64 ans`+`Pop Femmes 20-64 ans`)*100,
@@ -1133,7 +1136,7 @@ Merge <- Merge |>
 
 ### The upper socio-economic group rate representation
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #Merging the geolocalisation dataset with the demographic indicators for each municipality
 map_demo <- communes_sf |>
   left_join(
@@ -1142,7 +1145,7 @@ map_demo <- communes_sf |>
   select(code_insee_de_la_commune, Annee, TauxCSPsup, TauxChom, TauxDem)
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 map_demo |>
   filter(!is.na(TauxCSPsup)) |>
   ggplot() +
@@ -1157,7 +1160,7 @@ map_demo |>
 
 ### The unemployment rate representation
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 map_demo |>
   filter(!is.na(TauxChom)) |>
   ggplot() +
@@ -1173,7 +1176,7 @@ map_demo |>
 
 ### The relocation rate representation
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 map_demo |>
   filter(!is.na(TauxDem)) |>
   ggplot() +
@@ -1191,7 +1194,7 @@ map_demo |>
 
 #### Distribution of socio-professional groups across departments
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 csp_cols <- c(
   "Pop 15 ans ou plus Agriculteurs exploitants",
   "Pop 15 ans ou plus Artisans, Comm., Chefs entr.",
@@ -1245,7 +1248,7 @@ Merge |>
   )
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 # =========================
 # 2022
 # =========================
@@ -1322,7 +1325,7 @@ bind_cols(low_2016, high_2016) |>
 
 #### Unemployment rate across departments
 
-```{r, echo=FALSE, fig.width=14, fig.height=18}
+```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 chom_dep <- Merge |>
   filter(Annee %in% c(2016, 2022)) |>
   filter(!is.na(code_departement)) |>
@@ -1366,7 +1369,7 @@ ggplot(chom_dep, aes(x = Annee, y = taux_chom, fill = Annee)) +
   )
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 # =========================
 # 2022
 # =========================
@@ -1449,7 +1452,7 @@ bind_cols(low_2016, high_2016) |>
 
 #### Relocation Rate across departments
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 dem_dep <- Merge |>
   filter(Annee %in% c(2016, 2022)) |>
   filter(!is.na(code_departement)) |>
@@ -1495,7 +1498,7 @@ ggplot(dem_dep, aes(x = Annee, y = taux_dem, fill = Annee)) +
   )
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 # =========================
 # 2022 — Mobility rate
 # =========================
@@ -1582,7 +1585,7 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge |>
   filter(Annee %in% c(2016, 2022)) |>
   filter(!is.na(TauxChom), !is.na(Prixm2Moyen)) |>
@@ -1597,7 +1600,7 @@ Merge |>
   ungroup() -> df_box_chom
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 df_box_chom |>
   ggplot(aes(x = factor(Annee), y = Prixm2Moyen, fill = factor(Annee))) +
   geom_boxplot() +
@@ -1610,7 +1613,7 @@ df_box_chom |>
   )
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 tab_dist_chom <- df_box_chom |>
   group_by(Annee, chom_cat) |>
   summarise(
@@ -1648,7 +1651,7 @@ tab_dist_chom_wide |>
   )
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge |>
   filter(Annee %in% c(2016, 2022)) |>
   filter(!is.na(TauxCSPsup), !is.na(Prixm2Moyen)) |>
@@ -1663,7 +1666,7 @@ Merge |>
   ungroup() -> df_box_csp
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 df_box_csp |>
   ggplot(aes(x = factor(Annee), y = Prixm2Moyen, fill = factor(Annee))) +
   geom_boxplot() +
@@ -1676,7 +1679,7 @@ df_box_csp |>
   )
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 tab_dist_csp <- df_box_csp |>
   group_by(Annee, csp_cat) |>
   summarise(
@@ -1714,7 +1717,7 @@ tab_dist_csp_wide |>
   )
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge |>
   filter(Annee %in% c(2016, 2022)) |>
   filter(!is.na(TauxDem), !is.na(Prixm2Moyen)) |>
@@ -1729,7 +1732,7 @@ Merge |>
   ungroup() -> df_box_mob
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 df_box_mob |>
   ggplot(aes(x = factor(Annee), y = Prixm2Moyen, fill = factor(Annee))) +
   geom_boxplot() +
@@ -1742,7 +1745,7 @@ df_box_mob |>
   )
 ```
 
-```{r, echo=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 tab_dist_mob <- df_box_mob |>
   group_by(Annee, mob_cat) |>
   summarise(
@@ -1780,15 +1783,13 @@ tab_dist_mob_wide |>
   )
 ```
 
-
 # Econometric analysis on prices
 
 ## Implementing the baseline two-way fixed effect regression
 
-We implement a two-way fixed effects (TWFE) panel regression at the municipal level for 2016 and 2022. The dependent variable is the logarithm of the average price per square meter. We express the dependent variable using the logarithm in order to interpret the coefficients (beta) as a percentage change in price. The main regressors reflect the local demographic and socioeconomic structure: proportion of executives (CSP+) (TauxCSPsup), unemployment rate (TauxChom), and residential mobility rate (TauxDem). 
-We add real estate market controls: average surface area (SurfaceMoy), proportion of apartments (PropAppart, as a proxy of urban form/density) and market activity (ln_mut = log1p(Nb_mutations)). We include municipal fixed effects (absorbing local characteristics that are invariant over time, such as geography and amenities) and annual fixed effects (absorbing national shocks). Standard errors are pooled at the municipal level.
+We implement a two-way fixed effects (TWFE) panel regression at the municipal level for 2016 and 2022. The dependent variable is the logarithm of the average price per square meter. We express the dependent variable using the logarithm in order to interpret the coefficients (beta) as a percentage change in price. The main regressors reflect the local demographic and socioeconomic structure: proportion of executives (CSP+) (TauxCSPsup), unemployment rate (TauxChom), and residential mobility rate (TauxDem). We add real estate market controls: average surface area (SurfaceMoy), proportion of apartments (PropAppart, as a proxy of urban form/density) and market activity (ln_mut = log1p(Nb_mutations)). We include municipal fixed effects (absorbing local characteristics that are invariant over time, such as geography and amenities) and annual fixed effects (absorbing national shocks). Standard errors are pooled at the municipal level.
 
-```{r}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge_reg <- Merge |>
   filter(Annee %in% c(2016, 2022)) |>
   mutate(
@@ -1808,10 +1809,10 @@ etable(m_twfe)
 ```
 
 ## First difference regression
-To make the interpretation within change even more straightforward, we reshape the data into a wide format and calculate the differences between 2016 and 2022:
-[\Delta \ln(P_{i}) = \ln(P_{i,2022}) - \ln(P_{i,2016}),] and we do the same for the regressors. We then perform a cross-sectional regression of price growth on changes in demographic composition and market conditions.
 
-```{r}
+To make the interpretation within change even more straightforward, we reshape the data into a wide format and calculate the differences between 2016 and 2022: \[\Delta \ln(P\_{i}) = \ln(P\_{i,2022}) - \ln(P\_{i,2016}),\] and we do the same for the regressors. We then perform a cross-sectional regression of price growth on changes in demographic composition and market conditions.
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge_wide <- Merge_reg |>
   select(INSEE_COM, Prixm2Moyen, TauxCSPsup, TauxChom, TauxDem,
          SurfaceMoy, PropAppart, Nb_mutations, Annee) |>
@@ -1839,9 +1840,10 @@ summary(m_fd)
 ```
 
 ## Adding department-by-year fixed effects
+
 Next, we strengthen the identification by replacing the simple fixed effects for the year with fixed effects for department × year. This allows us to absorb shocks common to all municipalities in the same department during a given year, such as local macroeconomic conditions or departmental policies. The remaining variation therefore lies within the municipality, excluding department-specific temporal shocks.
 
-```{r}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 m_depyear <- feols(
   ln_prix_m2 ~ TauxCSPsup + TauxChom + TauxDem + SurfaceMoy + PropAppart + ln_mut |
     INSEE_COM + code_departement^Annee,
@@ -1854,9 +1856,10 @@ etable(m_twfe, m_depyear)
 ```
 
 ## Heterogeneity by urbanization terciles (interaction model)
+
 To check whether demographic effects differ between urban and rural areas, we create an urbanisation indicator by dividing municipalities into tertiles of PropAppart. We then estimate a TWFE model in which TauxCSPsup, TauxChom and TauxDem interact with the urban tertile. This allows the marginal effect of each demographic variable to vary between municipalities with low, medium, and high proportions of flats, in other words between less dense and more dense areas. Due to collinearity, fixest removes some interaction terms.
 
-```{r}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge_reg <- Merge_reg |>
   mutate(urb_tercile = ntile(PropAppart, 3))
 
@@ -1872,9 +1875,10 @@ etable(m_het)
 ```
 
 ## Explicit age structure (children vs seniors)
+
 As our research question is about demographic composition, we add a simple block on age structure: the share of children and the share of elderly people (combining those aged 60-74, 75-89 and 90 and over). We estimate a TWFE model with the same controls and fixed effects as before.
 
-```{r}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge_reg <- Merge_reg |>
   mutate(
     share_0_14 = (`Pop 0-14 ans`) / Population * 100,
@@ -1892,10 +1896,11 @@ m_age <- feols(
 etable(m_age)
 ```
 
-
 ## Liquidity restriction (Nb_mutations ≥ 30)
-Finally, we apply the TWFE benchmark model to a restricted sample of more liquid municipalities (Nb_mutations >= 30). The idea is to reduce the measurement error in Prixm2Moyen and ensure that the dependent variable reflects a reasonably active market.
-```{r}
+
+Finally, we apply the TWFE benchmark model to a restricted sample of more liquid municipalities (Nb_mutations \>= 30). The idea is to reduce the measurement error in Prixm2Moyen and ensure that the dependent variable reflects a reasonably active market.
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge_reg2 <- Merge_reg |> filter(Nb_mutations >= 30)
 
 m_twfe_liq <- feols(
@@ -1907,4 +1912,3 @@ m_twfe_liq <- feols(
 
 etable(m_twfe, m_twfe_liq)
 ```
-
