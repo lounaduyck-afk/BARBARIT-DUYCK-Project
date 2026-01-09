@@ -1807,4 +1807,34 @@ m_twfe <- feols(
 etable(m_twfe)
 ```
 
+## First difference regression
+To make the interpretation within change even more straightforward, we reshape the data into a wide format and calculate the differences between 2016 and 2022:
+[\Delta \ln(P_{i}) = \ln(P_{i,2022}) - \ln(P_{i,2016}),] and we do the same for the regressors. We then perform a cross-sectional regression of price growth on changes in demographic composition and market conditions.
+
+```{r}
+Merge_wide <- Merge_reg |>
+  select(INSEE_COM, Prixm2Moyen, TauxCSPsup, TauxChom, TauxDem,
+         SurfaceMoy, PropAppart, Nb_mutations, Annee) |>
+  tidyr::pivot_wider(
+    names_from = Annee,
+    values_from = c(Prixm2Moyen, TauxCSPsup, TauxChom, TauxDem,
+                    SurfaceMoy, PropAppart, Nb_mutations, Annee),
+    names_sep = "_"
+  ) |>
+  mutate(
+    d_ln_prix = log(Prixm2Moyen_2022) - log(Prixm2Moyen_2016),
+    d_csp = TauxCSPsup_2022 - TauxCSPsup_2016,
+    d_chom = TauxChom_2022 - TauxChom_2016,
+    d_dem = TauxDem_2022 - TauxDem_2016,
+    d_surface = SurfaceMoy_2022 - SurfaceMoy_2016,
+    d_propapp = PropAppart_2022 - PropAppart_2016,
+    d_ln_mut = log1p(Nb_mutations_2022) - log1p(Nb_mutations_2016)
+  ) |>
+  filter(is.finite(d_ln_prix))
+
+m_fd <- lm(d_ln_prix ~ d_csp + d_chom + d_dem + d_surface + d_propapp + d_ln_mut,
+           data = Merge_wide)
+summary(m_fd)
+
+```
 
