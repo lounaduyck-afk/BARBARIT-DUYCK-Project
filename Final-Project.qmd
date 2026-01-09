@@ -1026,7 +1026,7 @@ To go further in the data analysis process, we calculate several indicators.
 
 -   **The relocation rate**: the percentage of people that initiate a transaction during the year while they were not resident in this municipality previously.
 
-```{r}
+```{r, echo=FALSE}
 Merge <- Merge |>   
   mutate(TauxCSPsup =`Pop 15 ans ou plus Cadres, Prof. intel. sup.`/ `Pop 15 ans ou plus`*100,
          TauxChom = chomeur_total /(`Pop Hommes 20-64 ans`+`Pop Femmes 20-64 ans`)*100,
@@ -1631,7 +1631,7 @@ Merge |>
   ungroup() -> df_box_mob
 ```
 
-```{r}
+```{r, echo=FALSE}
 df_box_mob |>
   ggplot(aes(x = factor(Annee), y = Prixm2Moyen, fill = factor(Annee))) +
   geom_boxplot() +
