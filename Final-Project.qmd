@@ -1037,11 +1037,11 @@ Merge <- Merge |>
 
 ```{r, echo=FALSE}
 #Merging the geolocalisation dataset with the demographic indicators for each municipality
-map_demo <- communes_poly |>
+map_demo <- communes_sf |>
   left_join(
     Merge |> filter(Annee %in% c(2016, 2022)),
-    by = c("code_insee" = "INSEE_COM")) |>
-  select(code_insee, Annee, TauxCSPsup, TauxChom, TauxDem)
+    by = c("code_insee_de_la_commune" = "INSEE_COM")) |>
+  select(code_insee_de_la_commune, Annee, TauxCSPsup, TauxChom, TauxDem)
 ```
 
 ```{r, echo=FALSE}
