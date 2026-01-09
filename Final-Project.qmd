@@ -909,7 +909,7 @@ bind_cols(low_2016, high_2016) |>
 ```
 
 ## Exploring joint distributions
-
+### Joint distribution of average price per m² and average surface area by Department
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 
 DVF_panel |>
@@ -942,6 +942,37 @@ In this graph, each point represents a department at one precise year. The scatt
 
 The extreme observations in the upper left correspond to very high prices for relatively small areas, probably reflecting Paris and a few particularly sought-after urban areas where land scarcity and high demand drive up valuations. This trend shows that price heterogeneity is determined not only by location, but also by the composition of the housing stock. Areas with a high proportion of small apartments have higher prices per square meter, while areas where houses and spacious dwellings are the norm have lower unit prices. These data confirm the need to control for average size or type of dwelling in any econometric analysis of real estate prices.
 
+### Joint distribution of average price per m² and average surface area by Communes
+```{r}
+DVF_panel |>
+  mutate(dep = substr(INSEE_COM, 1, 2)) |>
+  filter(
+    !dep %in% c("97", "98", "57", "68"),
+    dep != "2A", dep != "2B",
+    !is.na(INSEE_COM),
+    !is.na(Prixm2Moyen),
+    !is.na(SurfaceMoy)
+  ) |>
+  group_by(INSEE_COM, Annee) |>
+  summarise(
+    prix_m2     = mean(Prixm2Moyen, na.rm = TRUE),
+    surface_moy = mean(SurfaceMoy,  na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(x = surface_moy, y = prix_m2)) +
+  geom_point(alpha = 0.08, size = 0.8, color = "steelblue") +
+  theme_minimal() +
+  labs(
+    title = "Joint distribution of average price per m² and average surface area (municipality level)",
+    x = "Average surface area (sqm)",
+    y = "Average price per m² (€)"
+  ) +
+  geom_smooth(method = "lm", se = FALSE, color = "darkred")
+
+```
+
+
+### Joint distribution of average price per m² and share of apartments by Departments
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
@@ -978,6 +1009,41 @@ A large number of observations below 25% apartments show that most French munici
 
 The slope suggests that price heterogeneity is strongly linked to the structure of the housing stock: compact real estate markets benefit more from location advantages than spacious residential markets. Therefore, any econometric assessment of real estate prices should take into account the proportion of apartments or the composition of the housing stock in order to avoid attributing the effects of density to other variables such as unemployment or income alone.
 
+### Joint distribution of average price per m² and share of apartments by Communes
+```{r}
+DVF_panel |>
+  mutate(dep = substr(INSEE_COM, 1, 2)) |>
+  filter(
+    !dep %in% c("97", "98", "57", "68"),
+    dep != "2A", dep != "2B",
+    !is.na(INSEE_COM),
+    !is.na(Prixm2Moyen),
+    !is.na(NbApparts),
+    !is.na(Nb_mutations),
+    Nb_mutations > 0
+  ) |>
+  group_by(INSEE_COM, Annee) |>
+  summarise(
+    prix_m2 = mean(Prixm2Moyen, na.rm = TRUE),
+    part_apparts = sum(NbApparts, na.rm = TRUE) / sum(Nb_mutations, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(x = part_apparts, y = prix_m2)) +
+  geom_point(alpha = 0.08, size = 0.8, color = "steelblue") +
+  geom_smooth(method = "lm", se = FALSE, color = "darkred") +
+  theme_minimal() +
+  scale_x_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Joint distribution of average price per m² and share of apartments (municipality level)",
+    subtitle = "Apartment share as a proxy for urban density",
+    x = "Share of apartments (%)",
+    y = "Average price per m² (€)"
+  )
+
+```
+
+
+### Joint distribution of average price per m² and number of transactions by Department
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 
 DVF_panel |>
@@ -1004,8 +1070,6 @@ DVF_panel |>
     x = "Number of transactions",
     y = "Average price per m² (€)"
   )
-
-
 ```
 
 Here we can observe a positive relationship showing that, on average, municipalities with higher transaction volumes tend to have higher prices per square meter. A very dense concentration of points below 10000 transactions and 2000€ per m² shows that the majority of French municipalities correspond to small and relatively inexpensive local markets.
@@ -1013,6 +1077,39 @@ Here we can observe a positive relationship showing that, on average, municipali
 The observations between 15000 and 30000 transactions correspond to large metropolitan or suburban areas characterized by high demand and many amenities. However, the cloud becomes increasingly heterogeneous as prices rise. Several high-priced municipalities have limited transaction volumes, which means that expensive markets are not necessarily the most active.
 
 In this graph, we see the coexistence of two mechanisms: in dynamic urban areas, high activity could reflect intense demand that drives up prices, while in expensive locations, affordability constraints and supply rigidity may limit the number of sales.
+
+### Joint distribution of average price per m² and number of transactions by Commune
+```{r}
+DVF_panel |>
+  mutate(dep = substr(INSEE_COM, 1, 2)) |>
+  filter(
+    !dep %in% c("97", "98", "57", "68"),
+    dep != "2A", dep != "2B",
+    !is.na(INSEE_COM),
+    !is.na(Prixm2Moyen),
+    !is.na(Nb_mutations),
+    Nb_mutations > 0
+  ) |>
+  group_by(INSEE_COM, Annee) |>
+  summarise(
+    prix_m2 = mean(Prixm2Moyen, na.rm = TRUE),
+    nb_mut  = sum(Nb_mutations, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(x = log(nb_mut), y = prix_m2)) +
+  geom_point(alpha = 0.08, size = 0.8, color = "steelblue") +
+  geom_smooth(method = "lm", se = FALSE, color = "darkred") +
+  theme_minimal() +
+  labs(
+    title = "Joint distribution of average price per m² and number of transactions (municipality level)",
+    subtitle = "Log number of transactions",
+    x = "Log number of transactions",
+    y = "Average price per m² (€)"
+  )
+
+```
+
+
 
 ## Demographic indicators
 
