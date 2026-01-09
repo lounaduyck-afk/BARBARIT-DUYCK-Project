@@ -1871,4 +1871,24 @@ m_het <- feols(
 etable(m_het)
 ```
 
+## Explicit age structure (children vs seniors)
+As our research question is about demographic composition, we add a simple block on age structure: the share of children and the share of elderly people (combining those aged 60-74, 75-89 and 90 and over). We estimate a TWFE model with the same controls and fixed effects as before.
+
+```{r}
+Merge_reg <- Merge_reg |>
+  mutate(
+    share_0_14 = (`Pop 0-14 ans`) / Population * 100,
+    share_60p  = (`Pop 60-74 ans` + `Pop 75-89 ans` + `Pop 90 ans ou plus`) / Population * 100
+  )
+
+m_age <- feols(
+  ln_prix_m2 ~ share_0_14 + share_60p + TauxCSPsup + TauxChom + TauxDem +
+    SurfaceMoy + PropAppart + ln_mut |
+    INSEE_COM + Annee,
+  data = Merge_reg,
+  vcov = ~ INSEE_COM
+)
+
+etable(m_age)
+```
 
