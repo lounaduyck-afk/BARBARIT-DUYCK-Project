@@ -21,7 +21,7 @@ Our project is structured as follows. First, we present a descriptive analysis o
 
 # Libraries
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 here::i_am("BARBARIT-DUYCK-Project.Rproj")
 library(here)
 library(dplyr)
@@ -60,7 +60,7 @@ One of the main strengths of this database is that it provides a common referenc
 
 ### Data merging
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 annees <- 2014:2024
 
 DVF_panel <- map_dfr(annees, function(a) {
@@ -94,7 +94,7 @@ Explanations: after standardizing the labels, we merge our data using bind_rows 
 
 #### Basic Information
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 nb_columns <- ncol(DVF_panel)
 
 nb_rows <- nrow(DVF_panel)
@@ -138,7 +138,7 @@ They have been collected by the INSEE during the census.
 
 The data cover population distribution by sex, age, occupations but also housing conditions and relocation.
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Population <- vroom(here("Data","base-cc-evol-struct-pop-2022.csv"))
 Labels <- vroom(here("Data","meta_base-cc-evol-struct-pop-2022.csv"))
 ```
@@ -147,7 +147,7 @@ Labels <- vroom(here("Data","meta_base-cc-evol-struct-pop-2022.csv"))
 
 #### Standardizing the labels
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 new_names <- setNames(Labels$COD_VAR, Labels$LIB_VAR)
 Population <- Population |>
   rename(!!!new_names)
@@ -162,7 +162,7 @@ Explanations: When we downloaded the data sets, we had two csv files, one with t
 
 ### Modificating the structure of the dataset
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Population <- Population |>
   pivot_longer(
     cols = -INSEE_COM,
@@ -187,7 +187,7 @@ Initially, we had one row for each municipality and the variables for each year.
 
 ### Changing the columns type
 
-```{r}
+```{r, echo=FALSE}
 Population <- Population |>
   mutate(Annee = as.integer(Annee))
 ```
@@ -196,7 +196,7 @@ Population <- Population |>
 
 #### Basic Information
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 nb_columns <- ncol(Population)
 
 nb_rows <- nrow(Population)
@@ -238,7 +238,7 @@ The data have been collected by the Insee, using the census in 2011, 2012, 2016 
 
 The data set gather, for each municipality and for each year of census, the total number of unemployed residents, the female unemployed residents and the male unemployed residents.
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Unemployment <- vroom(here("Data","indic_sex_rp.csv"),
   delim = ";",
   skip = 4,
@@ -254,7 +254,7 @@ Unemployment <- vroom(here("Data","indic_sex_rp.csv"),
          Chomeur = nb_chom1564)
 ```
 
-```{r}
+```{r, echo=FALSE}
 Unemployment |>
   filter(Annee == 2012) |>
   summarise(na_chomeur = sum(is.na(Chomeur)),
@@ -264,14 +264,14 @@ Unemployment |>
 
 Since all the observations in 2012 are NA, we apply a filter to remove them.
 
-```{r}
+```{r, echo=FALSE}
 Unemployment <- Unemployment |>
   filter(!Annee==2012)
 ```
 
 ### Modificating the structure of the dataset
 
-```{r}
+```{r, echo=FALSE}
 Unemployment <- Unemployment |>
   mutate(sexe = case_when(
     sexe == "F" ~ "chomeur_femme",
@@ -296,7 +296,7 @@ Initially, for each year, each municipality had three rows:
 
 #### Basic information
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 nb_columns <- ncol(Unemployment)
 
 nb_rows <- nrow(Unemployment)
@@ -327,7 +327,7 @@ summary_table |>
 
 ## Code
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVFcensus <- DVF_panel |>
   filter(Annee %in% c(2022, 2016))
 
@@ -338,7 +338,7 @@ Unemployment_filtered <- Unemployment |>
   filter(Annee%in%c(2016,2022))
 ```
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge <- left_join(
   DVFcensus,
   Population_filtered,
@@ -381,7 +381,7 @@ This product line facilitates combining administrative boundaries with external 
 
 Here, we import both layers using `st_read()`, then standardize their INSEE municipality codes by trimming extra spaces and ensuring they always have five digits. This harmonization is essential for correctly joining the geographic layers with our DVF database, which also uses INSEE codes as identifiers.
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 gpkg_path <- "Data/ADE_4-0_GPKG_LAMB93_FXX-ED2025-10-15.gpkg"
 communes_sf <- st_read(gpkg_path, layer = "chef_lieu_de_commune") |>
 mutate(code_insee_de_la_commune = sprintf("%05s", trimws(code_insee_de_la_commune)))
@@ -398,13 +398,13 @@ This file gather: - The department code - The department name - The region code 
 
 We use it here to add to our Merge data set the name of the department to which each municipality belongs. This will be useful latter to do some data visualization at the department level.
 
-```{r}
+```{r, echo=FALSE}
 dep <- vroom(here("Data","departements-france.csv"))
 ```
 
 We extract from the "INSEE code commune" the numbers linked to the department code.
 
-```{r}
+```{r, echo=FALSE}
 Merge <- Merge |>
   mutate(
     code_departement = substr(as.character(INSEE_COM), 1, 2)
@@ -415,7 +415,7 @@ Merge <- Merge |>
   )
 ```
 
-```{r}
+```{r, echo=FALSE}
 sum(is.na(Merge$code_departement))
 ```
 
@@ -423,7 +423,7 @@ Only 2 municipalities do not have a departement code. This is due to two NA for 
 
 # Descriptive analysis of the structure of the French real estate market
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 
 df_both <- DVF_panel |>
   filter(Annee %in% c(2016, 2022)) |>
@@ -460,7 +460,7 @@ These maps allow us to easily distinguish between attractive areas of France, su
 
 ### Ile de France map
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 departements_idf <- c("75","92","93","94","91","77","78","95")
 
 communes_idf <- communes_poly |>
@@ -494,7 +494,7 @@ ggplot(carte_idf_1622) +
 
 ### Graphic of the evolution of the average price of real estate per square meter
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
   group_by(Annee) |>
   summarise(prix_moyen_m2 = mean(Prixm2Moyen, na.rm = TRUE)) |>
@@ -518,7 +518,7 @@ A downward trend is observed since 2023. This recent slowdown could be linked to
 
 ### Graphic of the evolution of the number of transactions
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
   group_by(Annee) |>
   summarise(Total_mutations = sum(Nb_mutations, na.rm = TRUE)) |>
@@ -540,7 +540,7 @@ After 2022, volumes decline sharply until 2023-2024, indicating a slowdown in th
 
 ### Graphical representation of the Average property size over time
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
   group_by(Annee) |>
   summarise(SurfaceMoy = mean(SurfaceMoy, na.rm = TRUE)) |>
@@ -559,7 +559,7 @@ After 2021, the average surface area decreases, stabilizing at around 100 m² in
 
 ### Distribution of houses vs. apartments by year
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 
 # 1) Unique aggregation
 df_agrege <- DVF_panel |>
@@ -609,7 +609,7 @@ ggplot() +
 
 ```
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
   group_by(Annee) |>
   summarise(
@@ -648,7 +648,7 @@ However, the composition chart shows that, despite these pronounced fluctuations
 
 ## Comparison across the 10 largest French metropolitan areas
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 metro_labels <- tibble::tibble(
   INSEE_COM = c("75056", "69123", "33063", "13055", "31555",
                 "06088", "44109", "34172", "67482", "59350"),
@@ -665,13 +665,13 @@ metro_labels <- tibble::tibble(
 )
 ```
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 df_comp <- DVF_panel |>
   filter(INSEE_COM %in% metro_labels$INSEE_COM) |>
   left_join(metro_labels, by = "INSEE_COM")
 ```
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 ggplot(df_comp, aes(x = Annee, y = Prixm2Moyen, color = Metro)) +
   geom_line(linewidth = 0.7) +
   geom_point(size = 2) +
@@ -685,7 +685,7 @@ ggplot(df_comp, aes(x = Annee, y = Prixm2Moyen, color = Metro)) +
   scale_color_brewer(palette = "Set2")
 ```
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 df_comp |>
   filter(!is.na(Nb_mutations)) |>
   ggplot(aes(x = Annee, y = Nb_mutations, color = Metro)) +
@@ -709,7 +709,7 @@ Taken together, these figures suggest that the French real estate market is beco
 
 ## Comparison between departments
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
   filter(
@@ -734,7 +734,7 @@ DVF_panel |>
   )
 ```
 
-```{r}
+```{r, echo=FALSE}
 # =========================
 # 2022 — Price per m² (Departments)
 # =========================
@@ -809,7 +809,7 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
   filter(
@@ -835,7 +835,7 @@ DVF_panel |>
 
 ```
 
-```{r}
+```{r, echo=FALSE}
 # =========================
 # 2022 — Number of transactions (mutations)
 # =========================
@@ -910,7 +910,7 @@ bind_cols(low_2016, high_2016) |>
 
 ## Exploring joint distributions
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
@@ -942,7 +942,7 @@ In this graph, each point represents a department at one precise year. The scatt
 
 The extreme observations in the upper left correspond to very high prices for relatively small areas, probably reflecting Paris and a few particularly sought-after urban areas where land scarcity and high demand drive up valuations. This trend shows that price heterogeneity is determined not only by location, but also by the composition of the housing stock. Areas with a high proportion of small apartments have higher prices per square meter, while areas where houses and spacious dwellings are the norm have lower unit prices. These data confirm the need to control for average size or type of dwelling in any econometric analysis of real estate prices.
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
   filter(
@@ -978,7 +978,7 @@ A large number of observations below 25% apartments show that most French munici
 
 The slope suggests that price heterogeneity is strongly linked to the structure of the housing stock: compact real estate markets benefit more from location advantages than spacious residential markets. Therefore, any econometric assessment of real estate prices should take into account the proportion of apartments or the composition of the housing stock in order to avoid attributing the effects of density to other variables such as unemployment or income alone.
 
-```{r, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
@@ -1035,7 +1035,7 @@ Merge <- Merge |>
 
 ### The upper socio-economic group rate representation
 
-```{r}
+```{r, echo=FALSE}
 #Merging the geolocalisation dataset with the demographic indicators for each municipality
 map_demo <- communes_poly |>
   left_join(
@@ -1044,7 +1044,7 @@ map_demo <- communes_poly |>
   select(code_insee, Annee, TauxCSPsup, TauxChom, TauxDem)
 ```
 
-```{r}
+```{r, echo=FALSE}
 map_demo |>
   filter(!is.na(TauxCSPsup)) |>
   ggplot() +
@@ -1059,7 +1059,7 @@ map_demo |>
 
 ### The unemployment rate representation
 
-```{r}
+```{r, echo=FALSE}
 map_demo |>
   filter(!is.na(TauxChom)) |>
   ggplot() +
@@ -1075,7 +1075,7 @@ map_demo |>
 
 ### The relocation rate representation
 
-```{r}
+```{r, echo=FALSE}
 map_demo |>
   filter(!is.na(TauxDem)) |>
   ggplot() +
@@ -1093,7 +1093,7 @@ map_demo |>
 
 #### Distribution of socio-professional groups across departments
 
-```{r}
+```{r, echo=FALSE}
 csp_cols <- c(
   "Pop 15 ans ou plus Agriculteurs exploitants",
   "Pop 15 ans ou plus Artisans, Comm., Chefs entr.",
@@ -1147,7 +1147,7 @@ Merge |>
   )
 ```
 
-```{r}
+```{r, echo=FALSE}
 # =========================
 # 2022
 # =========================
@@ -1224,7 +1224,7 @@ bind_cols(low_2016, high_2016) |>
 
 #### Unemployment rate across departments
 
-```{r}
+```{r, echo=FALSE}
 chom_dep <- Merge |>
   filter(Annee %in% c(2016, 2022)) |>
   filter(!is.na(code_departement)) |>
@@ -1268,7 +1268,7 @@ ggplot(chom_dep, aes(x = Annee, y = taux_chom, fill = Annee)) +
   )
 ```
 
-```{r}
+```{r, echo=FALSE}
 # =========================
 # 2022
 # =========================
@@ -1351,7 +1351,7 @@ bind_cols(low_2016, high_2016) |>
 
 #### Relocation Rate across departments
 
-```{r}
+```{r, echo=FALSE}
 dem_dep <- Merge |>
   filter(Annee %in% c(2016, 2022)) |>
   filter(!is.na(code_departement)) |>
@@ -1397,7 +1397,7 @@ ggplot(dem_dep, aes(x = Annee, y = taux_dem, fill = Annee)) +
   )
 ```
 
-```{r}
+```{r, echo=FALSE}
 # =========================
 # 2022 — Mobility rate
 # =========================
@@ -1484,7 +1484,7 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
-```{r}
+```{r, echo=FALSE}
 Merge |>
   filter(Annee %in% c(2016, 2022)) |>
   filter(!is.na(TauxChom), !is.na(Prixm2Moyen)) |>
@@ -1499,7 +1499,7 @@ Merge |>
   ungroup() -> df_box_chom
 ```
 
-```{r}
+```{r, echo=FALSE}
 df_box_chom |>
   ggplot(aes(x = factor(Annee), y = Prixm2Moyen, fill = factor(Annee))) +
   geom_boxplot() +
@@ -1512,7 +1512,7 @@ df_box_chom |>
   )
 ```
 
-```{r}
+```{r, echo=FALSE}
 tab_dist_chom <- df_box_chom |>
   group_by(Annee, chom_cat) |>
   summarise(
@@ -1550,7 +1550,7 @@ tab_dist_chom_wide |>
   )
 ```
 
-```{r}
+```{r, echo=FALSE}
 Merge |>
   filter(Annee %in% c(2016, 2022)) |>
   filter(!is.na(TauxCSPsup), !is.na(Prixm2Moyen)) |>
@@ -1565,7 +1565,7 @@ Merge |>
   ungroup() -> df_box_csp
 ```
 
-```{r}
+```{r, echo=FALSE}
 df_box_csp |>
   ggplot(aes(x = factor(Annee), y = Prixm2Moyen, fill = factor(Annee))) +
   geom_boxplot() +
@@ -1578,7 +1578,7 @@ df_box_csp |>
   )
 ```
 
-```{r}
+```{r, echo=FALSE}
 tab_dist_csp <- df_box_csp |>
   group_by(Annee, csp_cat) |>
   summarise(
@@ -1616,7 +1616,7 @@ tab_dist_csp_wide |>
   )
 ```
 
-```{r}
+```{r, echo=FALSE}
 Merge |>
   filter(Annee %in% c(2016, 2022)) |>
   filter(!is.na(TauxDem), !is.na(Prixm2Moyen)) |>
@@ -1644,7 +1644,7 @@ df_box_mob |>
   )
 ```
 
-```{r}
+```{r, echo=FALSE}
 tab_dist_mob <- df_box_mob |>
   group_by(Annee, mob_cat) |>
   summarise(
