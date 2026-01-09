@@ -32,6 +32,7 @@ library(purrr)
 library(stringr)
 library(sf)
 library(knitr)
+library(fixest)
 ```
 
 # Link to the github project
@@ -1778,3 +1779,32 @@ tab_dist_mob_wide |>
     )
   )
 ```
+
+
+# Econometric analysis on prices
+
+## Implementing the baseline two-way fixed effect regression
+
+We implement a two-way fixed effects (TWFE) panel regression at the municipal level for 2016 and 2022. The dependent variable is the logarithm of the average price per square meter. We express the dependent variable using the logarithm in order to interpret the coefficients (beta) as a percentage change in price. The main regressors reflect the local demographic and socioeconomic structure: proportion of executives (CSP+) (TauxCSPsup), unemployment rate (TauxChom), and residential mobility rate (TauxDem). 
+We add real estate market controls: average surface area (SurfaceMoy), proportion of apartments (PropAppart, as a proxy of urban form/density) and market activity (ln_mut = log1p(Nb_mutations)). We include municipal fixed effects (absorbing local characteristics that are invariant over time, such as geography and amenities) and annual fixed effects (absorbing national shocks). Standard errors are pooled at the municipal level.
+
+```{r}
+Merge_reg <- Merge |>
+  filter(Annee %in% c(2016, 2022)) |>
+  mutate(
+    ln_prix_m2 = log(Prixm2Moyen),
+    ln_mut = log1p(Nb_mutations)
+  ) |>
+  filter(is.finite(ln_prix_m2))
+
+m_twfe <- feols(
+  ln_prix_m2 ~ TauxCSPsup + TauxChom + TauxDem + SurfaceMoy + PropAppart + ln_mut |
+    INSEE_COM + Annee,
+  data = Merge_reg,
+  vcov = ~ INSEE_COM  # SE cluster commune
+)
+
+etable(m_twfe)
+```
+
+
