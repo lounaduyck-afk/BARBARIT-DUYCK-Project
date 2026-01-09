@@ -1853,4 +1853,22 @@ etable(m_twfe, m_depyear)
 
 ```
 
+## Heterogeneity by urbanization terciles (interaction model)
+To check whether demographic effects differ between urban and rural areas, we create an urbanisation indicator by dividing municipalities into tertiles of PropAppart. We then estimate a TWFE model in which TauxCSPsup, TauxChom and TauxDem interact with the urban tertile. This allows the marginal effect of each demographic variable to vary between municipalities with low, medium, and high proportions of flats, in other words between less dense and more dense areas. Due to collinearity, fixest removes some interaction terms.
+
+```{r}
+Merge_reg <- Merge_reg |>
+  mutate(urb_tercile = ntile(PropAppart, 3))
+
+m_het <- feols(
+  ln_prix_m2 ~ (TauxCSPsup + TauxChom + TauxDem) * i(urb_tercile) +
+    SurfaceMoy + ln_mut |
+    INSEE_COM + Annee,
+  data = Merge_reg,
+  vcov = ~ INSEE_COM
+)
+
+etable(m_het)
+```
+
 
