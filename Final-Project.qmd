@@ -1224,7 +1224,7 @@ bind_cols(low_2016, high_2016) |>
 
 #### Unemployment rate across departments
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.width=14, fig.height=18}
 chom_dep <- Merge |>
   filter(Annee %in% c(2016, 2022)) |>
   filter(!is.na(code_departement)) |>
