@@ -61,11 +61,6 @@ One of the main strengths of this database is that it provides a common referenc
 ### Data merging
 
 ```{r, warning=FALSE, message=FALSE}
-library(vroom)
-library(dplyr)
-library(purrr)
-library(here)
-
 annees <- 2014:2024
 
 DVF_panel <- map_dfr(annees, function(a) {
