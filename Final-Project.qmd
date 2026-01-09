@@ -1892,3 +1892,19 @@ m_age <- feols(
 etable(m_age)
 ```
 
+
+## Liquidity restriction (Nb_mutations ≥ 30)
+Finally, we apply the TWFE benchmark model to a restricted sample of more liquid municipalities (Nb_mutations >= 30). The idea is to reduce the measurement error in Prixm2Moyen and ensure that the dependent variable reflects a reasonably active market.
+```{r}
+Merge_reg2 <- Merge_reg |> filter(Nb_mutations >= 30)
+
+m_twfe_liq <- feols(
+  ln_prix_m2 ~ TauxCSPsup + TauxChom + TauxDem + SurfaceMoy + PropAppart + ln_mut |
+    INSEE_COM + Annee,
+  data = Merge_reg2,
+  vcov = ~ INSEE_COM
+)
+
+etable(m_twfe, m_twfe_liq)
+```
+
