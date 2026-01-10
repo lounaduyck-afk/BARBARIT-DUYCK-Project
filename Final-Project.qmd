@@ -1887,6 +1887,43 @@ At the municipality level, housing prices tend to decrease slightly as unemploym
 
 Departments aggregate very different municipalities, mixing rich urban centers and poorer peripheral areas. As a result, high-priced urban areas can coexist with higher unemployment elsewhere in the same department, generating a weak or even positive aggregate relationship. By contrast, at the municipality level, unemployment is more directly linked to local demand and purchasing power, leading to a negative relationship with housing prices.
 
+## Housing prices and residential mobility — Departments & Municipalities
+
+```{r}
+ggplot(df_dep, aes(x = dem, y = log_prix, color = factor(Annee))) +
+  geom_point(alpha = 0.75, size = 2) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = pal_year, name = "Year") +
+  labs(
+    title = "Housing prices and residential mobility (departments)",
+    x = "Mobility rate (%)",
+    y = "Log price per m²"
+  ) +
+  theme_minimal()
+```
+
+Housing prices are positively associated with residential mobility at the department level. Departments with higher mobility rates tend to have higher housing prices. This pattern is observed in both years and is stronger in 2022.
+
+This suggests that more dynamic and attractive housing markets are also those with higher prices.
+
+```{r}
+ggplot(df_com, aes(x = TauxDem, y = log_prix, color = factor(Annee))) +
+  geom_point(alpha = 0.25, size = 0.8) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = pal_year, name = "Year") +
+  labs(
+    title = "Housing prices and residential mobility (municipalities)",
+    x = "Mobility rate (%)",
+    y = "Log price per m²"
+  ) +
+  theme_minimal()
+```
+
+At the municipality level, the relationship between housing prices and mobility is positive but highly dispersed. Very high mobility rates correspond to a small number of observations and generate outliers. Overall, the positive trend suggests that mobility reflects market dynamism rather than affordability.
+
+Relationships are much clearer at the department level than at the municipality level. Aggregation reduces noise and highlights structural demographic patterns. At the municipality level, local factors generate substantial heterogeneity.
+
+Overall, the share of high-skilled workers is the demographic variable most strongly correlated with housing prices. Unemployment plays a secondary role, while residential mobility captures housing market dynamism. These graphical patterns motivate the use of regression analysis to quantify these relationships.
 
 
 # Econometric analysis on prices
