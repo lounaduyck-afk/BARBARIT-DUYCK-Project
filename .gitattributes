@@ -1,5 +1,2 @@
-*.gpkg filter=lfs diff=lfs merge=lfs -text
-*.csv filter=lfs diff=lfs merge=lfs -text
-*.CSV filter=lfs diff=lfs merge=lfs -text
-.CSV filter=lfs diff=lfs merge=lfs -text
 Data/base-cc-evol-struct-pop-2022.CSV filter=lfs diff=lfs merge=lfs -text
+Data/ADE_4-0_GPKG_LAMB93_FXX-ED2025-10-15.gpkg filter=lfs diff=lfs merge=lfs -text
