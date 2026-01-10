@@ -1783,6 +1783,91 @@ tab_dist_mob_wide |>
   )
 ```
 
+
+## Descriptive analysis of housing prices and demographic characteristics
+
+```{r}
+df_dep <- Merge |>
+  filter(Annee %in% c(2016, 2022),
+         !is.na(code_departement),
+         !is.na(Prixm2Moyen),
+         !is.na(TauxCSPsup),
+         !is.na(TauxChom),
+         !is.na(TauxDem)) |>
+  group_by(code_departement, nom_departement, Annee) |>
+  summarise(
+    prix_m2 = mean(Prixm2Moyen, na.rm = TRUE),
+    csp     = mean(TauxCSPsup, na.rm = TRUE),
+    chom    = mean(TauxChom, na.rm = TRUE),
+    dem     = mean(TauxDem, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(log_prix = log(prix_m2))
+```
+
+```{r}
+df_com <- Merge |>
+  filter(Annee %in% c(2016, 2022),
+         !is.na(Prixm2Moyen),
+         !is.na(TauxCSPsup),
+         !is.na(TauxChom),
+         !is.na(TauxDem)) |>
+  mutate(log_prix = log(Prixm2Moyen))
+```
+
+```{r}
+pal_year <- c("2016" = "#1b9e77", "2022" = "#d95f02")
+```
+
+### Housing prices and the share of high-skilled workers — Departments & Municipalities level
+
+```{r}
+ggplot(df_dep, aes(x = csp, y = log_prix, color = factor(Annee))) +
+  geom_point(alpha = 0.75, size = 2) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = pal_year, name = "Year") +
+  labs(
+    title = "Housing prices and share of high-skilled workers (departments)",
+    x = "CSP+ rate (%)",
+    y = "Log price per m²"
+  ) +
+  theme_minimal()
+```
+
+The scatter plot shows a strong positive relationship between housing prices and the share of high-skilled workers. Departments with a higher CSP+ rate tend to have higher housing prices. This relationship is visible in both 2016 and 2022 and appears stable over time.
+
+The upward shift of the 2022 line reflects a general increase in housing prices between the two years.
+
+```{r}
+ggplot(df_com, aes(x = TauxCSPsup, y = log_prix, color = factor(Annee))) +
+  geom_point(alpha = 0.25, size = 0.8) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = pal_year, name = "Year") +
+  labs(
+    title = "Housing prices and share of high-skilled workers (municipalities)",
+    x = "CSP+ rate (%)",
+    y = "Log price per m²"
+  ) +
+  theme_minimal()
+```
+
+At the municipality level, the relationship remains positive but is more dispersed. This higher dispersion reflects strong local heterogeneity across municipalities. Despite this noise, municipalities with a higher share of high-skilled workers tend to have higher housing prices.
+
+```{r}
+ggplot(df_dep, aes(x = chom, y = log_prix, color = factor(Annee))) +
+  geom_point(alpha = 0.75, size = 2) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = pal_year, name = "Year") +
+  labs(
+    title = "Housing prices and unemployment rate (departments)",
+    x = "Unemployment rate (%)",
+    y = "Log price per m²"
+  ) +
+  theme_minimal()
+```
+
+The relationship between housing prices and the unemployment rate is weaker and less clear. In 2016, housing prices show almost no correlation with unemployment. In 2022, the relationship becomes slightly positive, but the slope remains small. This suggests that unemployment alone is not a strong determinant of housing prices at the department level.
+
 # Econometric analysis on prices
 
 ## Implementing the baseline two-way fixed effect regression
@@ -1912,3 +1997,5 @@ m_twfe_liq <- feols(
 
 etable(m_twfe, m_twfe_liq)
 ```
+
+
