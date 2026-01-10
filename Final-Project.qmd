@@ -1951,7 +1951,15 @@ etable(m_twfe)
 
 ## b. First difference regression
 
-To make the interpretation within change even more straightforward, we reshape the data into a wide format and calculate the differences between 2016 and 2022: \[\Delta \ln(P\_{i}) = \ln(P\_{i,2022}) - \ln(P\_{i,2016}),\] and we do the same for the regressors. We then perform a cross-sectional regression of price growth on changes in demographic composition and market conditions.
+To make the interpretation within change even more straightforward, we reshape the data into a wide format and calculate the differences between 2016 and 2022:
+
+\$\$
+
+\\Delta \\ln(P_i) = \\ln(P\_{i,2022}) - \\ln(P\_{i,2016})
+
+\$\$
+
+, and we do the same for the regressors. We then perform a cross-sectional regression of price growth on changes in demographic composition and market conditions.
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge_wide <- Merge_reg |>
