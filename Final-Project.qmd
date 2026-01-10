@@ -1853,6 +1853,8 @@ ggplot(df_com, aes(x = TauxCSPsup, y = log_prix, color = factor(Annee))) +
 
 At the municipality level, the relationship remains positive but is more dispersed. This higher dispersion reflects strong local heterogeneity across municipalities. Despite this noise, municipalities with a higher share of high-skilled workers tend to have higher housing prices.
 
+## Housing prices and unemployment rate — Departments & municipalities level
+
 ```{r}
 ggplot(df_dep, aes(x = chom, y = log_prix, color = factor(Annee))) +
   geom_point(alpha = 0.75, size = 2) +
@@ -1867,6 +1869,25 @@ ggplot(df_dep, aes(x = chom, y = log_prix, color = factor(Annee))) +
 ```
 
 The relationship between housing prices and the unemployment rate is weaker and less clear. In 2016, housing prices show almost no correlation with unemployment. In 2022, the relationship becomes slightly positive, but the slope remains small. This suggests that unemployment alone is not a strong determinant of housing prices at the department level.
+
+```{r}
+ggplot(df_com, aes(x = TauxChom, y = log_prix, color = factor(Annee))) +
+  geom_point(alpha = 0.25, size = 0.8) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = pal_year, name = "Year") +
+  labs(
+    title = "Housing prices and unemployment rate (municipalities)",
+    x = "Unemployment rate (%)",
+    y = "Log price per m²"
+  ) +
+  theme_minimal()
+```
+
+At the municipality level, housing prices tend to decrease slightly as unemployment increases. However, the dispersion is very large, indicating that unemployment explains only a limited share of price differences across municipalities.
+
+Departments aggregate very different municipalities, mixing rich urban centers and poorer peripheral areas. As a result, high-priced urban areas can coexist with higher unemployment elsewhere in the same department, generating a weak or even positive aggregate relationship. By contrast, at the municipality level, unemployment is more directly linked to local demand and purchasing power, leading to a negative relationship with housing prices.
+
+
 
 # Econometric analysis on prices
 
