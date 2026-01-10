@@ -1115,9 +1115,19 @@ To go further in the data analysis process, we calculate several indicators.
 
 -   **The unemployment rate**: the percentage of unemployed people among the active population (between 20 years old and 64 years old).
 
-    It should be noted that this ratio is approximate, as it does not take into account individuals aged 15 to 19. As we did not have the number of inhabitants for each age group in each municipality, we chose the age group closest to the working population.
+It should be noted that this ratio is approximate, as it does not take into account individuals aged 15 to 19. As we did not have the number of inhabitants for each age group in each municipality, we chose the age group closest to the working population.
 
 -   **The relocation rate**: the percentage of people that initiate a transaction during the year while they were not resident in this municipality previously.
+
+These indicators were selected to capture the demographic dimensions of local housing demand.
+
+The upper socio-economic group rate, 
+CSP+ captures long-term socio-economic structure and reflects income levels, human capital, and purchasing power which directly affect households’ ability to borrow and therefore to buy housing.
+
+Unemployment reflects short-term economic conditions and the labor market conditions. 
+
+Mobility measures housing market dynamism.
+
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge <- Merge |>   
@@ -1150,6 +1160,15 @@ map_demo |>
   theme_minimal()
 ```
 
+As well as in the graph where average m² price are mapped, we can easily distinguish the French metropolises (Paris, Marseille, Lyon, Nantes, Grenoble, Toulouse, Nice, Bordeaux, Lilles…) and the “diagonale du vide”. It therefore seems to highlight a positive correlation between average m² price and the CSP+ rate in municipalities. In other words, municipalities with higher CSP+ rate also have higher average m² price.
+
+Indeed, the share of highly skilled workers is a proxy for the average income level. Municipalities with a large proportion of CSP+ tend to have a population with higher income in average and therefore a higher borrowing power. This leads to higher demand for housing and apartments and an increase in price.
+
+A high CSP+ rate also implies the presence of skilled jobs and a dynamic economic fabric, which can therefore attract residents and increase the housing and apartments demand.
+
+We can’t notice very well an evolution between 2016 and 2022. However, this is probably because of the scale.
+
+
 ## c. Unemployment rate by municipalities
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
@@ -1166,6 +1185,11 @@ map_demo |>
   theme_minimal()
 ```
 
+Contrary to the previous map, this is here much more difficult to distinguish the biggest cities. We can underline a decrease in unemployment between 2016 and 2022.
+
+It seems difficult to establish a correlation between unemployment rate and the average price per m² looking at both maps.
+
+
 ## d. Mobility rate representation
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
@@ -1181,6 +1205,11 @@ map_demo |>
   ) +
   theme_minimal()
 ```
+
+As the unemployment rate map showed, it is difficult to distinguish areas with higher relocation rates. It appears to be uniform.
+
+However, with a scale with a smaller range, our analysis would have been more precise.
+
 
 ## e. Distribution of socio-professional groups across departments
 
@@ -1313,6 +1342,17 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
+At the departmental level, it appears that Île-de-France and the surrounding departments have a higher proportion of executives and higher intellectual professions, which highlights a strong special division.
+
+The proportion of CSP+ workers increased in almost all departments between 2016 and 2022. However, this increase appears to be greater in departments that already have a high proportion of highly skilled workers.
+
+We observe that seven of the ten departments with the lowest average price per square metre are also among the ten departments with the lowest CSP+ rate in 2022.
+
+However, only four departments with the highest price per square metre are among the ten departments with the highest CSP+ rate. 
+
+We can see that the top of the ranking is virtually identical for both indicators. Also, we do not observe huge changes between 2016 and 2022. The departments in both rankings remain mostly.
+
+
 ## f. Unemployment rate across departments
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
@@ -1439,6 +1479,11 @@ bind_cols(low_2016, high_2016) |>
     align = "l"
   )
 ```
+
+For every department, unemployment decreased between 2016 and 2022, which highlights an improvement in the labor market. However, we can still observe gap between departments. 
+
+Contrary to the distribution of the CSP+ rate, the ranking of the 10 lowest/highest differs a lot from the one showing the price.
+
 
 ## g. Relocation Rate across departments
 
@@ -1575,6 +1620,11 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
+For every department, the mobility rate decreased between 2016 and 2022. It is difficult to establish a common pattern that the top 10 departments could share. All of them tend to have different characteristics. 
+
+It appears that this rate might not be a good proxy for area’s dynamism. In fact, high prices and limited housing supply may reduce residential moves. 
+
+
 # IV - Descriptive analysis of housing prices and demographic characteristics
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
@@ -1695,6 +1745,8 @@ tab_mean_csp |>
   )
 ```
 
+Areas with a high CSP+ concentration are more expensive in both years, and this gap widens over time. It implies that socio-economic composition plays a role in shaping local housing markets.
+
 ### 2) Municipality level
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
@@ -1729,24 +1781,6 @@ ggplot(df_dep, aes(x = chom, y = log_prix, color = factor(Annee))) +
 ```
 
 The relationship between housing prices and the unemployment rate is weaker and less clear. In 2016, housing prices show almost no correlation with unemployment. In 2022, the relationship becomes positive, but the slope remains small. This suggests that unemployment alone is not a strong determinant of housing prices at the department level.
-
-### 2) Municipality level
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-ggplot(df_com, aes(x = TauxChom, y = log_prix, color = factor(Annee))) +
-  geom_point(alpha = 0.25, size = 0.8) +
-  geom_smooth(method = "lm", se = FALSE) +
-  scale_color_manual(values = pal_year, name = "Year") +
-  labs(
-    title = "Housing prices and unemployment rate (municipalities)",
-    x = "Unemployment rate (%)",
-    y = "Log price per m²"
-  ) +
-  theme_minimal()
-```
-
-At the municipality level, housing prices tend to decrease as unemployment increases. 
-Departments aggregate very different municipalities, mixing rich urban centers and poorer peripheral areas. As a result, high-priced urban areas can coexist with higher unemployment elsewhere in the same department. This implies a positive aggregate relationship. By contrast, at the municipality level, unemployment is more directly linked to local demand and purchasing power, and therefore to a negative relationship with housing prices.
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge |>
@@ -1813,6 +1847,26 @@ tab_mean_chom |>
     )
   )
 ```
+
+This boxplot shows that housing prices increase between 2016 and 2022 across all unemployment groups. The magnitude of price growth is similar across groups. This suggests that unemployment mainly captures persistent spatial differences rather than differential price dynamics. This is why we should use Two Way Fixed Effects to implement regressions later.
+
+### 2) Municipality level
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(df_com, aes(x = TauxChom, y = log_prix, color = factor(Annee))) +
+  geom_point(alpha = 0.25, size = 0.8) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = pal_year, name = "Year") +
+  labs(
+    title = "Housing prices and unemployment rate (municipalities)",
+    x = "Unemployment rate (%)",
+    y = "Log price per m²"
+  ) +
+  theme_minimal()
+```
+
+At the municipality level, housing prices tend to decrease as unemployment increases. 
+Departments aggregate very different municipalities, mixing rich urban centers and poorer peripheral areas. As a result, high-priced urban areas can coexist with higher unemployment elsewhere in the same department. This implies a positive aggregate relationship. By contrast, at the municipality level, unemployment is more directly linked to local demand and purchasing power, and therefore to a negative relationship with housing prices.
 
 
 ## c. Housing prices and residential mobility 
@@ -1903,6 +1957,7 @@ tab_mean_mob |>
   )
 ```
 
+Housing prices increase similarly across all residential mobility groups between 2016 and 2022. While areas with lower mobility tend to be cheaper, the distribution is almost the same for each group. Mobility is therefore less informative about price levels than socio-economic composition or labor market conditions.
 
 ### 3) Municipality level
 
