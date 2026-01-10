@@ -19,9 +19,8 @@ To explore this question, the project combines several datasets. Housing indicat
 
 Our project is structured as follows. First, we present a descriptive analysis of the main variables in our datasets, using graphical and spatial visualisations to highlight key trends in both housing prices and demographic composition. Then we develop an econometric framework in order to isolate the effect of demographic structure on real estate prices. Finally, we address potential identification challenges, such as reverse causality and omitted variable bias, and discuss how our empirical strategy attempts to mitigate them.
 
-# Libraries
-
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
+#Libraries
 here::i_am("BARBARIT-DUYCK-Project.Rproj")
 library(here)
 library(dplyr)
@@ -35,13 +34,13 @@ library(knitr)
 library(fixest)
 ```
 
-# Link to the github project
+### Link to the github project
 
 <https://github.com/lounaduyck-afk/BARBARIT-DUYCK-Project.git>
 
-# Loading and describing the data
+# I - Loading and describing the data
 
-## 1) Residential property market data
+## a. Residential property market data
 
 <https://www.data.gouv.fr/datasets/indicateurs-immobiliers-par-commune-et-par-annee-prix-et-volumes-sur-la-periode-2014-2024>
 
@@ -49,7 +48,7 @@ From this website, we downloaded 11 csv files, each file corresponding to a spec
 
 The data have been collected by the government, from 2014 to 2024. The latest update was on the 7th of July 2025.
 
-### Methodology
+### i. Methodology
 
 Data come from the treatment of another datagouv database regarding the Request for Property Values. From this initial database, they took only single-sale transfers, for which the values lied between 15,000€ and 10,000,000€, the surface between 10m² and 250m² for apartments, and between 10m² and 400m² for houses.
 
@@ -59,7 +58,7 @@ It is important to note that this database covers the whole of metropolitan Fran
 
 One of the main strengths of this database is that it provides a common reference framework over a near-national geographical scope, making it possible to compare territories with one another, to understand their specific characteristics, and to produce studies and indicators based on homogeneous methods.
 
-### Data merging
+### ii. Data cleaning and merging
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 annees <- 2014:2024
@@ -89,11 +88,9 @@ DVF_panel <- map_dfr(annees, function(a) {
 
 ```
 
-Explanations: after standardizing the labels, we merge our data using bind_rows in order to get panel data.
+After standardizing the labels, we merge our data using bind_rows in order to get panel data.
 
-### Data descriptions
-
-#### Basic Information
+### iii. Data descriptions
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 nb_columns <- ncol(DVF_panel)
@@ -114,7 +111,7 @@ summary_table |>
   knitr::kable()
 ```
 
-#### Variables descriptions
+#### Variables:
 
 -   INSEE code: a qualitative variable which is unique for each municipality
 -   Year
@@ -127,9 +124,11 @@ summary_table |>
 -   The average price per square metre of properties sold in €: quantitative variable
 -   The average surface area of properties sold in square metre: quantitative variable
 
-## 2) Population evolution and stucture by municipalities
+## b. Population evolution and stucture by municipalities
 
 <https://www.insee.fr/fr/statistiques/8581696?sommaire=8581933>
+
+### i. Methodology
 
 From this website, we downloaded csv file corresponding to "Évolution et structure de la population en 2022 - Commune - France hors Mayotte"
 
@@ -144,9 +143,9 @@ Population <- vroom(here("Data","base-cc-evol-struct-pop-2022.csv"))
 Labels <- vroom(here("Data","meta_base-cc-evol-struct-pop-2022.csv"))
 ```
 
-### Data cleaning
+### ii. Data cleaning and merging
 
-#### Standardizing the labels
+#### Labels
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 new_names <- setNames(Labels$COD_VAR, Labels$LIB_VAR)
@@ -159,43 +158,30 @@ Population <- Population |>
 " = `Pop 25-54 ans Autres en 2016 (compl)`, "Pop 55 ans ou plus Autres personnes sans activité professionnelle en 2016 (compl)" = `Pop 55 ans ou plus Autres en 2016 (compl)`)
 ```
 
-Explanations: When we downloaded the data sets, we had two csv files, one with the data we want to look at, in which the labels had a specific code, and the other with the labels' code and their meaning. Then, we changed the code labels of our data set of interest to get their meaning.
+When we downloaded the data sets, we had two csv files, one with the data we want to look at, in which the labels had a specific code, and the other with the labels' code and their meaning. Then, we changed the code labels of our data set of interest to get their meaning.
 
-### Modificating the structure of the dataset
+#### Structure of the dataset
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Population <- Population |>
   pivot_longer(
     cols = -INSEE_COM,
     names_to = "temp",
-    values_to = "value"
-  ) |>
+    values_to = "value") |>
   mutate(
-    Annee = str_extract(temp, "\\d{4}"),                
-    Variable = str_remove(temp, " en \\d{4}.*$")               
-  ) |>
+    Annee = str_extract(temp, "\\d{4}"),      
+    Variable = str_remove(temp, " en \\d{4}.*$")) |>
   select(INSEE_COM, Annee, Variable, value) |>
   pivot_wider(
     names_from = Variable,
-    values_from = value
-  ) |>
-  arrange(INSEE_COM, Annee)
-```
-
-Explanations:
-
-Initially, we had one row for each municipality and the variables for each year. For example, we have 3 columns related to the number of men in the municipality, one for 2022, 2016 and 2011 ("Pop Homme en 2022", "Pop Homme en 2016", "Pop Homme en 2011"). Therefore, in order to get a panel data structure as the DVF data set we uploaded in the first part, we used at first pivot longer and we extract the year in each initial label. Then we create an additional column "Annee" and we used pivot wider to have the panel structure.
-
-### Changing the columns type
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-Population <- Population |>
+    values_from = value) |>
+  arrange(INSEE_COM, Annee) |>
   mutate(Annee = as.integer(Annee))
 ```
 
-### Data descriptions
+Initially, we had one row for each municipality and the variables for each year. For example, we have 3 columns related to the number of men in the municipality, one for 2022, 2016 and 2011 ("Pop Homme en 2022", "Pop Homme en 2016", "Pop Homme en 2011"). Therefore, in order to get a panel data structure as the DVF data set we uploaded in the first part, we used at first pivot longer and we extract the year in each initial label. Then we create an additional column "Annee" and we used pivot wider to have the panel structure.
 
-#### Basic Information
+### iii. Data descriptions
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 nb_columns <- ncol(Population)
@@ -216,7 +202,7 @@ summary_table |>
   knitr::kable()
 ```
 
-#### Variables description
+#### Variables:
 
 -   Population: quantitative variable - number of residents in each municipality
 -   Per age range population (0-14, 15-29, 30-44, 45-59, 60-74, 75-89, 90+)
@@ -229,15 +215,19 @@ summary_table |>
 -   Number of residents who lived outside the municipality 1 year ago (in a different department, in a different region, in Mainland France or in DOM) and their distribution by age and by sex.
 -   Number of residents in each CSP for every age range and sex.
 
-## 3) Unemployment
+## c. Unemployment
 
 <https://www.observatoire-des-territoires.gouv.fr/taux-de-chomage-des-15-64-ans-rp>
+
+### i. Methodology
 
 From this website, we downloaded the file corresponding to "Taux de chômage des 15-64 ans", which was initially in the xlsx format. We therefore opened it on Excel and stored it as a csv file.
 
 The data have been collected by the Insee, using the census in 2011, 2012, 2016 and 2022.
 
 The data set gather, for each municipality and for each year of census, the total number of unemployed residents, the female unemployed residents and the male unemployed residents.
+
+### ii. Data cleaning and merging
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Unemployment <- vroom(here("Data","indic_sex_rp.csv"),
@@ -263,14 +253,11 @@ Unemployment |>
   knitr::kable()
 ```
 
-Since all the observations in 2012 are NA, we apply a filter to remove them.
-
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
+#Since all the observations in 2012 are NA, we apply a filter to remove them.
 Unemployment <- Unemployment |>
   filter(!Annee==2012)
 ```
-
-### Modificating the structure of the dataset
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Unemployment <- Unemployment |>
@@ -291,11 +278,11 @@ Initially, for each year, each municipality had three rows:
 
 \- The number of female unemployed residents
 
-\- The number of male unemployed residents To get a consistent panel structure, we created additional columns, that specify to what each number refers, and we used pivot wider.
+\- The number of male unemployed residents 
 
-### Data description
+To get a consistent panel structure, we created additional columns, that specify to what each number refers, and we used pivot wider.
 
-#### Basic information
+### iii. Data description
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 nb_columns <- ncol(Unemployment)
@@ -316,7 +303,7 @@ summary_table |>
   knitr::kable()
 ```
 
-#### Variables description
+#### Variables:
 
 -   INSEE_COM: as the previous data bases, this one uses the Insee code to classify the municipality
 -   libgeo: it corresponds to the name of the municipality associated with the INSEE code
@@ -324,9 +311,7 @@ summary_table |>
 -   Sex: coded as a factor, it expresses the gender category of the observation, distinguishing between females, males, and the total population
 -   Chomeur: number of unemployed people (based on the INSEE's definition of unemployment)
 
-# Merging the databases
-
-## Code
+## d. Merging all the databases
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVFcensus <- DVF_panel |>
@@ -352,13 +337,39 @@ Merge <- Merge |>
     by = join_by(INSEE_COM, Annee))
 ```
 
-## Description
-
 From the 3 data bases, we only kept data from 2016 and 2022, years of census and common to all bases. Using left join, because we wanted to keep all the observations we have in the initial panel set and match them with additional data we have from the two other data sets, we merged the data sets. Before merging, we ensured that the structure of the three data sets where coherent to be merged. We did this work in previous sections.
 
-## Geographical data
+## e. Department labels data
+
+Source: https://www.data.gouv.fr/datasets/departements-de-france
+
+### i. Methodology
+
+This file gather: - The department code - The department name - The region code - The region name
+
+We use it here to add to our Merge data set the name of the department to which each municipality belongs. This will be useful latter to do some data visualization at the department level.
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+dep <- vroom(here("Data","departements-france.csv"))
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+#We extract from the "INSEE code commune" the numbers linked to the department code.
+Merge <- Merge |>
+  mutate(
+    code_departement = substr(as.character(INSEE_COM), 1, 2)
+  ) |>
+  left_join(
+    dep |> select(code_departement, nom_departement),
+    by = "code_departement"
+  )
+```
+
+## f. Geographical data
 
 ​​<https://geoservices.ign.fr/adminexpress>
+
+### i. Methodology and data description
 
 The ADMIN EXPRESS product line centralizes five related datasets: ADMIN EXPRESS, ADMIN EXPRESS COG, ADMIN EXPRESS COG CARTO, ADMIN EXPRESS COG CARTO Petite Échelle, and ADMIN EXPRESS COG CARTOPLUS PE. Together, these datasets provide detailed administrative boundary layers for France across multiple levels. They include the following geographic units:
 
@@ -383,6 +394,9 @@ This product line facilitates combining administrative boundaries with external 
 Here, we import both layers using `st_read()`, then standardize their INSEE municipality codes by trimming extra spaces and ensuring they always have five digits. This harmonization is essential for correctly joining the geographic layers with our DVF database, which also uses INSEE codes as identifiers.
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
+#| echo: false
+#| message: false
+#| warning: false
 gpkg_path <- "Data/ADE_4-0_GPKG_LAMB93_FXX-ED2025-10-15.gpkg"
 communes_sf <- st_read(gpkg_path, layer = "chef_lieu_de_commune") |>
 mutate(code_insee_de_la_commune = sprintf("%05s", trimws(code_insee_de_la_commune)))
@@ -391,38 +405,9 @@ communes_poly <- st_read(gpkg_path, layer = "commune") |>
 mutate(code_insee = sprintf("%05s", trimws(code_insee)))
 ```
 
-## 4) Department labels data
+# II - Descriptive analysis of the structure of the French real estate market
 
-Source: https://www.data.gouv.fr/datasets/departements-de-france
-
-This file gather: - The department code - The department name - The region code - The region name
-
-We use it here to add to our Merge data set the name of the department to which each municipality belongs. This will be useful latter to do some data visualization at the department level.
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-dep <- vroom(here("Data","departements-france.csv"))
-```
-
-We extract from the "INSEE code commune" the numbers linked to the department code.
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-Merge <- Merge |>
-  mutate(
-    code_departement = substr(as.character(INSEE_COM), 1, 2)
-  ) |>
-  left_join(
-    dep |> select(code_departement, nom_departement),
-    by = "code_departement"
-  )
-```
-
-```{r, echo=FALSE}
-sum(is.na(Merge$code_departement))
-```
-
-Only 2 municipalities do not have a departement code. This is due to two NA for INSEE_COM, one for 2016, the other for 2022.
-
-# Descriptive analysis of the structure of the French real estate market
+## a. Average price per m² at the municipality level
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 
@@ -459,7 +444,7 @@ ggplot(carte_poly_both) +
 Between 2016 and 2022, the maps reveal an almost global increase in average prices per square meter, particularly marked in and around large metropolitan areas (we can distinguish Paris, Lyon, Marseille, Bordeaux, Toulouse...). This trend is followed by a significant gap between urban and rural areas, reflecting the dynamics of metropolitanization and differentiated attractiveness. The spread of high price levels in cities such as Bordeaux, Annecy, and Nantes suggests that the rise in prices extends beyond the Paris region and reflects common macroeconomic determinants combined with heterogeneous local trends. Coastal municipalities also have high prices per square meter, which can be explained by several factors such as tourist appeal, quality of life, and the presence of many second homes. From an economic point of view, these maps already allow us to make the following assumptions: prices per square meter seem to be correlated with several factors, including urbanity, unemployment, and the attractiveness of different areas.\
 These maps allow us to easily distinguish between attractive areas of France, such as cities and coastal regions, and less attractive areas, known as the “diagonale du vide” (empty diagonal), which stretches from the northeast to the west of the country.
 
-### Ile de France map
+## b. Average price per m² at the municipality level - focus on Ile de France
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 departements_idf <- c("75","92","93","94","91","77","78","95")
@@ -493,7 +478,7 @@ ggplot(carte_idf_1622) +
 
 ```
 
-### Graphic of the evolution of the average price of real estate per square meter
+## c. The evolution of the average price of real estate per square meter
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
@@ -517,7 +502,7 @@ This trend probably reflects several factors: very favorable borrowing condition
 
 A downward trend is observed since 2023. This recent slowdown could be linked to the change in monetary policy and rising interest rates, which have reduced households' purchasing power in the real estate market. Overall, this graph highlights a change in the market regime, which has shifted from a relatively stable situation at the outset to a phase of significant price appreciation that appears to be highly sensitive to macroeconomic and financial shocks.
 
-### Graphic of the evolution of the number of transactions
+## d. The evolution of the number of transactions
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
@@ -539,7 +524,7 @@ From 2019, the number of transactions increased strongly, exceeding one million 
 
 After 2022, volumes decline sharply until 2023-2024, indicating a slowdown in the market. This slowdown shows rising mortgage rates and inflation, which have eroded purchasing power and increased the cost of financing.
 
-### Graphical representation of the Average property size over time
+## e. The Average property size over time
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
@@ -558,7 +543,7 @@ We see that there was a gradual increase in the average surface area of propetie
 
 After 2021, the average surface area decreases, stabilizing at around 100 m² in 2023. This reversal could be linked to rising property prices and mortgage rates, which have stretched budgets and forced households to buy smaller homes.
 
-### Distribution of houses vs. apartments by year
+## f. Distribution of houses vs. apartments by year
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 
@@ -647,7 +632,7 @@ After 2022, volumes decline sharply until 2023-2024, indicating a slowdown in th
 
 However, the composition chart shows that, despite these pronounced fluctuations in activity, the market structure has remained remarkably stable: apartments have consistently accounted for just over half of transactions, around 55-58%, and houses around 42-45%. Only minor variations can be observed from year to year, with no lasting shift in favor of one type of housing over another.
 
-## Comparison across the 10 largest French metropolitan areas
+## g. Comparison across the 10 largest French metropolitan areas - price and volume
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 metro_labels <- tibble::tibble(
@@ -708,7 +693,7 @@ In the second graph we observe that the sharp decline in Paris around 2017, foll
 
 Taken together, these figures suggest that the French real estate market is becoming increasingly polarized: high prices in Paris may crowd out some demand, while regional metropolitan areas continue to grow in both value and activity. This requires a differentiated regional analysis when evaluating housing or territorial policies.
 
-## Comparison between departments
+## h. Average price per m² - Comparison between departments
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 DVF_panel |>
@@ -810,6 +795,8 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
+## i. Transactions - Comparison between departments
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 DVF_panel |>
   mutate(dep = substr(INSEE_COM, 1, 2)) |>
@@ -909,9 +896,7 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
-## Exploring joint distributions
-
-### Joint distribution of average price per m² and average surface area by Department
+## j. Joint distribution of average price per m² and average surface area by Department
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 
@@ -945,7 +930,8 @@ In this graph, each point represents a department at one precise year. The scatt
 
 The extreme observations in the upper left correspond to very high prices for relatively small areas, probably reflecting Paris and a few particularly sought-after urban areas where land scarcity and high demand drive up valuations. This trend shows that price heterogeneity is determined not only by location, but also by the composition of the housing stock. Areas with a high proportion of small apartments have higher prices per square meter, while areas where houses and spacious dwellings are the norm have lower unit prices. These data confirm the need to control for average size or type of dwelling in any econometric analysis of real estate prices.
 
-### Joint distribution of average price per m² and average surface area by Communes
+## k. Joint distribution of average price per m² and average surface area
+### 1) By Communes
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
@@ -975,7 +961,7 @@ DVF_panel |>
 
 ```
 
-### Joint distribution of average price per m² and share of apartments by Departments
+### 2) By Departments
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
@@ -1013,7 +999,9 @@ A large number of observations below 25% apartments show that most French munici
 
 The slope suggests that price heterogeneity is strongly linked to the structure of the housing stock: compact real estate markets benefit more from location advantages than spacious residential markets. Therefore, any econometric assessment of real estate prices should take into account the proportion of apartments or the composition of the housing stock in order to avoid attributing the effects of density to other variables such as unemployment or income alone.
 
-### Joint distribution of average price per m² and share of apartments by Communes
+## l. Joint distribution of average price per m² and share of apartments
+
+### 1) By communes
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
@@ -1047,7 +1035,7 @@ DVF_panel |>
 
 ```
 
-### Joint distribution of average price per m² and number of transactions by Department
+### 2) By Department
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 
@@ -1083,7 +1071,9 @@ The observations between 15000 and 30000 transactions correspond to large metrop
 
 In this graph, we see the coexistence of two mechanisms: in dynamic urban areas, high activity could reflect intense demand that drives up prices, while in expensive locations, affordability constraints and supply rigidity may limit the number of sales.
 
-### Joint distribution of average price per m² and number of transactions by Commune
+## m. Joint distribution of average price per m² and number of transactions
+
+### 1) By Commune
 
 ```{r,warning=FALSE, message=FALSE, echo=FALSE}
 DVF_panel |>
@@ -1115,7 +1105,9 @@ DVF_panel |>
 
 ```
 
-## Demographic indicators
+# III - Descriptive analysis of the demography
+
+## a. Demographic indicators
 
 To go further in the data analysis process, we calculate several indicators.
 
@@ -1134,7 +1126,7 @@ Merge <- Merge |>
          TauxDem = (1 - (`Pop 1 an ou plus habitant 1 an avt même logt`+`Pop 1 an ou plus habitant 1 an avt autre logt même commune`)/Population)*100)
 ```
 
-### The upper socio-economic group rate representation
+## b. CSP+ rate by municipalities
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 #Merging the geolocalisation dataset with the demographic indicators for each municipality
@@ -1158,7 +1150,7 @@ map_demo |>
   theme_minimal()
 ```
 
-### The unemployment rate representation
+## c. Unemployment rate by municipalities
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 map_demo |>
@@ -1174,7 +1166,7 @@ map_demo |>
   theme_minimal()
 ```
 
-### The relocation rate representation
+## d. Mobility rate representation
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 map_demo |>
@@ -1190,9 +1182,7 @@ map_demo |>
   theme_minimal()
 ```
 
-### Analysis per departments
-
-#### Distribution of socio-professional groups across departments
+## e. Distribution of socio-professional groups across departments
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 csp_cols <- c(
@@ -1323,7 +1313,7 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
-#### Unemployment rate across departments
+## f. Unemployment rate across departments
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 chom_dep <- Merge |>
@@ -1450,7 +1440,7 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
-#### Relocation Rate across departments
+## g. Relocation Rate across departments
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
 dem_dep <- Merge |>
@@ -1585,71 +1575,58 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-Merge |>
-  filter(Annee %in% c(2016, 2022)) |>
-  filter(!is.na(TauxChom), !is.na(Prixm2Moyen)) |>
-  group_by(Annee) |>
-  mutate(
-    chom_cat = case_when(
-      TauxChom <= quantile(TauxChom, 1/3, na.rm = TRUE) ~ "Low unemployment",
-      TauxChom <= quantile(TauxChom, 2/3, na.rm = TRUE) ~ "Moderate unemployment",
-      TRUE                                                ~ "High unemployment"
-    )
-  ) |>
-  ungroup() -> df_box_chom
-```
+# IV - Descriptive analysis of housing prices and demographic characteristics
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
-df_box_chom |>
-  ggplot(aes(x = factor(Annee), y = Prixm2Moyen, fill = factor(Annee))) +
-  geom_boxplot() +
-  facet_wrap(~ chom_cat, nrow = 1) +
-  scale_fill_brewer(palette = "Set2")+
-  theme_minimal()+
-  labs(
-    title = "Price distribution (€/m²) by unemployment group",
-    x = NULL, y = "Price (€/m²)"
-  )
-```
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-tab_dist_chom <- df_box_chom |>
-  group_by(Annee, chom_cat) |>
+df_dep <- Merge |>
+  filter(Annee %in% c(2016, 2022),
+         !is.na(code_departement),
+         !is.na(Prixm2Moyen),
+         !is.na(TauxCSPsup),
+         !is.na(TauxChom),
+         !is.na(TauxDem)) |>
+  group_by(code_departement, nom_departement, Annee) |>
   summarise(
-    mean   = mean(Prixm2Moyen, na.rm = TRUE),
-    se     = sd(Prixm2Moyen, na.rm = TRUE) / sqrt(sum(!is.na(Prixm2Moyen))),
-    q1     = quantile(Prixm2Moyen, 0.25, na.rm = TRUE),
-    median = median(Prixm2Moyen, na.rm = TRUE),
-    q3     = quantile(Prixm2Moyen, 0.75, na.rm = TRUE),
-    n      = sum(!is.na(Prixm2Moyen)),
+    prix_m2 = mean(Prixm2Moyen, na.rm = TRUE),
+    csp     = mean(TauxCSPsup, na.rm = TRUE),
+    chom    = mean(TauxChom, na.rm = TRUE),
+    dem     = mean(TauxDem, na.rm = TRUE),
     .groups = "drop"
   ) |>
-  mutate(across(c(mean, se, q1, median, q3), ~ round(.x, 1))) |>
-  arrange(chom_cat, Annee)
-
-tab_dist_chom_wide <- tab_dist_chom |>
-  select(Annee, chom_cat, mean, se, q1, median, q3) |>
-  pivot_wider(
-    names_from  = Annee,
-    values_from = c(mean, se, q1, median, q3),
-    names_glue  = "{.value}_{Annee}"
-  ) |>
-  arrange(chom_cat)
-
-tab_dist_chom_wide |>
-  kable(
-    caption = "Price distribution summary (€/m²): 2016 vs 2022 within each unemployment group",
-    col.names = c(
-      "Unemployment group",
-      "Mean 2016","Mean 2022",
-      "SE 2016","SE 2022",
-      "Q1 2016","Q1 2022",
-      "Median 2016","Median 2022",
-      "Q3 2016","Q3 2022"
-    )
-  )
+  mutate(log_prix = log(prix_m2))
 ```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+df_com <- Merge |>
+  filter(Annee %in% c(2016, 2022),
+         !is.na(Prixm2Moyen),
+         !is.na(TauxCSPsup),
+         !is.na(TauxChom),
+         !is.na(TauxDem)) |>
+  mutate(log_prix = log(Prixm2Moyen))
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+pal_year <- c("2016" = "#1b9e77", "2022" = "#d95f02")
+```
+
+## a. Housing prices and the share of high-skilled workers
+### 1) Department level
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(df_dep, aes(x = csp, y = log_prix, color = factor(Annee))) +
+  geom_point(alpha = 0.75, size = 2) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = pal_year, name = "Year") +
+  labs(
+    title = "Housing prices and share of high-skilled workers (departments)",
+    x = "CSP+ rate (%)",
+    y = "Log price per m²"
+  ) +
+  theme_minimal()
+```
+
+The scatter plot shows a strong positive relationship between housing prices and the share of high-skilled workers. Departments with a higher CSP+ rate tend to have higher housing prices. This relationship appears stable over time. The absence of a change in slope over time indicates that increases in the CSP+ rate are not associated with faster price growth.
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge |>
@@ -1680,42 +1657,185 @@ df_box_csp |>
 ```
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
-tab_dist_csp <- df_box_csp |>
+tab_mean_csp <- df_box_csp |>
   group_by(Annee, csp_cat) |>
   summarise(
-    mean   = mean(Prixm2Moyen, na.rm = TRUE),
-    se     = sd(Prixm2Moyen, na.rm = TRUE) / sqrt(sum(!is.na(Prixm2Moyen))),
-    q1     = quantile(Prixm2Moyen, 0.25, na.rm = TRUE),
-    median = median(Prixm2Moyen, na.rm = TRUE),
-    q3     = quantile(Prixm2Moyen, 0.75, na.rm = TRUE),
-    n      = sum(!is.na(Prixm2Moyen)),
+    mean = mean(Prixm2Moyen, na.rm = TRUE),
+    n    = sum(!is.na(Prixm2Moyen)),
     .groups = "drop"
   ) |>
-  mutate(across(c(mean, se, q1, median, q3), ~ round(.x, 1))) |>
-  arrange(csp_cat, Annee)
-
-tab_dist_csp_wide <- tab_dist_csp |>
-  select(Annee, csp_cat, mean, se, q1, median, q3) |>
+  arrange(csp_cat, Annee) |>
   pivot_wider(
     names_from  = Annee,
-    values_from = c(mean, se, q1, median, q3),
+    values_from = c(mean, n),
     names_glue  = "{.value}_{Annee}"
+  ) |>
+  mutate(
+    change_eur = mean_2022 - mean_2016,
+    change_pct = 100 * (mean_2022 / mean_2016 - 1)
+  ) |>
+  mutate(across(c(mean_2016, mean_2022, change_eur, change_pct), ~ round(.x, 1))) |>
+  select(
+    csp_cat,
+    mean_2016, mean_2022,
+    change_eur, change_pct
   ) |>
   arrange(csp_cat)
 
-tab_dist_csp_wide |>
+tab_mean_csp |>
   kable(
-    caption = "Price distribution summary (€/m²): 2016 vs 2022 within each csp+ group",
+    caption = "Average price (€/m²): 2016 vs 2022 and change within each CSP+ group",
     col.names = c(
-      "csp+ group",
-      "Mean 2016","Mean 2022",
-      "SE 2016","SE 2022",
-      "Q1 2016","Q1 2022",
-      "Median 2016","Median 2022",
-      "Q3 2016","Q3 2022"
+      "CSP+ group",
+      "Mean 2016",
+      "Mean 2022",
+      "Change (€/m²)",
+      "Change (%)"
     )
   )
 ```
+
+### 2) Municipality level
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(df_com, aes(x = TauxCSPsup, y = log_prix, color = factor(Annee))) +
+  geom_point(alpha = 0.25, size = 0.8) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = pal_year, name = "Year") +
+  labs(
+    title = "Housing prices and share of high-skilled workers (municipalities)",
+    x = "CSP+ rate (%)",
+    y = "Log price per m²"
+  ) +
+  theme_minimal()
+```
+
+At the municipality level, the relationship remains positive but is more dispersed. Despite this noise, municipalities with a higher share of high-skilled workers tend to have higher housing prices.
+
+## b. Housing prices and unemployment rate 
+### 1) Department level
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(df_dep, aes(x = chom, y = log_prix, color = factor(Annee))) +
+  geom_point(alpha = 0.75, size = 2) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = pal_year, name = "Year") +
+  labs(
+    title = "Housing prices and unemployment rate (departments)",
+    x = "Unemployment rate (%)",
+    y = "Log price per m²"
+  ) +
+  theme_minimal()
+```
+
+The relationship between housing prices and the unemployment rate is weaker and less clear. In 2016, housing prices show almost no correlation with unemployment. In 2022, the relationship becomes positive, but the slope remains small. This suggests that unemployment alone is not a strong determinant of housing prices at the department level.
+
+### 2) Municipality level
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(df_com, aes(x = TauxChom, y = log_prix, color = factor(Annee))) +
+  geom_point(alpha = 0.25, size = 0.8) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = pal_year, name = "Year") +
+  labs(
+    title = "Housing prices and unemployment rate (municipalities)",
+    x = "Unemployment rate (%)",
+    y = "Log price per m²"
+  ) +
+  theme_minimal()
+```
+
+At the municipality level, housing prices tend to decrease as unemployment increases. 
+Departments aggregate very different municipalities, mixing rich urban centers and poorer peripheral areas. As a result, high-priced urban areas can coexist with higher unemployment elsewhere in the same department. This implies a positive aggregate relationship. By contrast, at the municipality level, unemployment is more directly linked to local demand and purchasing power, and therefore to a negative relationship with housing prices.
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+Merge |>
+  filter(Annee %in% c(2016, 2022)) |>
+  filter(!is.na(TauxChom), !is.na(Prixm2Moyen)) |>
+  group_by(Annee) |>
+  mutate(
+    chom_cat = case_when(
+      TauxChom <= quantile(TauxChom, 1/3, na.rm = TRUE) ~ "Low unemployment",
+      TauxChom <= quantile(TauxChom, 2/3, na.rm = TRUE) ~ "Moderate unemployment",
+      TRUE                                                ~ "High unemployment"
+    )
+  ) |>
+  ungroup() -> df_box_chom
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+df_box_chom |>
+  ggplot(aes(x = factor(Annee), y = Prixm2Moyen, fill = factor(Annee))) +
+  geom_boxplot() +
+  facet_wrap(~ chom_cat, nrow = 1) +
+  scale_fill_brewer(palette = "Set2")+
+  theme_minimal()+
+  labs(
+    title = "Price distribution (€/m²) by unemployment group",
+    x = NULL, y = "Price (€/m²)"
+  )
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+tab_mean_chom <- df_box_chom |>
+  group_by(Annee, chom_cat) |>
+  summarise(
+    mean = mean(Prixm2Moyen, na.rm = TRUE),
+    n    = sum(!is.na(Prixm2Moyen)),
+    .groups = "drop"
+  ) |>
+  pivot_wider(
+    names_from  = Annee,
+    values_from = c(mean, n),
+    names_glue  = "{.value}_{Annee}"
+  ) |>
+  mutate(
+    change_eur = mean_2022 - mean_2016,
+    change_pct = 100 * (mean_2022 / mean_2016 - 1)
+  ) |>
+  mutate(across(c(mean_2016, mean_2022, change_eur, change_pct), ~ round(.x, 1))) |>
+  select(
+    chom_cat,
+    mean_2016, mean_2022,
+    change_eur, change_pct
+  ) |>
+  arrange(chom_cat)
+
+tab_mean_chom |>
+  kable(
+    caption = "Average price (€/m²): 2016 vs 2022 and change within each unemployment group",
+    col.names = c(
+      "Unemployment group",
+      "Mean 2016",
+      "Mean 2022",
+      "Change (€/m²)",
+      "Change (%)"
+    )
+  )
+```
+
+
+## c. Housing prices and residential mobility 
+### 2) Department level
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(df_dep, aes(x = dem, y = log_prix, color = factor(Annee))) +
+  geom_point(alpha = 0.75, size = 2) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_color_manual(values = pal_year, name = "Year") +
+  labs(
+    title = "Housing prices and residential mobility (departments)",
+    x = "Mobility rate (%)",
+    y = "Log price per m²"
+  ) +
+  theme_minimal()
+```
+
+Housing prices are positively associated with residential mobility at the department level. Departments with higher mobility rates tend to have higher housing prices. This pattern is observed in both years and is stronger in 2022.
+
+This suggests that more dynamic and attractive housing markets are also those with higher prices.
+
+
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge |>
@@ -1746,167 +1866,47 @@ df_box_mob |>
 ```
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
-tab_dist_mob <- df_box_mob |>
+tab_mean_mob <- df_box_mob |>
   group_by(Annee, mob_cat) |>
   summarise(
-    mean   = mean(Prixm2Moyen, na.rm = TRUE),
-    se     = sd(Prixm2Moyen, na.rm = TRUE) / sqrt(sum(!is.na(Prixm2Moyen))),
-    q1     = quantile(Prixm2Moyen, 0.25, na.rm = TRUE),
-    median = median(Prixm2Moyen, na.rm = TRUE),
-    q3     = quantile(Prixm2Moyen, 0.75, na.rm = TRUE),
-    n      = sum(!is.na(Prixm2Moyen)),
+    mean = mean(Prixm2Moyen, na.rm = TRUE),
+    n    = sum(!is.na(Prixm2Moyen)),
     .groups = "drop"
   ) |>
-  mutate(across(c(mean, se, q1, median, q3), ~ round(.x, 1))) |>
-  arrange(mob_cat, Annee)
-
-tab_dist_mob_wide <- tab_dist_mob |>
-  select(Annee, mob_cat, mean, se, q1, median, q3) |>
   pivot_wider(
     names_from  = Annee,
-    values_from = c(mean, se, q1, median, q3),
+    values_from = c(mean, n),
     names_glue  = "{.value}_{Annee}"
+  ) |>
+  mutate(
+    change_eur = mean_2022 - mean_2016,
+    change_pct = 100 * (mean_2022 / mean_2016 - 1)
+  ) |>
+  mutate(across(c(mean_2016, mean_2022, change_eur, change_pct), ~ round(.x, 1))) |>
+  select(
+    mob_cat,
+    mean_2016, mean_2022,
+    change_eur, change_pct
   ) |>
   arrange(mob_cat)
 
-tab_dist_mob_wide |>
+tab_mean_mob |>
   kable(
-    caption = "Price distribution summary (€/m²): 2016 vs 2022 within each mobility group",
+    caption = "Average price (€/m²): 2016 vs 2022 and change within each mobility group",
     col.names = c(
       "Mobility group",
-      "Mean 2016","Mean 2022",
-      "SE 2016","SE 2022",
-      "Q1 2016","Q1 2022",
-      "Median 2016","Median 2022",
-      "Q3 2016","Q3 2022"
+      "Mean 2016",
+      "Mean 2022",
+      "Change (€/m²)",
+      "Change (%)"
     )
   )
 ```
 
 
-## Descriptive analysis of housing prices and demographic characteristics
+### 3) Municipality level
 
-```{r}
-df_dep <- Merge |>
-  filter(Annee %in% c(2016, 2022),
-         !is.na(code_departement),
-         !is.na(Prixm2Moyen),
-         !is.na(TauxCSPsup),
-         !is.na(TauxChom),
-         !is.na(TauxDem)) |>
-  group_by(code_departement, nom_departement, Annee) |>
-  summarise(
-    prix_m2 = mean(Prixm2Moyen, na.rm = TRUE),
-    csp     = mean(TauxCSPsup, na.rm = TRUE),
-    chom    = mean(TauxChom, na.rm = TRUE),
-    dem     = mean(TauxDem, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  mutate(log_prix = log(prix_m2))
-```
-
-```{r}
-df_com <- Merge |>
-  filter(Annee %in% c(2016, 2022),
-         !is.na(Prixm2Moyen),
-         !is.na(TauxCSPsup),
-         !is.na(TauxChom),
-         !is.na(TauxDem)) |>
-  mutate(log_prix = log(Prixm2Moyen))
-```
-
-```{r}
-pal_year <- c("2016" = "#1b9e77", "2022" = "#d95f02")
-```
-
-### Housing prices and the share of high-skilled workers — Departments & Municipalities level
-
-```{r}
-ggplot(df_dep, aes(x = csp, y = log_prix, color = factor(Annee))) +
-  geom_point(alpha = 0.75, size = 2) +
-  geom_smooth(method = "lm", se = FALSE) +
-  scale_color_manual(values = pal_year, name = "Year") +
-  labs(
-    title = "Housing prices and share of high-skilled workers (departments)",
-    x = "CSP+ rate (%)",
-    y = "Log price per m²"
-  ) +
-  theme_minimal()
-```
-
-The scatter plot shows a strong positive relationship between housing prices and the share of high-skilled workers. Departments with a higher CSP+ rate tend to have higher housing prices. This relationship is visible in both 2016 and 2022 and appears stable over time.
-
-The upward shift of the 2022 line reflects a general increase in housing prices between the two years.
-
-```{r}
-ggplot(df_com, aes(x = TauxCSPsup, y = log_prix, color = factor(Annee))) +
-  geom_point(alpha = 0.25, size = 0.8) +
-  geom_smooth(method = "lm", se = FALSE) +
-  scale_color_manual(values = pal_year, name = "Year") +
-  labs(
-    title = "Housing prices and share of high-skilled workers (municipalities)",
-    x = "CSP+ rate (%)",
-    y = "Log price per m²"
-  ) +
-  theme_minimal()
-```
-
-At the municipality level, the relationship remains positive but is more dispersed. This higher dispersion reflects strong local heterogeneity across municipalities. Despite this noise, municipalities with a higher share of high-skilled workers tend to have higher housing prices.
-
-## Housing prices and unemployment rate — Departments & municipalities level
-
-```{r}
-ggplot(df_dep, aes(x = chom, y = log_prix, color = factor(Annee))) +
-  geom_point(alpha = 0.75, size = 2) +
-  geom_smooth(method = "lm", se = FALSE) +
-  scale_color_manual(values = pal_year, name = "Year") +
-  labs(
-    title = "Housing prices and unemployment rate (departments)",
-    x = "Unemployment rate (%)",
-    y = "Log price per m²"
-  ) +
-  theme_minimal()
-```
-
-The relationship between housing prices and the unemployment rate is weaker and less clear. In 2016, housing prices show almost no correlation with unemployment. In 2022, the relationship becomes slightly positive, but the slope remains small. This suggests that unemployment alone is not a strong determinant of housing prices at the department level.
-
-```{r}
-ggplot(df_com, aes(x = TauxChom, y = log_prix, color = factor(Annee))) +
-  geom_point(alpha = 0.25, size = 0.8) +
-  geom_smooth(method = "lm", se = FALSE) +
-  scale_color_manual(values = pal_year, name = "Year") +
-  labs(
-    title = "Housing prices and unemployment rate (municipalities)",
-    x = "Unemployment rate (%)",
-    y = "Log price per m²"
-  ) +
-  theme_minimal()
-```
-
-At the municipality level, housing prices tend to decrease slightly as unemployment increases. However, the dispersion is very large, indicating that unemployment explains only a limited share of price differences across municipalities.
-
-Departments aggregate very different municipalities, mixing rich urban centers and poorer peripheral areas. As a result, high-priced urban areas can coexist with higher unemployment elsewhere in the same department, generating a weak or even positive aggregate relationship. By contrast, at the municipality level, unemployment is more directly linked to local demand and purchasing power, leading to a negative relationship with housing prices.
-
-## Housing prices and residential mobility — Departments & Municipalities
-
-```{r}
-ggplot(df_dep, aes(x = dem, y = log_prix, color = factor(Annee))) +
-  geom_point(alpha = 0.75, size = 2) +
-  geom_smooth(method = "lm", se = FALSE) +
-  scale_color_manual(values = pal_year, name = "Year") +
-  labs(
-    title = "Housing prices and residential mobility (departments)",
-    x = "Mobility rate (%)",
-    y = "Log price per m²"
-  ) +
-  theme_minimal()
-```
-
-Housing prices are positively associated with residential mobility at the department level. Departments with higher mobility rates tend to have higher housing prices. This pattern is observed in both years and is stronger in 2022.
-
-This suggests that more dynamic and attractive housing markets are also those with higher prices.
-
-```{r}
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
 ggplot(df_com, aes(x = TauxDem, y = log_prix, color = factor(Annee))) +
   geom_point(alpha = 0.25, size = 0.8) +
   geom_smooth(method = "lm", se = FALSE) +
@@ -1919,16 +1919,14 @@ ggplot(df_com, aes(x = TauxDem, y = log_prix, color = factor(Annee))) +
   theme_minimal()
 ```
 
-At the municipality level, the relationship between housing prices and mobility is positive but highly dispersed. Very high mobility rates correspond to a small number of observations and generate outliers. Overall, the positive trend suggests that mobility reflects market dynamism rather than affordability.
-
-Relationships are much clearer at the department level than at the municipality level. Aggregation reduces noise and highlights structural demographic patterns. At the municipality level, local factors generate substantial heterogeneity.
+At the municipality level, the relationship between housing prices and mobility is positive but dispersed. Very high mobility rates correspond to a small number of observations and generate outliers. Overall, the positive trend suggests that mobility reflects market dynamism rather than affordability. This result is contrary to what we observed before with the top 10 departments with the higher & lower mobility rate.
 
 Overall, the share of high-skilled workers is the demographic variable most strongly correlated with housing prices. Unemployment plays a secondary role, while residential mobility captures housing market dynamism. These graphical patterns motivate the use of regression analysis to quantify these relationships.
 
 
-# Econometric analysis on prices
+# V- Econometric analysis on prices
 
-## Implementing the baseline two-way fixed effect regression
+## a. Implementing the baseline two-way fixed effect regression
 
 We implement a two-way fixed effects (TWFE) panel regression at the municipal level for 2016 and 2022. The dependent variable is the logarithm of the average price per square meter. We express the dependent variable using the logarithm in order to interpret the coefficients (beta) as a percentage change in price. The main regressors reflect the local demographic and socioeconomic structure: proportion of executives (CSP+) (TauxCSPsup), unemployment rate (TauxChom), and residential mobility rate (TauxDem). We add real estate market controls: average surface area (SurfaceMoy), proportion of apartments (PropAppart, as a proxy of urban form/density) and market activity (ln_mut = log1p(Nb_mutations)). We include municipal fixed effects (absorbing local characteristics that are invariant over time, such as geography and amenities) and annual fixed effects (absorbing national shocks). Standard errors are pooled at the municipal level.
 
@@ -1951,7 +1949,7 @@ m_twfe <- feols(
 etable(m_twfe)
 ```
 
-## First difference regression
+## b. First difference regression
 
 To make the interpretation within change even more straightforward, we reshape the data into a wide format and calculate the differences between 2016 and 2022: \[\Delta \ln(P\_{i}) = \ln(P\_{i,2022}) - \ln(P\_{i,2016}),\] and we do the same for the regressors. We then perform a cross-sectional regression of price growth on changes in demographic composition and market conditions.
 
@@ -1982,7 +1980,7 @@ summary(m_fd)
 
 ```
 
-## Adding department-by-year fixed effects
+## c. Adding department-by-year fixed effects
 
 Next, we strengthen the identification by replacing the simple fixed effects for the year with fixed effects for department × year. This allows us to absorb shocks common to all municipalities in the same department during a given year, such as local macroeconomic conditions or departmental policies. The remaining variation therefore lies within the municipality, excluding department-specific temporal shocks.
 
@@ -1998,7 +1996,7 @@ etable(m_twfe, m_depyear)
 
 ```
 
-## Heterogeneity by urbanization terciles (interaction model)
+## d. Heterogeneity by urbanization terciles (interaction model)
 
 To check whether demographic effects differ between urban and rural areas, we create an urbanisation indicator by dividing municipalities into tertiles of PropAppart. We then estimate a TWFE model in which TauxCSPsup, TauxChom and TauxDem interact with the urban tertile. This allows the marginal effect of each demographic variable to vary between municipalities with low, medium, and high proportions of flats, in other words between less dense and more dense areas. Due to collinearity, fixest removes some interaction terms.
 
@@ -2017,7 +2015,7 @@ m_het <- feols(
 etable(m_het)
 ```
 
-## Explicit age structure (children vs seniors)
+## e. Explicit age structure (children vs seniors)
 
 As our research question is about demographic composition, we add a simple block on age structure: the share of children and the share of elderly people (combining those aged 60-74, 75-89 and 90 and over). We estimate a TWFE model with the same controls and fixed effects as before.
 
@@ -2039,7 +2037,7 @@ m_age <- feols(
 etable(m_age)
 ```
 
-## Liquidity restriction (Nb_mutations ≥ 30)
+## f. Liquidity restriction (Nb_mutations ≥ 30)
 
 Finally, we apply the TWFE benchmark model to a restricted sample of more liquid municipalities (Nb_mutations \>= 30). The idea is to reduce the measurement error in Prixm2Moyen and ensure that the dependent variable reflects a reasonably active market.
 
