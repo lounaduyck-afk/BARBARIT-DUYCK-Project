@@ -444,40 +444,6 @@ ggplot(carte_poly_both) +
 Between 2016 and 2022, the maps reveal an almost global increase in average prices per square meter, particularly marked in and around large metropolitan areas (we can distinguish Paris, Lyon, Marseille, Bordeaux, Toulouse...). This trend is followed by a significant gap between urban and rural areas, reflecting the dynamics of metropolitanization and differentiated attractiveness. The spread of high price levels in cities such as Bordeaux, Annecy, and Nantes suggests that the rise in prices extends beyond the Paris region and reflects common macroeconomic determinants combined with heterogeneous local trends. Coastal municipalities also have high prices per square meter, which can be explained by several factors such as tourist appeal, quality of life, and the presence of many second homes. From an economic point of view, these maps already allow us to make the following assumptions: prices per square meter seem to be correlated with several factors, including urbanity, unemployment, and the attractiveness of different areas.\
 These maps allow us to easily distinguish between attractive areas of France, such as cities and coastal regions, and less attractive areas, known as the “diagonale du vide” (empty diagonal), which stretches from the northeast to the west of the country.
 
-## b. Average price per m² at the municipality level - focus on Ile de France
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
-departements_idf <- c("75","92","93","94","91","77","78","95")
-
-communes_idf <- communes_poly |>
-mutate(code_insee = sprintf("%05s", trimws(code_insee))) |>
-filter(substr(code_insee, 1, 2) %in% departements_idf)
-
-carte_idf_2016 <- communes_idf |>
-  left_join(DVF_panel |> filter(Annee == 2016),
-            by = c("code_insee" = "INSEE_COM")) |>
-  mutate(Annee = "2016")
-
-carte_idf_2022 <- communes_idf |>
-  left_join(DVF_panel |> filter(Annee == 2022),
-            by = c("code_insee" = "INSEE_COM")) |>
-  mutate(Annee = "2022")
-
-carte_idf_1622 <- bind_rows(carte_idf_2016, carte_idf_2022)
-
-# Graph with facet_wrap
-ggplot(carte_idf_1622) +
-  geom_sf(aes(fill = Prixm2Moyen), color = "white", size = 0.1) +
-  scale_fill_viridis_c(trans = "log", direction = -1) +
-  theme_minimal() +
-  labs(
-    title = "Average price per square meter — Île-de-France",
-    fill  = "Average Price per square meter (€)"
-  ) +
-  facet_wrap(~ Annee)
-
-```
-
 ## c. The evolution of the average price of real estate per square meter
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
