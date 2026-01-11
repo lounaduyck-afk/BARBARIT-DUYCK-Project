@@ -995,7 +995,7 @@ DVF_panel |>
   )
 
 ```
-The third figure shows a strong positive relationship between prices and the (log) number of transactions. Municipalities with more active markets tend to have higher prices per m², and the relationship appears monotonic.
+This figure shows a strong positive relationship between prices and the (log) number of transactions. Municipalities with more active markets tend to have higher prices per m², and the relationship appears monotonic.
 
 
 ## B - Descriptive analysis of housing prices and demographic characteristics
@@ -1503,7 +1503,7 @@ m_twfe_liq <- feols(
 
 etable(m_twfe, m_twfe_liq)
 ```
-The results change when we focus on liquid markets (N drops to around 7076 observations). The CSP+ coefficient becomes much larger and significant at the 1% level (≈ 0.0058), implying a stronger socio-economic gradient in places where the market is active and prices are measured more reliably. Unemployment becomes negative and significant at the 1% level (≈ −0.0055), more in line with standard economic intuition, suggesting that the baseline positive coefficient partly reflected noise in thin markets. Mobility remains low and insignificant. 
+The results change when we focus on liquid markets. The CSP+ coefficient becomes much larger and significant, implying a stronger socioeconomic gradient in places where the market is active and prices are measured more reliably. Unemployment becomes negative and significant at the 1% level, suggesting that the baseline positive coefficient partly reflected noise in thin markets. Mobility remains low and insignificant. 
 We notice that the coefficient on market activity becomes negative, which likely reflects mechanical mean-reversion or selection effects in already highly liquid municipalities. The within R² increases, indicating that the model explains a larger share of price variation in liquid markets.
 This restriction highlights that measurement error and market thinness matter and that demographic effects are more clearly identified in municipalities with sufficient transaction volumes.
 
