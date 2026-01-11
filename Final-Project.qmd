@@ -41,6 +41,8 @@ library(fixest)
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge <- readRDS("Data/Merge.rds")
 DVF_panel <- readRDS("Data/DVF_panel.rds")
+communes_poly <- readRDS("Data/communes_poly.rds")
+communes_sf <- readRDS("Data/communes_sf.rds")
 ```
 
 # II - Descriptive analysis of the structure of the French real estate market
@@ -211,7 +213,7 @@ df_long <- df_agrege |>
 ggplot() +
   geom_col(
     data = df_long,
-    aes(x = Annee, y = Nombre, fill = TypeBien),
+    aes(x = Annee, y = Number, fill = Type),
     position = "stack",
     alpha = 0.85
   ) +
@@ -252,7 +254,7 @@ DVF_panel |>
     names_to = "Type",
     values_to = "Share"
   ) |>
-  ggplot(aes(x = Annee, y = Share, fill = TypeBien)) +
+  ggplot(aes(x = Annee, y = Share, fill = Type)) +
   geom_bar(stat = "identity", position = "stack") +
   scale_y_continuous(labels = scales::percent_format()) +
   labs(
