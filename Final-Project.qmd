@@ -393,7 +393,7 @@ This product line facilitates combining administrative boundaries with external 
 
 Here, we import both layers using `st_read()`, then standardize their INSEE municipality codes by trimming extra spaces and ensuring they always have five digits. This harmonization is essential for correctly joining the geographic layers with our DVF database, which also uses INSEE codes as identifiers.
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
+```{r}
 #| echo: false
 #| message: false
 #| warning: false
@@ -444,6 +444,83 @@ ggplot(carte_poly_both) +
 Between 2016 and 2022, the maps reveal an almost global increase in average prices per square meter, particularly marked in and around large metropolitan areas (we can distinguish Paris, Lyon, Marseille, Bordeaux, Toulouse...). This trend is followed by a significant gap between urban and rural areas, reflecting the dynamics of metropolitanization and differentiated attractiveness. The spread of high price levels in cities such as Bordeaux, Annecy, and Nantes suggests that the rise in prices extends beyond the Paris region and reflects common macroeconomic determinants combined with heterogeneous local trends. Coastal municipalities also have high prices per square meter, which can be explained by several factors such as tourist appeal, quality of life, and the presence of many second homes. From an economic point of view, these maps already allow us to make the following assumptions: prices per square meter seem to be correlated with several factors, including urbanity, unemployment, and the attractiveness of different areas.\
 These maps allow us to easily distinguish between attractive areas of France, such as cities and coastal regions, and less attractive areas, known as the “diagonale du vide” (empty diagonal), which stretches from the northeast to the west of the country.
 
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+# =========================
+# 2022 — Price per m² (Departments)
+# =========================
+Merge |>
+  filter(Annee == 2022, !is.na(code_departement), !is.na(Prixm2Moyen)) |>
+  group_by(code_departement, nom_departement) |>
+  summarise(
+    Prixm2Moyen = mean(Prixm2Moyen, na.rm = TRUE),
+    n_communes  = sum(!is.na(Prixm2Moyen)),
+    .groups = "drop"
+  ) |>
+  filter(is.finite(Prixm2Moyen), n_communes > 0) |>
+  arrange(Prixm2Moyen) -> p_2022
+
+p_2022 |>
+  slice_head(n = 10) |>
+  transmute(
+    `Lowest prices (2022)` = nom_departement,
+    `Avg price (€/m²)`     = round(Prixm2Moyen, 0)
+  ) -> low_2022
+
+p_2022 |>
+  slice_tail(n = 10) |>
+  arrange(desc(Prixm2Moyen)) |>
+  transmute(
+    `Highest prices (2022)` = nom_departement,
+    `Avg price (€/m²)`      = round(Prixm2Moyen, 0)
+  ) -> high_2022
+
+bind_cols(low_2022, high_2022) |>
+  kable(
+    digits = 0,
+    caption = "Housing prices — Departments with the lowest and highest average price per m² (2022)",
+    align = "l"
+  )
+
+
+# =========================
+# 2016 — Price per m² (Departments)
+# =========================
+Merge |>
+  filter(Annee == 2016, !is.na(code_departement), !is.na(Prixm2Moyen)) |>
+  group_by(code_departement, nom_departement) |>
+  summarise(
+    Prixm2Moyen = mean(Prixm2Moyen, na.rm = TRUE),
+    n_communes  = sum(!is.na(Prixm2Moyen)),
+    .groups = "drop"
+  ) |>
+  filter(is.finite(Prixm2Moyen), n_communes > 0) |>
+  arrange(Prixm2Moyen) -> p_2016
+
+p_2016 |>
+  slice_head(n = 10) |>
+  transmute(
+    `Lowest prices (2016)` = nom_departement,
+    `Avg price (€/m²)`     = round(Prixm2Moyen, 0)
+  ) -> low_2016
+
+p_2016 |>
+  slice_tail(n = 10) |>
+  arrange(desc(Prixm2Moyen)) |>
+  transmute(
+    `Highest prices (2016)` = nom_departement,
+    `Avg price (€/m²)`      = round(Prixm2Moyen, 0)
+  ) -> high_2016
+
+bind_cols(low_2016, high_2016) |>
+  kable(
+    digits = 0,
+    caption = "Housing prices — Departments with the lowest and highest average price per m² (2016)",
+    align = "l"
+  )
+```
+
+Departments with the lowest prices are mostly rural and less densely populated, while the highest prices are urban departments.
+
 ## b. The evolution of the average price of real estate per square meter
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
@@ -468,48 +545,7 @@ This trend probably reflects several factors: very favorable borrowing condition
 
 A downward trend is observed since 2023. This recent slowdown could be linked to the change in monetary policy and rising interest rates, which have reduced households' purchasing power in the real estate market. Overall, this graph highlights a change in the market regime, which has shifted from a relatively stable situation at the outset to a phase of significant price appreciation that appears to be highly sensitive to macroeconomic and financial shocks.
 
-## c. The evolution of the number of transactions
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-DVF_panel |>
-  group_by(Annee) |>
-  summarise(Total_mutations = sum(Nb_mutations, na.rm = TRUE)) |>
-  ggplot(aes(x = Annee, y = Total_mutations)) +
-  geom_line(color = "steelblue", size = 1.2) +
-  geom_point(color = "red", size = 2) +
-  labs(title = "Evolution of the number of real estate transactions in France (2014-2024)",
-       x = "Year",
-       y = "Number of transactions") +
-  theme_minimal()
-```
-
-In this graphical representation we observe that the volume of transactions increased between 2014 and 2016, suggesting a gradual recovery in the real estate market after the sovereign debt crisis in the eurozone (which peaked in 2010-2012).\
-A sharp decline was observed in 2017-2018, which could reflect regulatory changes, data coverage issues, or tighter credit conditions that temporarily reduced market activity.
-
-From 2019, the number of transactions increased strongly, exceeding one million in 2021 and remaining at a high level in 2022. This expansion is consistent with the exceptionally low interest rates observed before 2022 and with the sharp increase in demand for housing around the Covid-19 crisis, when households sought larger or better-located homes.
-
-After 2022, volumes decline sharply until 2023-2024, indicating a slowdown in the market. This slowdown shows rising mortgage rates and inflation, which have eroded purchasing power and increased the cost of financing.
-
-## d. The Average property size over time
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-DVF_panel |>
-  group_by(Annee) |>
-  summarise(SurfaceMoy = mean(SurfaceMoy, na.rm = TRUE)) |>
-  ggplot(aes(x = Annee, y = SurfaceMoy)) +
-  geom_line(color = "darkred", size = 1.2) +
-  geom_point(color = "red", size = 2) +
-  labs(title = "Evolution of the average surface area of properties in France",
-       x = "Year",
-       y = "Average surface area (m²)") +
-  theme_minimal()
-```
-
-We see that there was a gradual increase in the average surface area of propeties between 2014 and 2016, with the average size rising from just under 100 m² to around 102 m². This upward trend continued moderately until 2020, suggesting that buyers gradually turned to larger homes, perhaps in response to changing preferences and improved living standards. A peak is observed in 2021, above 103 m², which could reflect the impact of the Covid-19 crisis: lockdowns and teleworking have increased the value of space, encouraging households to look for homes with additional rooms, gardens, or offices.
-
-After 2021, the average surface area decreases, stabilizing at around 100 m² in 2023. This reversal could be linked to rising property prices and mortgage rates, which have stretched budgets and forced households to buy smaller homes.
-
-## e. Distribution of houses vs. apartments by year
+## c. Distribution of houses vs. apartments by year
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 
@@ -598,146 +634,6 @@ After 2022, volumes decline sharply until 2023-2024, indicating a slowdown in th
 
 However, the composition chart shows that, despite these pronounced fluctuations in activity, the market structure has remained remarkably stable: apartments have consistently accounted for just over half of transactions, around 55-58%, and houses around 42-45%. Only minor variations can be observed from year to year, with no lasting shift in favor of one type of housing over another.
 
-## f. Comparison across the 10 largest French metropolitan areas - price and volume
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-metro_labels <- tibble::tibble(
-  INSEE_COM = c("75056", "69123", "33063", "13055", "31555",
-                "06088", "44109", "34172", "67482", "59350"),
-  Metro = c("Paris",
-            "Lyon",
-            "Bordeaux",
-            "Marseille",
-            "Toulouse",
-            "Nice",
-            "Nantes",
-            "Montpellier",
-            "Strasbourg",
-            "Lille")
-)
-```
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-df_comp <- DVF_panel |>
-  filter(INSEE_COM %in% metro_labels$INSEE_COM) |>
-  left_join(metro_labels, by = "INSEE_COM")
-```
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-ggplot(df_comp, aes(x = Annee, y = Prixm2Moyen, color = Metro)) +
-  geom_line(linewidth = 0.7) +
-  geom_point(size = 2) +
-  theme_minimal() +
-  labs(
-    title = "Comparison across the 10 largest French metropolitan areas (m²)",
-    x = "Year",
-    y = "Average property price (€)",
-    color = "Metropolitan area"
-  ) +
-scale_color_brewer(palette = "Paired")
-```
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-df_comp |>
-  filter(!is.na(Nb_mutations)) |>
-  ggplot(aes(x = Annee, y = Nb_mutations, color = Metro)) +
-  geom_line(linewidth = 0.7) +
-  geom_point(size = 1.8) +
-  theme_minimal() +
-  labs(
-    title = "Comparison of transaction volumes across the 10 French metropolitan areas",
-    x = "Year",
-    y = "Number of transactions",
-    color = "Metropolitan area"
-  ) +
-scale_color_brewer(palette = "Paired")
-```
-
-The first graph highlights an upward trend in real estate prices in the ten largest French cities between 2016 and 2022, confirming the previous observations. Paris clearly stands out as an outlier, with prices almost twice as high as those in other cities, reflecting very limited land supply and sustained investor demand. Most regional cities such as Lyon and Nice are also experiencing significant increases, suggesting growing appeal and demographic pressure in major urban centers.
-
-In the second graph we observe that the sharp decline in Paris around 2017, followed by a rebound after 2019, reflects sensitivity to credit conditions and affordability constraints. Regional cities show approximatively the same shape, but in smaller proportions, indicating more elastic supply and a less stained real estate market outside the capital.
-
-Taken together, these figures suggest that the French real estate market is becoming increasingly polarized: high prices in Paris may crowd out some demand, while regional metropolitan areas continue to grow in both value and activity. This requires a differentiated regional analysis when evaluating housing or territorial policies.
-
-
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE}
-# =========================
-# 2022 — Price per m² (Departments)
-# =========================
-Merge |>
-  filter(Annee == 2022, !is.na(code_departement), !is.na(Prixm2Moyen)) |>
-  group_by(code_departement, nom_departement) |>
-  summarise(
-    Prixm2Moyen = mean(Prixm2Moyen, na.rm = TRUE),
-    n_communes  = sum(!is.na(Prixm2Moyen)),
-    .groups = "drop"
-  ) |>
-  filter(is.finite(Prixm2Moyen), n_communes > 0) |>
-  arrange(Prixm2Moyen) -> p_2022
-
-p_2022 |>
-  slice_head(n = 10) |>
-  transmute(
-    `Lowest prices (2022)` = nom_departement,
-    `Avg price (€/m²)`     = round(Prixm2Moyen, 0)
-  ) -> low_2022
-
-p_2022 |>
-  slice_tail(n = 10) |>
-  arrange(desc(Prixm2Moyen)) |>
-  transmute(
-    `Highest prices (2022)` = nom_departement,
-    `Avg price (€/m²)`      = round(Prixm2Moyen, 0)
-  ) -> high_2022
-
-bind_cols(low_2022, high_2022) |>
-  kable(
-    digits = 0,
-    caption = "Housing prices — Departments with the lowest and highest average price per m² (2022)",
-    align = "l"
-  )
-
-
-# =========================
-# 2016 — Price per m² (Departments)
-# =========================
-Merge |>
-  filter(Annee == 2016, !is.na(code_departement), !is.na(Prixm2Moyen)) |>
-  group_by(code_departement, nom_departement) |>
-  summarise(
-    Prixm2Moyen = mean(Prixm2Moyen, na.rm = TRUE),
-    n_communes  = sum(!is.na(Prixm2Moyen)),
-    .groups = "drop"
-  ) |>
-  filter(is.finite(Prixm2Moyen), n_communes > 0) |>
-  arrange(Prixm2Moyen) -> p_2016
-
-p_2016 |>
-  slice_head(n = 10) |>
-  transmute(
-    `Lowest prices (2016)` = nom_departement,
-    `Avg price (€/m²)`     = round(Prixm2Moyen, 0)
-  ) -> low_2016
-
-p_2016 |>
-  slice_tail(n = 10) |>
-  arrange(desc(Prixm2Moyen)) |>
-  transmute(
-    `Highest prices (2016)` = nom_departement,
-    `Avg price (€/m²)`      = round(Prixm2Moyen, 0)
-  ) -> high_2016
-
-bind_cols(low_2016, high_2016) |>
-  kable(
-    digits = 0,
-    caption = "Housing prices — Departments with the lowest and highest average price per m² (2016)",
-    align = "l"
-  )
-```
-
-
-
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 # =========================
 # 2022 — Number of transactions (mutations)
@@ -811,6 +707,70 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
+Average housing surface areas remain relatively stable over time. Changes in prices therefore mainly reflect price dynamics rather than changes in housing size.
+Again, large and urban departments faced more transactions than small rural ones.
+
+## d. Comparison across the 10 largest French metropolitan areas - price and volume
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+metro_labels <- tibble::tibble(
+  INSEE_COM = c("75056", "69123", "33063", "13055", "31555",
+                "06088", "44109", "34172", "67482", "59350"),
+  Metro = c("Paris",
+            "Lyon",
+            "Bordeaux",
+            "Marseille",
+            "Toulouse",
+            "Nice",
+            "Nantes",
+            "Montpellier",
+            "Strasbourg",
+            "Lille")
+)
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+df_comp <- DVF_panel |>
+  filter(INSEE_COM %in% metro_labels$INSEE_COM) |>
+  left_join(metro_labels, by = "INSEE_COM")
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(df_comp, aes(x = Annee, y = Prixm2Moyen, color = Metro)) +
+  geom_line(linewidth = 0.7) +
+  geom_point(size = 2) +
+  theme_minimal() +
+  labs(
+    title = "Comparison across the 10 largest French metropolitan areas (m²)",
+    x = "Year",
+    y = "Average property price (€)",
+    color = "Metropolitan area"
+  ) +
+scale_color_brewer(palette = "Paired")
+```
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+df_comp |>
+  filter(!is.na(Nb_mutations)) |>
+  ggplot(aes(x = Annee, y = Nb_mutations, color = Metro)) +
+  geom_line(linewidth = 0.7) +
+  geom_point(size = 1.8) +
+  theme_minimal() +
+  labs(
+    title = "Comparison of transaction volumes across the 10 French metropolitan areas",
+    x = "Year",
+    y = "Number of transactions",
+    color = "Metropolitan area"
+  ) +
+scale_color_brewer(palette = "Paired")
+```
+
+The first graph highlights an upward trend in real estate prices in the ten largest French cities between 2016 and 2022, confirming the previous observations. Paris clearly stands out as an outlier, with prices almost twice as high as those in other cities, reflecting very limited land supply and sustained investor demand. Most regional cities such as Lyon and Nice are also experiencing significant increases, suggesting growing appeal and demographic pressure in major urban centers.
+
+In the second graph we observe that the sharp decline in Paris around 2017, followed by a rebound after 2019, reflects sensitivity to credit conditions and affordability constraints. Regional cities show approximatively the same shape, but in smaller proportions, indicating more elastic supply and a less stained real estate market outside the capital.
+
+Taken together, these figures suggest that the French real estate market is becoming increasingly polarized: high prices in Paris may crowd out some demand, while regional metropolitan areas continue to grow in both value and activity. This requires a differentiated regional analysis when evaluating housing or territorial policies.
+
 # III - Descriptive analysis of the demography
 
 ## a. Demographic indicators
@@ -873,105 +833,6 @@ Indeed, the share of highly skilled workers is a proxy for the average income le
 A high CSP+ rate also implies the presence of skilled jobs and a dynamic economic fabric, which can therefore attract residents and increase the housing and apartments demand.
 
 We can’t notice very well an evolution between 2016 and 2022. However, this is probably because of the scale.
-
-
-## c. Unemployment rate by municipalities
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
-map_demo |>
-  filter(!is.na(TauxChom)) |>
-  ggplot() +
-  geom_sf(aes(color = TauxChom), size = 1, alpha = 0.7) +
-  facet_wrap(~ Annee, ncol = 2, scales = "fixed") +
-  scale_color_viridis_c(direction = -1) +
-  labs(
-    title = "Unemployment rate by municipalities",
-    color = "Rate (%)"
-  ) +
-  theme_minimal()
-```
-
-Contrary to the previous map, this is here much more difficult to distinguish the biggest cities. We can underline a decrease in unemployment between 2016 and 2022.
-
-It seems difficult to establish a correlation between unemployment rate and the average price per m² looking at both maps.
-
-
-## d. Mobility rate representation
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
-map_demo |>
-  filter(!is.na(TauxDem)) |>
-  ggplot() +
-  geom_sf(aes(color = TauxDem), size = 1, alpha = 0.7) +
-  facet_wrap(~ Annee, ncol = 2, scales = "fixed") +
-  scale_color_viridis_c(direction = -1) +
-  labs(
-    title = "Relocation rate by municipalities",
-    color = "Rate (%)"
-  ) +
-  theme_minimal()
-```
-
-As the unemployment rate map showed, it is difficult to distinguish areas with higher relocation rates. It appears to be uniform.
-
-However, with a scale with a smaller range, our analysis would have been more precise.
-
-
-## e. Distribution of socio-professional groups across departments
-
-```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
-csp_cols <- c(
-  "Pop 15 ans ou plus Agriculteurs exploitants",
-  "Pop 15 ans ou plus Artisans, Comm., Chefs entr.",
-  "Pop 15 ans ou plus Cadres, Prof. intel. sup.",
-  "Pop 15 ans ou plus Prof. intermédiaires ",
-  "Pop 15 ans ou plus Employés",
-  "Pop 15 ans ou plus Ouvriers",
-  "Pop 15 ans ou plus Retraités",
-  "Pop 15 ans ou plus Autres personnes sans activité professionnelle")
-
-Merge |>
-  filter(Annee %in% c(2016, 2022)) |>
-  
-  filter(!is.na(code_departement)) |>
-  mutate(
-    dep_label = paste0(code_departement, " – ", nom_departement),
-    Annee = factor(Annee, levels = c("2016","2022"))
-  ) |>
-  pivot_longer(
-    cols = all_of(csp_cols),
-    names_to = "variable",
-    values_to = "pop"
-  ) |>
-  mutate(
-    CSP = str_remove(variable, "^Pop 15 ans ou plus\\s*"),
-    CSP = str_squish(CSP)
-  ) |>
-  group_by(dep_label, Annee, CSP) |>
-  summarise(pop = sum(pop, na.rm = TRUE), .groups = "drop") |>
-  group_by(dep_label, Annee) |>
-  mutate(part = pop / sum(pop)) |>
-  ggplot(aes(x = Annee, y = part, fill = CSP)) +
-  geom_col(width = 0.8) +
-  coord_flip() +
-  facet_wrap(~ dep_label, ncol = 3) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  scale_fill_brewer(palette = "Set2") +
-  labs(
-    title = "Distribution of socio-professional groups across departments.",
-    subtitle = "Comparison between 2016 and 2022 (population aged 15 and over)",
-    x = NULL,
-    y = "Share",
-    fill = "Socio-professional groups"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    strip.text = element_text(face = "bold", size = 9),
-    axis.text.y = element_text(size = 8),
-    axis.text.x = element_text(size = 8),
-    panel.grid.major.y = element_blank()
-  )
-```
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 # =========================
@@ -1059,51 +920,25 @@ However, only four departments with the highest price per square metre are among
 We can see that the top of the ranking is virtually identical for both indicators. Also, we do not observe huge changes between 2016 and 2022. The departments in both rankings remain mostly.
 
 
-## f. Unemployment rate across departments
+## c. Unemployment rate by municipalities
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
-chom_dep <- Merge |>
-  filter(Annee %in% c(2016, 2022)) |>
-  filter(!is.na(code_departement)) |>
-  mutate(
-    dep_label = paste0(code_departement, " – ", nom_departement),
-    Annee = factor(Annee, levels = c("2016","2022")),
-    pop2064 = `Pop Hommes 20-64 ans` + `Pop Femmes 20-64 ans`
-  ) |>
-  group_by(dep_label, Annee) |>
-  summarise(
-    chomeurs = sum(chomeur_total, na.rm = TRUE),
-    pop2064  = sum(pop2064, na.rm = TRUE),
-    taux_chom = 100 * chomeurs / pop2064,
-    .groups = "drop"
-  )
-
-
-ggplot(chom_dep, aes(x = Annee, y = taux_chom, fill = Annee)) +
-  geom_col(width = 0.8, position = position_dodge2(reverse = TRUE)) +
-  coord_flip() +
-  facet_wrap(~ dep_label, ncol = 3) +
-  scale_fill_manual(
-    values = c(
-      "2016" = "#66C2A5",
-      "2022" = "#FC8D62"
-    )
-  ) +
+map_demo |>
+  filter(!is.na(TauxChom)) |>
+  ggplot() +
+  geom_sf(aes(color = TauxChom), size = 1, alpha = 0.7) +
+  facet_wrap(~ Annee, ncol = 2, scales = "fixed") +
+  scale_color_viridis_c(direction = -1) +
   labs(
-    title = "Unemployment Rate by Department",
-    subtitle = "Comparison between 2016 and 2022 (ratio of unemployed persons to the population aged 20–64).",
-    x = NULL,
-    y = "Unemployment rate (%)",
-    fill = "Year"
+    title = "Unemployment rate by municipalities",
+    color = "Rate (%)"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    strip.text = element_text(face = "bold", size = 9),
-    axis.text.y = element_text(size = 8),
-    axis.text.x = element_text(size = 8),
-    panel.grid.major.y = element_blank()
-  )
+  theme_minimal()
 ```
+
+Contrary to the previous map, this is here much more difficult to distinguish the biggest cities. We can underline a decrease in unemployment between 2016 and 2022.
+
+It seems difficult to establish a correlation between unemployment rate and the average price per m² looking at both maps.
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 # =========================
@@ -1190,54 +1025,25 @@ For every department, unemployment decreased between 2016 and 2022, which highli
 
 Contrary to the distribution of the CSP+ rate, the ranking of the 10 lowest/highest differs a lot from the one showing the price.
 
-
-## g. Relocation Rate across departments
+## d. Mobility rate representation
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
-dem_dep <- Merge |>
-  filter(Annee %in% c(2016, 2022)) |>
-  filter(!is.na(code_departement)) |>
-  mutate(
-    dep_label = paste0(code_departement, " – ", nom_departement),
-    Annee = factor(Annee, levels = c("2022","2016")),
-    non_demenage = 
-      `Pop 1 an ou plus habitant 1 an avt même logt` +
-      `Pop 1 an ou plus habitant 1 an avt autre logt même commune`
-  ) |>
-  group_by(dep_label, Annee) |>
-  summarise(
-    non_demenage = sum(non_demenage, na.rm = TRUE),
-    population   = sum(Population, na.rm = TRUE),
-    taux_dem = 100 * (1 - non_demenage / population),
-    .groups = "drop"
-  )
-
-
-ggplot(dem_dep, aes(x = Annee, y = taux_dem, fill = Annee)) +
-  geom_col(width = 0.8) +
-  coord_flip() +
-  facet_wrap(~ dep_label, ncol = 3) +
-  scale_fill_manual(
-    values = c(
-      "2016" = "#8DA0CB",  
-      "2022" = "#E78AC3" 
-    )
-  ) +
+map_demo |>
+  filter(!is.na(TauxDem)) |>
+  ggplot() +
+  geom_sf(aes(color = TauxDem), size = 1, alpha = 0.7) +
+  facet_wrap(~ Annee, ncol = 2, scales = "fixed") +
+  scale_color_viridis_c(direction = -1) +
   labs(
-    title = "Residential Mobility Rate by Department",
-    subtitle = "2016 vs 2022 Comparison (Resident Population)",
-    x = NULL,
-    y = "Relocation rate (%)",
-    fill = "Year"
+    title = "Relocation rate by municipalities",
+    color = "Rate (%)"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    strip.text = element_text(face = "bold", size = 9),
-    axis.text.y = element_text(size = 8),
-    axis.text.x = element_text(size = 8),
-    panel.grid.major.y = element_blank()
-  )
+  theme_minimal()
 ```
+
+As the unemployment rate map showed, it is difficult to distinguish areas with higher relocation rates. It appears to be uniform.
+
+However, with a scale with a smaller range, our analysis would have been more precise.
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 # =========================
@@ -1326,7 +1132,9 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
-For every department, the mobility rate decreased between 2016 and 2022. It is difficult to establish a common pattern that the top 10 departments could share. All of them tend to have different characteristics. 
+For every department, the mobility rate decreased between 2016 and 2022. 
+
+It is difficult to establish a common pattern that the top 10 departments could share. All of them tend to have different characteristics. 
 
 It appears that this rate might not be a good proxy for area’s dynamism. In fact, high prices and limited housing supply may reduce residential moves. 
 
