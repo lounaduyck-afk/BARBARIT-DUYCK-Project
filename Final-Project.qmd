@@ -2003,6 +2003,11 @@ m_twfe <- feols(
 
 etable(m_twfe)
 ```
+The logarithm of the number of transactions, used as a proxy of the market activity, is strongly and positively associated with prices. Indeed, the coefficient shows that a 1% increase in transactions is associated with an increase in prices of about 3.3%, suggesting that more active markets experience stronger price growth. Average dwelling size is negatively related to prices, consistent with a price-per-square-meter mechanical effect, which appears when municipalities where the average surface increases tend to display lower prices per m². A higher proportion of apartments is associated with lower prices, conditional on municipality fixed effects, suggesting that increases in density within a municipality are correlated with weaker price growth.
+
+Demographic variables have smaller effects. The share of CSP+ is positive and weakly significant, indicating that municipalities experiencing an increase in high-income households tend to see slightly faster price growth. In contrast, unemployment and residential mobility rates are not statistically significant here. The low within R² (≈ 2.5%) indicates that only a small fraction of within-municipality price variation is explained by these observables, which is expected given the strong role of fixed effects in absorbing persistent heterogeneity.
+
+
 
 ## b. First difference regression
 
@@ -2042,6 +2047,11 @@ m_fd <- lm(d_ln_prix ~ d_csp + d_chom + d_dem + d_surface + d_propapp + d_ln_mut
 summary(m_fd)
 
 ```
+The first difference results are mostly consistent with the TWFE approach, confirming their robustness. The variation in CSP+ is positive and significant (≈ 0.00138), again suggesting that municipalities that became more “executive-intensive” between 2016 and 2022 experienced faster growth in real estate prices. Changes in unemployment are also positive and significant (≈ 0.00143), while mobility is weakly significant, around the 10% level.
+
+The variation in average surface area and in the share of apartments are negative and significant, reinforcing the idea that changes in the composition of transactions have a significant impact on price per square meter. Finally, the increase in transaction activity is positively associated with price growth.
+The explanatory power of the model remains low (R² ≈ 2.5%), reinforcing the idea that most price dynamics reflect factors not directly captured by observable demographic changes, such as credit conditions, expectations, or national housing cycles.
+
 
 ## c. Adding department-by-year fixed effects
 
