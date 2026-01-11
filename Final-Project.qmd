@@ -2108,3 +2108,6 @@ The results change when we focus on liquid markets (N drops to around 7076 obser
 We notice that the coefficient on market activity becomes negative, which likely reflects mechanical mean-reversion or selection effects in already highly liquid municipalities. The within R² increases, indicating that the model explains a larger share of price variation in liquid markets.
 This restriction highlights that measurement error and market thinness matter and that demographic effects are more clearly identified in municipalities with sufficient transaction volumes.
 
+# Conclusion 
+
+## Discussion and limits
