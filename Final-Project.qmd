@@ -1242,7 +1242,7 @@ Departments aggregate very different municipalities, mixing rich urban centers a
 
 
 ## c. Housing prices and residential mobility 
-### 2) Department level
+### 1) Department level
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 ggplot(df_dep, aes(x = dem, y = log_prix, color = factor(Annee))) +
@@ -1331,7 +1331,7 @@ tab_mean_mob |>
 
 Housing prices increase similarly across all residential mobility groups between 2016 and 2022. While areas with lower mobility tend to be cheaper, the distribution is almost the same for each group. Mobility is therefore less informative about price levels than socio-economic composition or labor market conditions.
 
-### 3) Municipality level
+### 2) Municipality level
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 ggplot(df_com, aes(x = TauxDem, y = log_prix, color = factor(Annee))) +
@@ -1488,7 +1488,6 @@ etable(m_age)
 Neither age variable is statistically significant, and their coefficients are small. This suggests that, conditional on income composition, unemployment, and mobility, changes in age structure alone do not play a major role in explaining within-municipality price dynamics over this period. Importantly, the inclusion of age variables leaves the coefficients on CSP+, surface, apartment share, and market activity virtually unchanged, indicating that earlier results are not confounded by omitted age-composition effects.
 
 ## f. Liquidity restriction (Nb_mutations ≥ 30)
-
 Finally, we restrict the analysis to municipalities with at least 30 transactions, reducing measurement error in average prices and focusing on more liquid markets.
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
@@ -1507,7 +1506,7 @@ The results change when we focus on liquid markets. The CSP+ coefficient becomes
 We notice that the coefficient on market activity becomes negative, which likely reflects mechanical mean-reversion or selection effects in already highly liquid municipalities. The within R² increases, indicating that the model explains a larger share of price variation in liquid markets.
 This restriction highlights that measurement error and market thinness matter and that demographic effects are more clearly identified in municipalities with sufficient transaction volumes.
 
-# Conclusion 
+# VI - Conclusion 
 The objective of this project was to examine the relationship between socio-demographic characteristics of French municipalities and housing prices, as well as how these relationships evolved between 2016 and 2022. Exploring municipality-level data from population censuses and real estate transaction databases, the analysis highlights the relationships between local socio-economic structures and average housing prices.
 
 The results show that municipalities with a higher share of higher-skilled occupations tend to exhibit higher prices per square meter, all else equal. On the other hand, higher unemployment rates are generally associated with lower housing prices. Indicators related to residential mobility are also positively correlated with prices, suggesting that more attractive and dynamic areas face stronger housing demand. These findings are consistent with economic intuition: housing prices reflect expected income levels, labor-market conditions, and the overall attractiveness of locations.
@@ -1517,4 +1516,13 @@ Graphical and cartographic analyses complement the econometric analysis by illus
 
 In addition, even if the two-way fixed effects specification controls for time-invariant unobserved heterogeneity across municipalities (such as persistent differences in climate or geography) and for common time shocks, our analysis remains incomplete as it does not capture unobserved factors that may vary over time inside municipalities, such as changes in local amenities, improvements in transport infrastructure or access to employment centers, or tourism development.
 
-## Discussion and limits
+# VII - Discussion and limits
+
+Several limitations should be acknowledged. First, the econometric model relies on only two years of observation (2016 and 2022), corresponding to census years. This constraint limits the use of richer panel-data methods and prevents a detailed analysis of price dynamics over time. Access to annual and harmonized data would allow for more robust panel estimations, better control for municipality fixed effects, and a clearer identification of structural changes in housing markets.
+
+The analysis focuses mainly on socio-professional categories, unemployment, and mobility indicators. Other demographic dimensions could have been explored in greater depth, such as age structure (e.g. student cities, ageing populations), the presence of coastal or tourist areas with a high share of retirees and secondary residences, or gender composition. These factors are likely to shape local housing demand and could refine the analysis.
+
+It is important to note that potential endogeneity issues arise. Demographic variables may be both determinants and outcomes of housing prices: for instance, high prices can attract higher-income households while simultaneously excluding others. As a result, estimated coefficients are interpreted as conditional correlations rather than strictly causal effects. Future research could address this issue using more advanced identification strategies, such as instrumental variables or quasi-experimental approaches.
+
+Finally, the measurement of housing markets itself is imperfect. Average prices per square meter aggregate highly heterogeneous properties and may generate substantial noise, especially in small municipalities with few transactions. In addition, the lack of detailed information on housing characteristics and local amenities limits the precision of the estimates.
+
