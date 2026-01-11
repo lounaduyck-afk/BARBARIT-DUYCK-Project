@@ -659,32 +659,7 @@ In the second graph we observe that the sharp decline in Paris around 2017, foll
 
 Taken together, these figures suggest that the French real estate market is becoming increasingly polarized: high prices in Paris may crowd out some demand, while regional metropolitan areas continue to grow in both value and activity. This requires a differentiated regional analysis when evaluating housing or territorial policies.
 
-## g. Average price per m² - Comparison between departments
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
-DVF_panel |>
-  mutate(dep = substr(INSEE_COM, 1, 2)) |>
-  filter(
-    !dep %in% c("97", "98", "57", "68"), 
-    dep != "2A", dep != "2B",
-    !is.na(Prixm2Moyen)
-  ) |>
-  group_by(dep, Annee) |>
-  summarise(
-    prix_m2 = mean(Prixm2Moyen, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  ggplot(aes(x = Annee, y = prix_m2)) +
-  geom_line(linewidth = 0.6, color = "steelblue") +
-  geom_point(size = 1.2, color = "steelblue") +
-  facet_wrap(~ dep, scales = "free_y") +  
-  theme_minimal() +
-  labs(
-    title = "Evolution of average price per square meter by department",
-    x = "Year",
-    y = "Average price per m² (€)"
-  )
-```
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 # =========================
@@ -761,33 +736,7 @@ bind_cols(low_2016, high_2016) |>
   )
 ```
 
-## h. Transactions - Comparison between departments
 
-```{r, warning=FALSE, message=FALSE, echo=FALSE, fig.width=14, fig.height=18}
-DVF_panel |>
-  mutate(dep = substr(INSEE_COM, 1, 2)) |>
-  filter(
-    !dep %in% c("97", "98", "57", "68"),  
-    dep != "2A", dep != "2B",
-    !is.na(SurfaceMoy)
-  ) |>
-  group_by(dep, Annee) |>
-  summarise(
-    surface_moy = mean(SurfaceMoy, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  ggplot(aes(x = Annee, y = surface_moy)) +
-  geom_line(linewidth = 0.6, color = "steelblue") +
-  geom_point(size = 1.2, color = "steelblue") +
-  facet_wrap(~ dep) +   
-  theme_minimal() +
-  labs(
-    title = "Evolution of average surface area by department",
-    x = "Year",
-    y = "Average surface area (sqm)"
-  )
-
-```
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 # =========================
