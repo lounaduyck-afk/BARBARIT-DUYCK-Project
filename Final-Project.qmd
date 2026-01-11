@@ -191,8 +191,8 @@ A downward trend is observed since 2023. This recent slowdown could be linked to
 df_agrege <- DVF_panel |>
   group_by(Annee) |>
   summarise(
-    Maisons      = sum(NbMaisons, na.rm = TRUE),
-    Appartements = sum(NbApparts, na.rm = TRUE),
+    Houses = sum(NbMaisons, na.rm = TRUE),
+    Appartments = sum(NbApparts, na.rm = TRUE),
     Total_mutations = sum(Nb_mutations, na.rm = TRUE),   # <- ton layer courbe
     .groups = "drop"
   ) |>
@@ -200,11 +200,11 @@ df_agrege <- DVF_panel |>
 
 # 2. Long format for the barres
 df_long <- df_agrege |>
-  select(Annee, Maisons, Appartements) |>
+  select(Annee, Houses, Appartments) |>
   pivot_longer(
-    cols = c(Maisons, Appartements),
-    names_to  = "TypeBien",
-    values_to = "Nombre"
+    cols = c(Houses, Appartments),
+    names_to  = "Type",
+    values_to = "Number"
   )
 
 # 3. Graph
@@ -249,7 +249,7 @@ DVF_panel |>
   ) |>
   pivot_longer(
     cols = c(Houses, Appartments),
-    names_to = "TypeBien",
+    names_to = "Type",
     values_to = "Share"
   ) |>
   ggplot(aes(x = Annee, y = Share, fill = TypeBien)) +
@@ -1379,11 +1379,11 @@ We observe an inverted-sign dynamic between the scatter plot and the regression 
 
 To make the interpretation within change even more straightforward, we reshape the data into a wide format and calculate the differences between 2016 and 2022:
 
-\$\$
+$$
 
-\\Delta \\ln(P_i) = \\ln(P\_{i,2022}) - \\ln(P\_{i,2016})
+\Delta\ln(P_i) = \ln(P_{i,2022}) - \ln(P_{i,2016})
 
-\$\$
+$$
 
 , and we do the same for the regressors. We then perform a cross-sectional regression of price growth on changes in demographic composition and market conditions.
 

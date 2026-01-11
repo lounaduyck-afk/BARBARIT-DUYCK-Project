@@ -390,5 +390,6 @@ mutate(code_insee = sprintf("%05s", trimws(code_insee)))
 saveRDS(Merge, "Data/Merge.rds")
 saveRDS(DVF_panel, "Data/DVF_panel.rds")
 saveRDS(communes_poly, "Data/communes_poly.rds")
+saveRDS(communes_sf, "Data/communes_sf.rds")
 ```
 
