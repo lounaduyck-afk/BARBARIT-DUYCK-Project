@@ -668,7 +668,7 @@ ggplot(df_comp, aes(x = Annee, y = Prixm2Moyen, color = Metro)) +
     y = "Average property price (€)",
     color = "Metropolitan area"
   ) +
-  scale_color_brewer(palette = "Set2")
+scale_color_brewer(palette = "Paired")
 ```
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
@@ -684,7 +684,7 @@ df_comp |>
     y = "Number of transactions",
     color = "Metropolitan area"
   ) +
-scale_color_brewer(palette = "Set2")
+scale_color_brewer(palette = "Paired")
 ```
 
 The first graph highlights an upward trend in real estate prices in the ten largest French cities between 2016 and 2022, confirming the previous observations. Paris clearly stands out as an outlier, with prices almost twice as high as those in other cities, reflecting very limited land supply and sustained investor demand. Most regional cities such as Lyon and Nice are also experiencing significant increases, suggesting growing appeal and demographic pressure in major urban centers.
