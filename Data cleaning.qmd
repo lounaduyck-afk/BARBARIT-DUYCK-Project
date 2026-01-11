@@ -1,7 +1,10 @@
 ---
 title: "Data cleaning and description"
 author: "Duyck Barbarit"
-format: html
+format:
+  html: default
+  pdf: default
+editor: visual
 ---
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
