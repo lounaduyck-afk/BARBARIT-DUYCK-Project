@@ -1508,5 +1508,13 @@ We notice that the coefficient on market activity becomes negative, which likely
 This restriction highlights that measurement error and market thinness matter and that demographic effects are more clearly identified in municipalities with sufficient transaction volumes.
 
 # Conclusion 
+The objective of this project was to examine the relationship between socio-demographic characteristics of French municipalities and housing prices, as well as how these relationships evolved between 2016 and 2022. Exploring municipality-level data from population censuses and real estate transaction databases, the analysis highlights the relationships between local socio-economic structures and average housing prices.
+
+The results show that municipalities with a higher share of higher-skilled occupations tend to exhibit higher prices per square meter, all else equal. On the other hand, higher unemployment rates are generally associated with lower housing prices. Indicators related to residential mobility are also positively correlated with prices, suggesting that more attractive and dynamic areas face stronger housing demand. These findings are consistent with economic intuition: housing prices reflect expected income levels, labor-market conditions, and the overall attractiveness of locations.
+
+However, we were unable to establish a significant relationship between the unemployment rate and the average price per square metre of property, or between the mobility rate and the average price per square metre for properties. 
+Graphical and cartographic analyses complement the econometric analysis by illustrating that the relationship between demographic variables and housing prices is neither uniform nor strictly linear across space.
+
+In addition, even if the two-way fixed effects specification controls for time-invariant unobserved heterogeneity across municipalities (such as persistent differences in climate or geography) and for common time shocks, our analysis remains incomplete as it does not capture unobserved factors that may vary over time inside municipalities, such as changes in local amenities, improvements in transport infrastructure or access to employment centers, or tourism development.
 
 ## Discussion and limits
