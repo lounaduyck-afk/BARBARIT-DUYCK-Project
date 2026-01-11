@@ -262,7 +262,7 @@ Initially, for each year, each municipality had three rows:
 
 \- The number of female unemployed residents
 
-\- The number of male unemployed residents 
+\- The number of male unemployed residents
 
 To get a consistent panel structure, we created additional columns, that specify to what each number refers, and we used pivot wider.
 
@@ -395,4 +395,3 @@ saveRDS(DVF_panel, "Data/DVF_panel.rds")
 saveRDS(communes_poly, "Data/communes_poly.rds")
 saveRDS(communes_sf, "Data/communes_sf.rds")
 ```
-
