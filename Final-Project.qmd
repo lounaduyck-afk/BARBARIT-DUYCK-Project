@@ -38,6 +38,10 @@ library(fixest)
 
 <https://github.com/lounaduyck-afk/BARBARIT-DUYCK-Project.git>
 
+# I - Data description
+
+Please refer to the quarto document and pdf named "Data cleaning".
+
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge <- readRDS("Data/Merge.rds")
 DVF_panel <- readRDS("Data/DVF_panel.rds")
