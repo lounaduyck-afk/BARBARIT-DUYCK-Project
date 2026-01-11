@@ -2119,7 +2119,7 @@ Neither age variable is statistically significant, and their coefficients are sm
 
 ## f. Liquidity restriction (Nb_mutations ≥ 30)
 
-Finally, we apply the TWFE benchmark model to a restricted sample of more liquid municipalities (Nb_mutations \>= 30). The idea is to reduce the measurement error in Prixm2Moyen and ensure that the dependent variable reflects a reasonably active market.
+Finally, we restrict the analysis to municipalities with at least 30 transactions, reducing measurement error in average prices and focusing on more liquid markets.
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge_reg2 <- Merge_reg |> filter(Nb_mutations >= 30)
@@ -2133,5 +2133,7 @@ m_twfe_liq <- feols(
 
 etable(m_twfe, m_twfe_liq)
 ```
-
+The results change when we focus on liquid markets (N drops to around 7076 observations). The CSP+ coefficient becomes much larger and significant at the 1% level (≈ 0.0058), implying a stronger socio-economic gradient in places where the market is active and prices are measured more reliably. Unemployment becomes negative and significant at the 1% level (≈ −0.0055), more in line with standard economic intuition, suggesting that the baseline positive coefficient partly reflected noise in thin markets. Mobility remains low and insignificant. 
+We notice that the coefficient on market activity becomes negative, which likely reflects mechanical mean-reversion or selection effects in already highly liquid municipalities. The within R² increases, indicating that the model explains a larger share of price variation in liquid markets.
+This restriction highlights that measurement error and market thinness matter and that demographic effects are more clearly identified in municipalities with sufficient transaction volumes.
 
