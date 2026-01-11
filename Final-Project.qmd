@@ -960,6 +960,7 @@ DVF_panel |>
   geom_smooth(method = "lm", se = FALSE, color = "darkred")
 
 ```
+The figure highlights a negative relationship between average surface area and average price per square meter, which shows that municipalities where transactions involve larger dwellings tend to exhibit lower prices per m². This pattern is intuitive and reflects a mechanical composition effect where larger properties (often houses) are typically cheaper per m² than smaller dwellings.
 
 ### 2) By Departments
 
@@ -1034,6 +1035,7 @@ DVF_panel |>
   )
 
 ```
+This graph reveals a positive raw correlation between the share of apartments and prices per m²: more apartment-dense municipalities tend to have higher prices. This reflects a classic urban pattern, as apartment-dominated areas are typically denser, more central, and more expensive.
 
 ### 2) By Department
 
@@ -1104,6 +1106,7 @@ DVF_panel |>
   )
 
 ```
+The third figure shows a strong positive relationship between prices and the (log) number of transactions. Municipalities with more active markets tend to have higher prices per m², and the relationship appears monotonic.
 
 # III - Descriptive analysis of the demography
 
@@ -2007,7 +2010,7 @@ The logarithm of the number of transactions, used as a proxy of the market activ
 
 Demographic variables have smaller effects. The share of CSP+ is positive and weakly significant, indicating that municipalities experiencing an increase in high-income households tend to see slightly faster price growth. In contrast, unemployment and residential mobility rates are not statistically significant here. The low within R² (≈ 2.5%) indicates that only a small fraction of within-municipality price variation is explained by these observables, which is expected given the strong role of fixed effects in absorbing persistent heterogeneity.
 
-
+We observe an inverted-sign dynamic between the scatter plot and the regression on the share of apartments. This can be explained by the fact that the graph captures between-municipality differences, while the regression captures within-municipality changes. Conditional on a municipality’s fixed characteristics, an increase in the apartment share over time is associated with lower price growth. This likely reflects densification dynamics (new apartment construction for example), which tend to expand supply and moderate prices.
 
 ## b. First difference regression
 
