@@ -1,0 +1,2075 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Barbarit Clara and Duyck Louna">
+
+<title>Final-Project</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="Final-Project_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Final-Project_files/libs/quarto-html/quarto.js"></script>
+<script src="Final-Project_files/libs/quarto-html/popper.min.js"></script>
+<script src="Final-Project_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Final-Project_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Final-Project_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Final-Project_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Final-Project_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Final-Project_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Final-Project_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="Final-Project.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Final-Project</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Barbarit Clara and Duyck Louna </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="effect-of-demographic-structure-on-housing-prices---a-municipality-level-analysis-in-france-from-2014-to-2024" class="level1">
+<h1><strong>Effect of Demographic structure on Housing prices - A municipality-level analysis in France from 2014 to 2024</strong></h1>
+<section id="research-question-how-does-the-demographic-composition-of-a-municipality-affect-local-housing-prices" class="level3">
+<h3 class="anchored" data-anchor-id="research-question-how-does-the-demographic-composition-of-a-municipality-affect-local-housing-prices">Research Question: <strong>How does the demographic composition of a municipality affect local housing prices?</strong></h3>
+<p>Understanding the determinants of housing prices has long been a central topic in urban economics. While demand-side factors such as income, interest rates, or credit conditions are often highlighted, demographic composition represents a less explored dimension. Housing demand is affected by demographic structure through household formation, age distribution, family size, and socioeconomic characteristics, which shape the type, size, and location of residences required by local populations. The objective of this project is therefore to study how changes in the demographic structure of French municipalities between 2014 and 2024 have influenced local housing prices.</p>
+<p>France is a relevant case study for answering our research question because it displays a wide diversity of spatial and demographic profiles. The French real estate market has undergone significant changes over the past decade, including rising average prices, varying transaction volumes, and growing spatial inequalities. Studying the link between demographic trends and housing prices over a ten-year period can therefore shed light on the mechanisms through which population structure influences local housing markets.</p>
+<p>To explore this question, the project combines several datasets. Housing indicators are available at the municipal level and on an annual basis for the period 2014-2024. Demographic data come from French censuses (2011, 2016 and 2022), which provide detailed information on age structure, household size, employment categories, and other population characteristics. Although census variables are only available for a few reference years, they still enable us to capture the significant changes that have occurred in the demographic composition during the period. Working with panel data allows us to track each municipality over time and to observe how changes in its demographic profile are linked to variations in housing prices. The econometric analysis will rely on fixed-effects models, which help isolate the effect of demographic variables by controlling for characteristics specific to each municipality that do not change over time (geography, local amenities, or long-run development patterns). Although causal inference is challenging due to potential reverse causality (high housing prices may attract or deter certain demographic groups), the panel structure helps reduce this concern by observing demographic changes before and after price movements. Additional strategies may also be considered.</p>
+<p>Our project is structured as follows. First, we present a descriptive analysis of the main variables in our datasets, using graphical and spatial visualisations to highlight key trends in both housing prices and demographic composition. Then we develop an econometric framework in order to isolate the effect of demographic structure on real estate prices. Finally, we address potential identification challenges, such as reverse causality and omitted variable bias, and discuss how our empirical strategy attempts to mitigate them.</p>
+</section>
+<section id="link-to-the-github-project" class="level3">
+<h3 class="anchored" data-anchor-id="link-to-the-github-project">Link to the github project</h3>
+<p><a href="https://github.com/lounaduyck-afk/BARBARIT-DUYCK-Project.git" class="uri">https://github.com/lounaduyck-afk/BARBARIT-DUYCK-Project.git</a></p>
+</section>
+</section>
+<section id="i---data-description" class="level1">
+<h1>I - Data description</h1>
+<p>Please refer to the quarto document and pdf named “Data cleaning”.</p>
+</section>
+<section id="ii---descriptive-analysis-of-the-structure-of-the-french-real-estate-market" class="level1">
+<h1>II - Descriptive analysis of the structure of the French real estate market</h1>
+<section id="a.-average-price-per-m²-at-the-municipality-level" class="level2">
+<h2 class="anchored" data-anchor-id="a.-average-price-per-m²-at-the-municipality-level">a. Average price per m² at the municipality level</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="1344"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Between 2016 and 2022, the maps reveal an almost global increase in average prices per square meter, particularly marked in and around large metropolitan areas (we can distinguish Paris, Lyon, Marseille, Bordeaux, Toulouse…). This trend is followed by a significant gap between urban and rural areas, reflecting the dynamics of metropolitanization and differentiated attractiveness. The spread of high price levels in cities such as Bordeaux, Annecy, and Nantes suggests that the rise in prices extends beyond the Paris region and reflects common macroeconomic determinants combined with heterogeneous local trends. Coastal municipalities also have high prices per square meter, which can be explained by several factors such as tourist appeal, quality of life, and the presence of many second homes. From an economic point of view, these maps already allow us to make the following assumptions: prices per square meter seem to be correlated with several factors, including urbanity, unemployment, and the attractiveness of different areas.<br>
+These maps allow us to easily distinguish between attractive areas of France, such as cities and coastal regions, and less attractive areas, known as the “diagonale du vide” (empty diagonal), which stretches from the northeast to the west of the country.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Housing prices — Departments with the lowest and highest average price per m² (2022)</caption>
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 25%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Lowest prices (2022)</th>
+<th style="text-align: left;">Avg price (€/m²)…2</th>
+<th style="text-align: left;">Highest prices (2022)</th>
+<th style="text-align: left;">Avg price (€/m²)…4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Creuse</td>
+<td style="text-align: left;">967</td>
+<td style="text-align: left;">Paris</td>
+<td style="text-align: left;">10698</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Haute-Marne</td>
+<td style="text-align: left;">973</td>
+<td style="text-align: left;">Hauts-de-Seine</td>
+<td style="text-align: left;">7058</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Meuse</td>
+<td style="text-align: left;">1072</td>
+<td style="text-align: left;">Val-de-Marne</td>
+<td style="text-align: left;">5142</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indre</td>
+<td style="text-align: left;">1089</td>
+<td style="text-align: left;">Seine-Saint-Denis</td>
+<td style="text-align: left;">4332</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nièvre</td>
+<td style="text-align: left;">1139</td>
+<td style="text-align: left;">Haute-Savoie</td>
+<td style="text-align: left;">4276</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Allier</td>
+<td style="text-align: left;">1185</td>
+<td style="text-align: left;">Bouches-du-Rhône</td>
+<td style="text-align: left;">4257</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cher</td>
+<td style="text-align: left;">1188</td>
+<td style="text-align: left;">Var</td>
+<td style="text-align: left;">3818</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Vosges</td>
+<td style="text-align: left;">1248</td>
+<td style="text-align: left;">Yvelines</td>
+<td style="text-align: left;">3743</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ardennes</td>
+<td style="text-align: left;">1253</td>
+<td style="text-align: left;">Alpes-Maritimes</td>
+<td style="text-align: left;">3657</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Deux-Sèvres</td>
+<td style="text-align: left;">1261</td>
+<td style="text-align: left;">Val-d’Oise</td>
+<td style="text-align: left;">3533</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Housing prices — Departments with the lowest and highest average price per m² (2016)</caption>
+<colgroup>
+<col style="width: 24%">
+<col style="width: 24%">
+<col style="width: 25%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Lowest prices (2016)</th>
+<th style="text-align: left;">Avg price (€/m²)…2</th>
+<th style="text-align: left;">Highest prices (2016)</th>
+<th style="text-align: left;">Avg price (€/m²)…4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Creuse</td>
+<td style="text-align: left;">845</td>
+<td style="text-align: left;">Paris</td>
+<td style="text-align: left;">8342</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Meuse</td>
+<td style="text-align: left;">925</td>
+<td style="text-align: left;">Hauts-de-Seine</td>
+<td style="text-align: left;">5459</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nièvre</td>
+<td style="text-align: left;">969</td>
+<td style="text-align: left;">Val-de-Marne</td>
+<td style="text-align: left;">3993</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indre</td>
+<td style="text-align: left;">973</td>
+<td style="text-align: left;">Seine-Saint-Denis</td>
+<td style="text-align: left;">3316</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Haute-Marne</td>
+<td style="text-align: left;">1013</td>
+<td style="text-align: left;">Bouches-du-Rhône</td>
+<td style="text-align: left;">3294</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Deux-Sèvres</td>
+<td style="text-align: left;">1015</td>
+<td style="text-align: left;">Haute-Savoie</td>
+<td style="text-align: left;">3237</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Allier</td>
+<td style="text-align: left;">1035</td>
+<td style="text-align: left;">Alpes-Maritimes</td>
+<td style="text-align: left;">3022</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Vosges</td>
+<td style="text-align: left;">1042</td>
+<td style="text-align: left;">Var</td>
+<td style="text-align: left;">2956</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Charente</td>
+<td style="text-align: left;">1064</td>
+<td style="text-align: left;">Yvelines</td>
+<td style="text-align: left;">2945</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Haute-Saône</td>
+<td style="text-align: left;">1077</td>
+<td style="text-align: left;">Val-d’Oise</td>
+<td style="text-align: left;">2760</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Departments with the lowest prices are mostly rural and less densely populated, while the highest prices are urban departments.</p>
+</section>
+<section id="b.-the-evolution-of-the-average-price-of-real-estate-per-square-meter" class="level2">
+<h2 class="anchored" data-anchor-id="b.-the-evolution-of-the-average-price-of-real-estate-per-square-meter">b. The evolution of the average price of real estate per square meter</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This graph confirms the trend observed on the maps: average real estate prices per square meter rose sharply in France between the mid-2010s and the mid-2020s. In fact, prices remained fairly stable between 2014 and 2019, hovering around 1600€ per m², with a slight decline observed in 2018.</p>
+<p>Between 2019 and 2023, the average price per square meter in France rose sharply from 1600€ to almost 2000€.<br>
+This trend probably reflects several factors: very favorable borrowing conditions for most of the period due to low interest rates, stronger demand for real estate after the Covid-19 crisis, and a possible move to more attractive regions.</p>
+<p>A downward trend is observed since 2023. This recent slowdown could be linked to the change in monetary policy and rising interest rates, which have reduced households’ purchasing power in the real estate market. Overall, this graph highlights a change in the market regime, which has shifted from a relatively stable situation at the outset to a phase of significant price appreciation that appears to be highly sensitive to macroeconomic and financial shocks.</p>
+</section>
+<section id="c.-distribution-of-houses-vs.-apartments-by-year" class="level2">
+<h2 class="anchored" data-anchor-id="c.-distribution-of-houses-vs.-apartments-by-year">c.&nbsp;Distribution of houses vs.&nbsp;apartments by year</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In the first graphical representation we observe that the volume of transactions increased between 2014 and 2016, suggesting a gradual recovery in the real estate market after the sovereign debt crisis in the eurozone (which peaked in 2010-2012). A significant decline was observed in 2017-2018, which could reflect regulatory changes, data coverage issues, or tighter credit conditions that temporarily reduced market activity.</p>
+<p>From 2019, the number of transactions increased strongly, exceeding one million in 2021 and remaining at a high level in 2022. This expansion is consistent with the exceptionally low interest rates observed before 2022 and with the sharp increase in demand for housing around the Covid-19 crisis, when households sought larger or better-located homes.</p>
+<p>After 2022, volumes decline sharply until 2023-2024, indicating a slowdown in the market. This slowdown reflects rising mortgage rates and inflation, which have eroded purchasing power and increased the cost of financing.</p>
+<p>However, the composition chart shows that, despite these pronounced fluctuations in activity, the market structure has remained remarkably stable: apartments have consistently accounted for just over half of transactions, around 55-58%, and houses around 42-45%. Only minor variations can be observed from year to year, with no lasting shift in favor of one type of housing over another.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Real-estate transactions — Departments with the lowest and highest number of mutations (2022)</caption>
+<colgroup>
+<col style="width: 31%">
+<col style="width: 18%">
+<col style="width: 32%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Lowest mutations (2022)</th>
+<th style="text-align: left;">Mutations…2</th>
+<th style="text-align: left;">Highest mutations (2022)</th>
+<th style="text-align: left;">Mutations…4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Lozère</td>
+<td style="text-align: left;">941</td>
+<td style="text-align: left;">Nord</td>
+<td style="text-align: left;">35577</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Territoire de Belfort</td>
+<td style="text-align: left;">1788</td>
+<td style="text-align: left;">Paris</td>
+<td style="text-align: left;">32746</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Creuse</td>
+<td style="text-align: left;">2043</td>
+<td style="text-align: left;">Bouches-du-Rhône</td>
+<td style="text-align: left;">31498</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Haute-Marne</td>
+<td style="text-align: left;">2098</td>
+<td style="text-align: left;">Alpes-Maritimes</td>
+<td style="text-align: left;">29651</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cantal</td>
+<td style="text-align: left;">2165</td>
+<td style="text-align: left;">Var</td>
+<td style="text-align: left;">27508</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Corse-du-Sud</td>
+<td style="text-align: left;">2351</td>
+<td style="text-align: left;">Gironde</td>
+<td style="text-align: left;">27489</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Meuse</td>
+<td style="text-align: left;">2407</td>
+<td style="text-align: left;">Rhône</td>
+<td style="text-align: left;">25656</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Haute-Corse</td>
+<td style="text-align: left;">2438</td>
+<td style="text-align: left;">Hérault</td>
+<td style="text-align: left;">25628</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Haute-Saône</td>
+<td style="text-align: left;">2896</td>
+<td style="text-align: left;">Loire-Atlantique</td>
+<td style="text-align: left;">23872</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ariège</td>
+<td style="text-align: left;">2944</td>
+<td style="text-align: left;">Haute-Garonne</td>
+<td style="text-align: left;">23265</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Real-estate transactions — Departments with the lowest and highest number of mutations (2016)</caption>
+<colgroup>
+<col style="width: 31%">
+<col style="width: 18%">
+<col style="width: 32%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Lowest mutations (2016)</th>
+<th style="text-align: left;">Mutations…2</th>
+<th style="text-align: left;">Highest mutations (2016)</th>
+<th style="text-align: left;">Mutations…4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Lozère</td>
+<td style="text-align: left;">553</td>
+<td style="text-align: left;">Paris</td>
+<td style="text-align: left;">28492</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Haute-Marne</td>
+<td style="text-align: left;">772</td>
+<td style="text-align: left;">Nord</td>
+<td style="text-align: left;">28300</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Territoire de Belfort</td>
+<td style="text-align: left;">1159</td>
+<td style="text-align: left;">Gironde</td>
+<td style="text-align: left;">22224</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Creuse</td>
+<td style="text-align: left;">1213</td>
+<td style="text-align: left;">Bouches-du-Rhône</td>
+<td style="text-align: left;">22145</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Meuse</td>
+<td style="text-align: left;">1293</td>
+<td style="text-align: left;">Rhône</td>
+<td style="text-align: left;">21335</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cantal</td>
+<td style="text-align: left;">1440</td>
+<td style="text-align: left;">Alpes-Maritimes</td>
+<td style="text-align: left;">20637</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Corse-du-Sud</td>
+<td style="text-align: left;">1486</td>
+<td style="text-align: left;">Hauts-de-Seine</td>
+<td style="text-align: left;">19302</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Haute-Corse</td>
+<td style="text-align: left;">1489</td>
+<td style="text-align: left;">Loire-Atlantique</td>
+<td style="text-align: left;">18554</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Haute-Saône</td>
+<td style="text-align: left;">1497</td>
+<td style="text-align: left;">Hérault</td>
+<td style="text-align: left;">17491</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ardennes</td>
+<td style="text-align: left;">1734</td>
+<td style="text-align: left;">Haute-Garonne</td>
+<td style="text-align: left;">16499</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Average housing surface areas remain relatively stable over time. Changes in prices therefore mainly reflect price dynamics rather than changes in housing size. Again, large and urban departments faced more transactions than small rural ones.</p>
+</section>
+<section id="d.-comparison-across-the-10-largest-french-metropolitan-areas---price-and-volume" class="level2">
+<h2 class="anchored" data-anchor-id="d.-comparison-across-the-10-largest-french-metropolitan-areas---price-and-volume">d.&nbsp;Comparison across the 10 largest French metropolitan areas - price and volume</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The first graph highlights an upward trend in real estate prices in the ten largest French cities between 2016 and 2022, confirming the previous observations. Paris clearly stands out as an outlier, with prices almost twice as high as those in other cities, reflecting very limited land supply and sustained investor demand. Most regional cities such as Lyon and Nice are also experiencing significant increases, suggesting growing appeal and demographic pressure in major urban centers.</p>
+<p>In the second graph we observe that the sharp decline in Paris around 2017, followed by a rebound after 2019, reflects sensitivity to credit conditions and affordability constraints. Regional cities show approximatively the same shape, but in smaller proportions, indicating more elastic supply and a less stained real estate market outside the capital.</p>
+<p>Taken together, these figures suggest that the French real estate market is becoming increasingly polarized: high prices in Paris may crowd out some demand, while regional metropolitan areas continue to grow in both value and activity. This requires a differentiated regional analysis when evaluating housing or territorial policies.</p>
+</section>
+</section>
+<section id="iii---descriptive-analysis-of-the-demography" class="level1">
+<h1>III - Descriptive analysis of the demography</h1>
+<section id="a.-demographic-indicators" class="level2">
+<h2 class="anchored" data-anchor-id="a.-demographic-indicators">a. Demographic indicators</h2>
+<p>To go further in the data analysis process, we calculate several indicators.</p>
+<ul>
+<li><p><strong>The upper socio-economic group rate</strong>: percentage of managers and higher intellectual professions among the population of 15+ years old.</p></li>
+<li><p><strong>The unemployment rate</strong>: the percentage of unemployed people among the active population (between 20 years old and 64 years old).</p></li>
+</ul>
+<p>It should be noted that this ratio is approximate, as it does not take into account individuals aged 15 to 19. As we did not have the number of inhabitants for each age group in each municipality, we chose the age group closest to the working population.</p>
+<ul>
+<li><strong>The relocation rate</strong>: the percentage of people that initiate a transaction during the year while they were not resident in this municipality previously.</li>
+</ul>
+<p>These indicators were selected to capture the demographic dimensions of local housing demand.</p>
+<p>The upper socio-economic group rate, CSP+ captures long-term socio-economic structure and reflects income levels, human capital, and purchasing power which directly affect households’ ability to borrow and therefore to buy housing.</p>
+<p>Unemployment reflects short-term economic conditions and the labor market conditions.</p>
+<p>Mobility measures housing market dynamism.</p>
+</section>
+<section id="b.-csp-rate-by-municipalities" class="level2">
+<h2 class="anchored" data-anchor-id="b.-csp-rate-by-municipalities">b. CSP+ rate by municipalities</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="1344"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As well as in the graph where average m² price are mapped, we can easily distinguish the French metropolises (Paris, Marseille, Lyon, Nantes, Grenoble, Toulouse, Nice, Bordeaux, Lilles…) and the “diagonale du vide”. It therefore seems to highlight a positive correlation between average m² price and the CSP+ rate in municipalities. In other words, municipalities with higher CSP+ rate also have higher average m² price.</p>
+<p>Indeed, the share of highly skilled workers is a proxy for the average income level. Municipalities with a large proportion of CSP+ tend to have a population with higher income in average and therefore a higher borrowing power. This leads to higher demand for housing and apartments and an increase in price.</p>
+<p>A high CSP+ rate also implies the presence of skilled jobs and a dynamic economic fabric, which can therefore attract residents and increase the housing and apartments demand.</p>
+<p>We can’t notice very well an evolution between 2016 and 2022. However, this is probably because of the scale.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>CSP+ — Departments with the lowest and highest shares of executives (2022)</caption>
+<colgroup>
+<col style="width: 28%">
+<col style="width: 20%">
+<col style="width: 30%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Lowest shares (2022)</th>
+<th style="text-align: right;">CSP+ share…2</th>
+<th style="text-align: left;">Highest shares (2022)</th>
+<th style="text-align: right;">CSP+ share…4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Ardennes</td>
+<td style="text-align: right;">4.48</td>
+<td style="text-align: left;">Paris</td>
+<td style="text-align: right;">31.88</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Haute-Marne</td>
+<td style="text-align: right;">4.55</td>
+<td style="text-align: left;">Hauts-de-Seine</td>
+<td style="text-align: right;">29.01</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Creuse</td>
+<td style="text-align: right;">4.58</td>
+<td style="text-align: left;">Yvelines</td>
+<td style="text-align: right;">21.31</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Cantal</td>
+<td style="text-align: right;">4.63</td>
+<td style="text-align: left;">Val-de-Marne</td>
+<td style="text-align: right;">18.01</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Orne</td>
+<td style="text-align: right;">4.65</td>
+<td style="text-align: left;">Haute-Garonne</td>
+<td style="text-align: right;">16.66</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Meuse</td>
+<td style="text-align: right;">4.70</td>
+<td style="text-align: left;">Rhône</td>
+<td style="text-align: right;">16.02</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nièvre</td>
+<td style="text-align: right;">4.78</td>
+<td style="text-align: left;">Essonne</td>
+<td style="text-align: right;">14.97</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indre</td>
+<td style="text-align: right;">4.79</td>
+<td style="text-align: left;">Val-d’Oise</td>
+<td style="text-align: right;">13.05</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Aisne</td>
+<td style="text-align: right;">4.82</td>
+<td style="text-align: left;">Loire-Atlantique</td>
+<td style="text-align: right;">12.91</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Allier</td>
+<td style="text-align: right;">4.89</td>
+<td style="text-align: left;">Gironde</td>
+<td style="text-align: right;">12.19</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>CSP+ — Departments with the lowest and highest shares of executives (2016)</caption>
+<colgroup>
+<col style="width: 28%">
+<col style="width: 20%">
+<col style="width: 30%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Lowest shares (2016)</th>
+<th style="text-align: right;">CSP+ share…2</th>
+<th style="text-align: left;">Highest shares (2016)</th>
+<th style="text-align: right;">CSP+ share…4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Creuse</td>
+<td style="text-align: right;">3.78</td>
+<td style="text-align: left;">Paris</td>
+<td style="text-align: right;">28.97</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Orne</td>
+<td style="text-align: right;">3.96</td>
+<td style="text-align: left;">Hauts-de-Seine</td>
+<td style="text-align: right;">24.99</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cantal</td>
+<td style="text-align: right;">4.02</td>
+<td style="text-align: left;">Yvelines</td>
+<td style="text-align: right;">18.60</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nièvre</td>
+<td style="text-align: right;">4.19</td>
+<td style="text-align: left;">Val-de-Marne</td>
+<td style="text-align: right;">15.56</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indre</td>
+<td style="text-align: right;">4.21</td>
+<td style="text-align: left;">Haute-Garonne</td>
+<td style="text-align: right;">14.62</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Dordogne</td>
+<td style="text-align: right;">4.25</td>
+<td style="text-align: left;">Essonne</td>
+<td style="text-align: right;">13.54</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Allier</td>
+<td style="text-align: right;">4.45</td>
+<td style="text-align: left;">Rhône</td>
+<td style="text-align: right;">13.21</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Meuse</td>
+<td style="text-align: right;">4.47</td>
+<td style="text-align: left;">Val-d’Oise</td>
+<td style="text-align: right;">11.29</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Lozère</td>
+<td style="text-align: right;">4.49</td>
+<td style="text-align: left;">Isère</td>
+<td style="text-align: right;">10.82</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lot-et-Garonne</td>
+<td style="text-align: right;">4.53</td>
+<td style="text-align: left;">Seine-et-Marne</td>
+<td style="text-align: right;">10.41</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>At the departmental level, it appears that Île-de-France and the surrounding departments have a higher proportion of executives and higher intellectual professions, which highlights a strong special division.</p>
+<p>The proportion of CSP+ workers increased in almost all departments between 2016 and 2022. However, this increase appears to be greater in departments that already have a high proportion of highly skilled workers.</p>
+<p>We observe that seven of the ten departments with the lowest average price per square metre are also among the ten departments with the lowest CSP+ rate in 2022.</p>
+<p>However, only four departments with the highest price per square metre are among the ten departments with the highest CSP+ rate.</p>
+<p>We can see that the top of the ranking is virtually identical for both indicators. Also, we do not observe huge changes between 2016 and 2022. The departments in both rankings remain mostly.</p>
+</section>
+<section id="c.-unemployment-rate-by-municipalities" class="level2">
+<h2 class="anchored" data-anchor-id="c.-unemployment-rate-by-municipalities">c.&nbsp;Unemployment rate by municipalities</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="1344"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Contrary to the previous map, this is here much more difficult to distinguish the biggest cities. We can underline a decrease in unemployment between 2016 and 2022.</p>
+<p>It seems difficult to establish a correlation between unemployment rate and the average price per m² looking at both maps.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Unemployment rate by department — 2022 (10 lowest vs 10 highest)</caption>
+<colgroup>
+<col style="width: 28%">
+<col style="width: 18%">
+<col style="width: 35%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Lowest rates (2022)</th>
+<th style="text-align: left;">Rate (%)…2</th>
+<th style="text-align: left;">Highest rates (2022)</th>
+<th style="text-align: left;">Rate (%)…4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">15 – Cantal</td>
+<td style="text-align: left;">5.77</td>
+<td style="text-align: left;">66 – Pyrénées-Orientales</td>
+<td style="text-align: left;">13.16</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">53 – Mayenne</td>
+<td style="text-align: left;">6.59</td>
+<td style="text-align: left;">02 – Aisne</td>
+<td style="text-align: left;">12.96</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">73 – Savoie</td>
+<td style="text-align: left;">6.67</td>
+<td style="text-align: left;">93 – Seine-Saint-Denis</td>
+<td style="text-align: left;">12.78</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">48 – Lozère</td>
+<td style="text-align: left;">6.74</td>
+<td style="text-align: left;">08 – Ardennes</td>
+<td style="text-align: left;">12.34</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">12 – Aveyron</td>
+<td style="text-align: left;">7.01</td>
+<td style="text-align: left;">59 – Nord</td>
+<td style="text-align: left;">12.11</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">43 – Haute-Loire</td>
+<td style="text-align: left;">7.28</td>
+<td style="text-align: left;">11 – Aude</td>
+<td style="text-align: left;">12.08</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">50 – Manche</td>
+<td style="text-align: left;">7.31</td>
+<td style="text-align: left;">34 – Hérault</td>
+<td style="text-align: left;">11.94</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">39 – Jura</td>
+<td style="text-align: left;">7.35</td>
+<td style="text-align: left;">10 – Aube</td>
+<td style="text-align: left;">11.63</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2A – Corse-du-Sud</td>
+<td style="text-align: left;">7.37</td>
+<td style="text-align: left;">30 – Gard</td>
+<td style="text-align: left;">11.61</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">85 – Vendée</td>
+<td style="text-align: left;">7.43</td>
+<td style="text-align: left;">84 – Vaucluse</td>
+<td style="text-align: left;">11.46</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Unemployment rate by department — 2016 (10 lowest vs 10 highest)</caption>
+<colgroup>
+<col style="width: 28%">
+<col style="width: 18%">
+<col style="width: 35%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Lowest rates (2016)</th>
+<th style="text-align: left;">Rate (%)…2</th>
+<th style="text-align: left;">Highest rates (2016)</th>
+<th style="text-align: left;">Rate (%)…4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">15 – Cantal</td>
+<td style="text-align: left;">7.40</td>
+<td style="text-align: left;">66 – Pyrénées-Orientales</td>
+<td style="text-align: left;">15.21</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">53 – Mayenne</td>
+<td style="text-align: left;">7.90</td>
+<td style="text-align: left;">93 – Seine-Saint-Denis</td>
+<td style="text-align: left;">15.12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">48 – Lozère</td>
+<td style="text-align: left;">7.91</td>
+<td style="text-align: left;">11 – Aude</td>
+<td style="text-align: left;">14.83</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">73 – Savoie</td>
+<td style="text-align: left;">8.03</td>
+<td style="text-align: left;">02 – Aisne</td>
+<td style="text-align: left;">14.57</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">12 – Aveyron</td>
+<td style="text-align: left;">8.29</td>
+<td style="text-align: left;">08 – Ardennes</td>
+<td style="text-align: left;">14.40</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">74 – Haute-Savoie</td>
+<td style="text-align: left;">8.90</td>
+<td style="text-align: left;">10 – Aube</td>
+<td style="text-align: left;">14.38</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">78 – Yvelines</td>
+<td style="text-align: left;">8.91</td>
+<td style="text-align: left;">59 – Nord</td>
+<td style="text-align: left;">14.06</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">43 – Haute-Loire</td>
+<td style="text-align: left;">8.96</td>
+<td style="text-align: left;">34 – Hérault</td>
+<td style="text-align: left;">13.86</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">19 – Corrèze</td>
+<td style="text-align: left;">9.02</td>
+<td style="text-align: left;">84 – Vaucluse</td>
+<td style="text-align: left;">13.85</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">05 – Hautes-Alpes</td>
+<td style="text-align: left;">9.05</td>
+<td style="text-align: left;">30 – Gard</td>
+<td style="text-align: left;">13.80</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>For every department, unemployment decreased between 2016 and 2022, which highlights an improvement in the labor market. However, we can still observe gap between departments.</p>
+<p>Contrary to the distribution of the CSP+ rate, the ranking of the 10 lowest/highest differs a lot from the one showing the price.</p>
+</section>
+<section id="d.-mobility-rate-representation" class="level2">
+<h2 class="anchored" data-anchor-id="d.-mobility-rate-representation">d.&nbsp;Mobility rate representation</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="1344"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As the unemployment rate map showed, it is difficult to distinguish areas with higher relocation rates. It appears to be uniform.</p>
+<p>However, with a scale with a smaller range, our analysis would have been more precise.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Residential mobility — Departments with the lowest and highest rates (2022)</caption>
+<colgroup>
+<col style="width: 23%">
+<col style="width: 25%">
+<col style="width: 24%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Lowest rates (2022)</th>
+<th style="text-align: left;">Mobility rate (%)…2</th>
+<th style="text-align: left;">Highest rates (2022)</th>
+<th style="text-align: left;">Mobility rate (%)…4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Corse-du-Sud</td>
+<td style="text-align: left;">5.60</td>
+<td style="text-align: left;">Gironde</td>
+<td style="text-align: left;">9.33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bouches-du-Rhône</td>
+<td style="text-align: left;">5.63</td>
+<td style="text-align: left;">Landes</td>
+<td style="text-align: left;">9.20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Haute-Corse</td>
+<td style="text-align: left;">6.33</td>
+<td style="text-align: left;">Charente-Maritime</td>
+<td style="text-align: left;">9.18</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Paris</td>
+<td style="text-align: left;">6.35</td>
+<td style="text-align: left;">Haute-Garonne</td>
+<td style="text-align: left;">9.13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Alpes-Maritimes</td>
+<td style="text-align: left;">6.44</td>
+<td style="text-align: left;">Ille-et-Vilaine</td>
+<td style="text-align: left;">9.13</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Seine-Saint-Denis</td>
+<td style="text-align: left;">6.53</td>
+<td style="text-align: left;">Haute-Savoie</td>
+<td style="text-align: left;">8.85</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pas-de-Calais</td>
+<td style="text-align: left;">6.87</td>
+<td style="text-align: left;">Ain</td>
+<td style="text-align: left;">8.83</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ardennes</td>
+<td style="text-align: left;">6.94</td>
+<td style="text-align: left;">Calvados</td>
+<td style="text-align: left;">8.79</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Loir-et-Cher</td>
+<td style="text-align: left;">6.98</td>
+<td style="text-align: left;">Pyrénées-Atlantiques</td>
+<td style="text-align: left;">8.76</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Indre</td>
+<td style="text-align: left;">7.03</td>
+<td style="text-align: left;">Ariège</td>
+<td style="text-align: left;">8.59</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Residential mobility — Departments with the lowest and highest rates (2016)</caption>
+<colgroup>
+<col style="width: 23%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Lowest rates (2016)</th>
+<th style="text-align: left;">Mobility rate (%)…2</th>
+<th style="text-align: left;">Highest rates (2016)</th>
+<th style="text-align: left;">Mobility rate (%)…4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Corse-du-Sud</td>
+<td style="text-align: left;">6.24</td>
+<td style="text-align: left;">Gironde</td>
+<td style="text-align: left;">10.41</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bouches-du-Rhône</td>
+<td style="text-align: left;">6.32</td>
+<td style="text-align: left;">Haute-Garonne</td>
+<td style="text-align: left;">10.05</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Paris</td>
+<td style="text-align: left;">6.97</td>
+<td style="text-align: left;">Charente-Maritime</td>
+<td style="text-align: left;">9.89</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Alpes-Maritimes</td>
+<td style="text-align: left;">6.98</td>
+<td style="text-align: left;">Ille-et-Vilaine</td>
+<td style="text-align: left;">9.81</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Indre</td>
+<td style="text-align: left;">7.02</td>
+<td style="text-align: left;">Haute-Savoie</td>
+<td style="text-align: left;">9.55</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ardennes</td>
+<td style="text-align: left;">7.19</td>
+<td style="text-align: left;">Rhône</td>
+<td style="text-align: left;">9.43</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cantal</td>
+<td style="text-align: left;">7.38</td>
+<td style="text-align: left;">Ain</td>
+<td style="text-align: left;">9.38</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Seine-Saint-Denis</td>
+<td style="text-align: left;">7.48</td>
+<td style="text-align: left;">Calvados</td>
+<td style="text-align: left;">9.37</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Cher</td>
+<td style="text-align: left;">7.50</td>
+<td style="text-align: left;">Territoire de Belfort</td>
+<td style="text-align: left;">9.36</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Pas-de-Calais</td>
+<td style="text-align: left;">7.55</td>
+<td style="text-align: left;">Pyrénées-Atlantiques</td>
+<td style="text-align: left;">9.35</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>For every department, the mobility rate decreased between 2016 and 2022.</p>
+<p>It is difficult to establish a common pattern that the top 10 departments could share. All of them tend to have different characteristics.</p>
+<p>It appears that this rate might not be a good proxy for area’s dynamism. In fact, high prices and limited housing supply may reduce residential moves.</p>
+</section>
+</section>
+<section id="iv---pre-regression-analysis-explorating-the-correlations" class="level1">
+<h1>IV - Pre-Regression Analysis: Explorating the Correlations</h1>
+<section id="a---descriptive-analysis-of-housing-prices-and-structural-characteristics" class="level2">
+<h2 class="anchored" data-anchor-id="a---descriptive-analysis-of-housing-prices-and-structural-characteristics">A - Descriptive analysis of housing prices and structural characteristics</h2>
+<section id="a.-joint-distribution-of-average-price-per-m²-and-average-surface-area" class="level3">
+<h3 class="anchored" data-anchor-id="a.-joint-distribution-of-average-price-per-m²-and-average-surface-area">a. Joint distribution of average price per m² and average surface area</h3>
+</section>
+<section id="by-departments" class="level3">
+<h3 class="anchored" data-anchor-id="by-departments">1) By Departments</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In this graph, each point represents a department at one precise year. The scatter plot shows a negative relationship, which means that transactions involving larger homes tend to be associated with lower prices per square meter, while smaller properties command higher unit values. The dense scatter plot between approximately 80 and 110 m² shows that most French sales fall within this range, with prices largely clustered around 1500€ to 3000€ per m².</p>
+<p>The extreme observations in the upper left correspond to very high prices for relatively small areas, probably reflecting Paris and a few particularly sought-after urban areas where land scarcity and high demand drive up valuations. This trend shows that price heterogeneity is determined not only by location, but also by the composition of the housing stock. Areas with a high proportion of small apartments have higher prices per square meter, while areas where houses and spacious dwellings are the norm have lower unit prices. These data confirm the need to control for average size or type of dwelling in any econometric analysis of real estate prices.</p>
+</section>
+<section id="by-communes" class="level3">
+<h3 class="anchored" data-anchor-id="by-communes">2) By Communes</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The figure highlights a negative relationship between average surface area and average price per square meter, which shows that municipalities where transactions involve larger dwellings tend to exhibit lower prices per m². This pattern is intuitive and reflects a mechanical composition effect where larger properties (often houses) are typically cheaper per m² than smaller dwellings.</p>
+</section>
+<section id="b.-joint-distribution-of-average-price-per-m²-and-share-of-apartments" class="level3">
+<h3 class="anchored" data-anchor-id="b.-joint-distribution-of-average-price-per-m²-and-share-of-apartments">b. Joint distribution of average price per m² and share of apartments</h3>
+</section>
+<section id="by-departments-1" class="level3">
+<h3 class="anchored" data-anchor-id="by-departments-1">1) By Departments</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In this graph, the proportion of apartments is used as a proxy of urban density (a high propotion of apartments is the sign of a urbanized area). The scatter plot reveals a positive and approximately linear relationship, showing that municipalities with a higher proportion of apartments tend to have higher prices per m², while areas dominated by low proportions of apartments have the lowest unit prices.</p>
+<p>A large number of observations below 25% apartments show that most French municipalities remain relatively low in density, with prices generally below 2000€ per m². The points on the far right, close to 100%, correspond to very dense urban areas, most likely Paris, where land scarcity, amenities, and the concentration of skilled households generate significantly higher valuations.</p>
+<p>The slope suggests that price heterogeneity is strongly linked to the structure of the housing stock: compact real estate markets benefit more from location advantages than spacious residential markets. Therefore, any econometric assessment of real estate prices should take into account the proportion of apartments or the composition of the housing stock in order to avoid attributing the effects of density to other variables such as unemployment or income alone.</p>
+</section>
+<section id="by-communes-1" class="level3">
+<h3 class="anchored" data-anchor-id="by-communes-1">2) By communes</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This graph reveals a positive raw correlation between the share of apartments and prices per m²: more apartment-dense municipalities tend to have higher prices. This reflects a classic urban pattern, as apartment-dominated areas are typically denser, more central, and more expensive.</p>
+</section>
+<section id="c.-joint-distribution-of-average-price-per-m²-and-number-of-transactions" class="level3">
+<h3 class="anchored" data-anchor-id="c.-joint-distribution-of-average-price-per-m²-and-number-of-transactions">c.&nbsp;Joint distribution of average price per m² and number of transactions</h3>
+</section>
+<section id="by-department" class="level3">
+<h3 class="anchored" data-anchor-id="by-department">1) By Department</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here we can observe a positive relationship showing that, on average, municipalities with higher transaction volumes tend to have higher prices per square meter. A very dense concentration of points below 10000 transactions and 2000€ per m² shows that the majority of French municipalities correspond to small and relatively inexpensive local markets.</p>
+<p>The observations between 15000 and 30000 transactions correspond to large metropolitan or suburban areas characterized by high demand and many amenities. However, the cloud becomes increasingly heterogeneous as prices rise. Several high-priced municipalities have limited transaction volumes, which means that expensive markets are not necessarily the most active.</p>
+<p>In this graph, we see the coexistence of two mechanisms: in dynamic urban areas, high activity could reflect intense demand that drives up prices, while in expensive locations, affordability constraints and supply rigidity may limit the number of sales.</p>
+</section>
+<section id="by-commune" class="level3">
+<h3 class="anchored" data-anchor-id="by-commune">2) By Commune</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This figure shows a strong positive relationship between prices and the (log) number of transactions. Municipalities with more active markets tend to have higher prices per m², and the relationship appears monotonic.</p>
+</section>
+</section>
+<section id="b---descriptive-analysis-of-housing-prices-and-demographic-characteristics" class="level2">
+<h2 class="anchored" data-anchor-id="b---descriptive-analysis-of-housing-prices-and-demographic-characteristics">B - Descriptive analysis of housing prices and demographic characteristics</h2>
+</section>
+<section id="a.-housing-prices-and-the-share-of-high-skilled-workers" class="level2">
+<h2 class="anchored" data-anchor-id="a.-housing-prices-and-the-share-of-high-skilled-workers">a. Housing prices and the share of high-skilled workers</h2>
+<section id="department-level" class="level3">
+<h3 class="anchored" data-anchor-id="department-level">1) Department level</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The scatter plot shows a strong positive relationship between housing prices and the share of high-skilled workers. Departments with a higher CSP+ rate tend to have higher housing prices. This relationship appears stable over time. The absence of a change in slope over time indicates that increases in the CSP+ rate are not associated with faster price growth.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Average price (€/m²): 2016 vs 2022 and change within each CSP+ group</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">CSP+ group</th>
+<th style="text-align: right;">Mean 2016</th>
+<th style="text-align: right;">Mean 2022</th>
+<th style="text-align: right;">Change (€/m²)</th>
+<th style="text-align: right;">Change (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">High CSP+</td>
+<td style="text-align: right;">1901.7</td>
+<td style="text-align: right;">2437.3</td>
+<td style="text-align: right;">535.6</td>
+<td style="text-align: right;">28.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Low CSP+</td>
+<td style="text-align: right;">1247.1</td>
+<td style="text-align: right;">1516.6</td>
+<td style="text-align: right;">269.4</td>
+<td style="text-align: right;">21.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Moderate CSP+</td>
+<td style="text-align: right;">1490.1</td>
+<td style="text-align: right;">1852.9</td>
+<td style="text-align: right;">362.9</td>
+<td style="text-align: right;">24.4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Areas with a high CSP+ concentration are more expensive in both years, and this gap widens over time. It implies that socio-economic composition plays a role in shaping local housing markets.</p>
+</section>
+<section id="municipality-level" class="level3">
+<h3 class="anchored" data-anchor-id="municipality-level">2) Municipality level</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>At the municipality level, the relationship remains positive but is more dispersed. Despite this noise, municipalities with a higher share of high-skilled workers tend to have higher housing prices.</p>
+</section>
+</section>
+<section id="b.-housing-prices-and-unemployment-rate" class="level2">
+<h2 class="anchored" data-anchor-id="b.-housing-prices-and-unemployment-rate">b. Housing prices and unemployment rate</h2>
+<section id="department-level-1" class="level3">
+<h3 class="anchored" data-anchor-id="department-level-1">1) Department level</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The relationship between housing prices and the unemployment rate is weaker and less clear. In 2016, housing prices show almost no correlation with unemployment. In 2022, the relationship becomes positive, but the slope remains small. This suggests that unemployment alone is not a strong determinant of housing prices at the department level.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-37-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Average price (€/m²): 2016 vs 2022 and change within each unemployment group</caption>
+<colgroup>
+<col style="width: 32%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 20%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Unemployment group</th>
+<th style="text-align: right;">Mean 2016</th>
+<th style="text-align: right;">Mean 2022</th>
+<th style="text-align: right;">Change (€/m²)</th>
+<th style="text-align: right;">Change (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">High unemployment</td>
+<td style="text-align: right;">1463.1</td>
+<td style="text-align: right;">1801.8</td>
+<td style="text-align: right;">338.7</td>
+<td style="text-align: right;">23.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Low unemployment</td>
+<td style="text-align: right;">1604.7</td>
+<td style="text-align: right;">1983.2</td>
+<td style="text-align: right;">378.5</td>
+<td style="text-align: right;">23.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Moderate unemployment</td>
+<td style="text-align: right;">1571.1</td>
+<td style="text-align: right;">2021.8</td>
+<td style="text-align: right;">450.8</td>
+<td style="text-align: right;">28.7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>This boxplot shows that housing prices increase between 2016 and 2022 across all unemployment groups. The magnitude of price growth is similar across groups. This suggests that unemployment mainly captures persistent spatial differences rather than differential price dynamics. This is why we should use Two Way Fixed Effects to implement regressions later.</p>
+</section>
+<section id="municipality-level-1" class="level3">
+<h3 class="anchored" data-anchor-id="municipality-level-1">2) Municipality level</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>At the municipality level, housing prices tend to decrease as unemployment increases. Departments aggregate very different municipalities, mixing rich urban centers and poorer peripheral areas. As a result, high-priced urban areas can coexist with higher unemployment elsewhere in the same department. This implies a positive aggregate relationship. By contrast, at the municipality level, unemployment is more directly linked to local demand and purchasing power, and therefore to a negative relationship with housing prices.</p>
+</section>
+</section>
+<section id="c.-housing-prices-and-residential-mobility" class="level2">
+<h2 class="anchored" data-anchor-id="c.-housing-prices-and-residential-mobility">c.&nbsp;Housing prices and residential mobility</h2>
+<section id="department-level-2" class="level3">
+<h3 class="anchored" data-anchor-id="department-level-2">1) Department level</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Housing prices are positively associated with residential mobility at the department level. Departments with higher mobility rates tend to have higher housing prices. This pattern is observed in both years and is stronger in 2022.</p>
+<p>This suggests that more dynamic and attractive housing markets are also those with higher prices.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Average price (€/m²): 2016 vs 2022 and change within each mobility group</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Mobility group</th>
+<th style="text-align: right;">Mean 2016</th>
+<th style="text-align: right;">Mean 2022</th>
+<th style="text-align: right;">Change (€/m²)</th>
+<th style="text-align: right;">Change (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">High mobility</td>
+<td style="text-align: right;">1619.5</td>
+<td style="text-align: right;">2018.0</td>
+<td style="text-align: right;">398.5</td>
+<td style="text-align: right;">24.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Low mobility</td>
+<td style="text-align: right;">1419.2</td>
+<td style="text-align: right;">1771.3</td>
+<td style="text-align: right;">352.1</td>
+<td style="text-align: right;">24.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Moderate mobility</td>
+<td style="text-align: right;">1600.2</td>
+<td style="text-align: right;">2017.7</td>
+<td style="text-align: right;">417.4</td>
+<td style="text-align: right;">26.1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Housing prices increase similarly across all residential mobility groups between 2016 and 2022. While areas with lower mobility tend to be cheaper, the distribution is almost the same for each group. Mobility is therefore less informative about price levels than socio-economic composition or labor market conditions.</p>
+</section>
+<section id="municipality-level-2" class="level3">
+<h3 class="anchored" data-anchor-id="municipality-level-2">2) Municipality level</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final-Project_files/figure-html/unnamed-chunk-44-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>At the municipality level, the relationship between housing prices and mobility is positive but dispersed. Very high mobility rates correspond to a small number of observations and generate outliers. Overall, the positive trend suggests that mobility reflects market dynamism rather than affordability. This result is contrary to what we observed before with the top 10 departments with the higher &amp; lower mobility rate.</p>
+<p>Overall, the share of high-skilled workers is the demographic variable most strongly correlated with housing prices. Unemployment plays a secondary role, while residential mobility captures housing market dynamism. These graphical patterns motivate the use of regression analysis to quantify these relationships.</p>
+</section>
+</section>
+</section>
+<section id="v--econometric-analysis-on-prices" class="level1">
+<h1>V- Econometric analysis on prices</h1>
+<section id="a.-implementing-the-baseline-two-way-fixed-effect-regression" class="level2">
+<h2 class="anchored" data-anchor-id="a.-implementing-the-baseline-two-way-fixed-effect-regression">a. Implementing the baseline two-way fixed effect regression</h2>
+<p>We implement a two-way fixed effects (TWFE) panel regression at the municipal level for 2016 and 2022. The dependent variable is the logarithm of the average price per square meter. We express the dependent variable using the logarithm in order to interpret the coefficients (beta) as a percentage change in price. The main regressors reflect the local demographic and socioeconomic structure: proportion of executives (CSP+) (TauxCSPsup), unemployment rate (TauxChom), and residential mobility rate (TauxDem). We add real estate market controls: average surface area (SurfaceMoy), proportion of apartments (PropAppart, as a proxy of urban form/density) and market activity (ln_mut = log1p(Nb_mutations)). We include municipal fixed effects (absorbing local characteristics that are invariant over time, such as geography and amenities) and annual fixed effects (absorbing national shocks). Standard errors are pooled at the municipal level.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                              m_twfe
+Dependent Var.:           ln_prix_m2
+                                    
+TauxCSPsup          0.0014* (0.0006)
+TauxChom             0.0014 (0.0009)
+TauxDem              0.0010 (0.0008)
+SurfaceMoy      -0.0016*** (9.85e-5)
+PropAppart       -0.0016*** (0.0003)
+ln_mut            0.0331*** (0.0049)
+Fixed-Effects:  --------------------
+INSEE_COM                        Yes
+Annee                            Yes
+_______________ ____________________
+S.E.: Clustered        by: INSEE_COM
+Observations                  54,496
+R2                           0.86810
+Within R2                    0.02535
+---
+Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>The logarithm of the number of transactions, used as a proxy of the market activity, is strongly and positively associated with prices. Indeed, the coefficient shows that a 1% increase in transactions is associated with an increase in prices of about 3.3%, suggesting that more active markets experience stronger price growth. Average dwelling size is negatively related to prices, consistent with a price-per-square-meter mechanical effect, which appears when municipalities where the average surface increases tend to display lower prices per m². A higher proportion of apartments is associated with lower prices, conditional on municipality fixed effects, suggesting that increases in density within a municipality are correlated with weaker price growth.</p>
+<p>Demographic variables have smaller effects. The share of CSP+ is positive and weakly significant, indicating that municipalities experiencing an increase in high-income households tend to see slightly faster price growth. In contrast, unemployment and residential mobility rates are not statistically significant here. The low within R² (≈ 2.5%) indicates that only a small fraction of within-municipality price variation is explained by these observables, which is expected given the strong role of fixed effects in absorbing persistent heterogeneity.</p>
+<p>We observe an inverted-sign dynamic between the scatter plot and the regression on the share of apartments. This can be explained by the fact that the graph captures between-municipality differences, while the regression captures within-municipality changes. Conditional on a municipality’s fixed characteristics, an increase in the apartment share over time is associated with lower price growth. This likely reflects densification dynamics (new apartment construction for example), which tend to expand supply and moderate prices.</p>
+</section>
+<section id="b.-first-difference-regression" class="level2">
+<h2 class="anchored" data-anchor-id="b.-first-difference-regression">b. First difference regression</h2>
+<p>To make the interpretation within change even more straightforward, we reshape the data into a wide format and calculate the differences between 2016 and 2022:</p>
+<p><span class="math display">\[
+\Delta \ln(P_i) = \ln(P_{i,2022}) - \ln(P_{i,2016})
+\]</span></p>
+<p>, and we do the same for the regressors. We then perform a cross-sectional regression of price growth on changes in demographic composition and market conditions.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = d_ln_prix ~ d_csp + d_chom + d_dem + d_surface + 
+    d_propapp + d_ln_mut, data = Merge_wide)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.7193 -0.1499  0.0061  0.1642  2.5858 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  2.338e-01  2.562e-03  91.241  &lt; 2e-16 ***
+d_csp        1.375e-03  4.543e-04   3.026  0.00248 ** 
+d_chom       1.432e-03  6.527e-04   2.194  0.02823 *  
+d_dem        9.595e-04  5.763e-04   1.665  0.09591 .  
+d_surface   -1.647e-03  6.728e-05 -24.486  &lt; 2e-16 ***
+d_propapp   -1.610e-03  1.991e-04  -8.086 6.43e-16 ***
+d_ln_mut     3.312e-02  4.145e-03   7.989 1.42e-15 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.3295 on 27241 degrees of freedom
+  (74 observations deleted due to missingness)
+Multiple R-squared:  0.02535,   Adjusted R-squared:  0.02513 
+F-statistic: 118.1 on 6 and 27241 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>The first difference results are mostly consistent with the TWFE approach, confirming their robustness. The variation in CSP+ is positive and significant (≈ 0.00138), again suggesting that municipalities that became more “executive-intensive” between 2016 and 2022 experienced faster growth in real estate prices. Changes in unemployment are also positive and significant (≈ 0.00143), while mobility is weakly significant, around the 10% level.</p>
+<p>The variation in average surface area and in the share of apartments are negative and significant, reinforcing the idea that changes in the composition of transactions have a significant impact on price per square meter. Finally, the increase in transaction activity is positively associated with price growth. The explanatory power of the model remains low (R² ≈ 2.5%), reinforcing the idea that most price dynamics reflect factors not directly captured by observable demographic changes, such as credit conditions, expectations, or national housing cycles.</p>
+</section>
+<section id="c.-adding-department-by-year-fixed-effects" class="level2">
+<h2 class="anchored" data-anchor-id="c.-adding-department-by-year-fixed-effects">c.&nbsp;Adding department-by-year fixed effects</h2>
+<p>Next, we strengthen the identification by replacing the simple fixed effects for the year with fixed effects for department × year. This allows us to absorb shocks common to all municipalities in the same department during a given year, such as local macroeconomic conditions or departmental policies. The remaining variation therefore lies within the municipality, excluding department-specific temporal shocks.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                                     m_twfe            m_depyear
+Dependent Var.:                  ln_prix_m2           ln_prix_m2
+                                                                
+TauxCSPsup                 0.0014* (0.0006)      0.0009 (0.0006)
+TauxChom                    0.0014 (0.0009)     0.0017* (0.0009)
+TauxDem                     0.0010 (0.0008)      0.0012 (0.0008)
+SurfaceMoy             -0.0016*** (9.85e-5) -0.0016*** (9.72e-5)
+PropAppart              -0.0016*** (0.0003)  -0.0018*** (0.0003)
+ln_mut                   0.0331*** (0.0049)   0.0326*** (0.0050)
+Fixed-Effects:         -------------------- --------------------
+INSEE_COM                               Yes                  Yes
+Annee                                   Yes                   No
+code_departement-Annee                   No                  Yes
+______________________ ____________________ ____________________
+S.E.: Clustered               by: INSEE_COM        by: INSEE_COM
+Observations                         54,496               54,494
+R2                                  0.86810              0.87308
+Within R2                           0.02535              0.02604
+---
+Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Compared to the reference TWFE, the CSP+ coefficient becomes weaker and is no longer significant (≈ 0.0009), while unemployment becomes positive and significant (≈ 0.0017). The effect of market activity, average surface, and apartment share is almost unchanged and highly significant, indicating that these relationships are not driven by department-level shocks. This specification confirms that the baseline results are not driven by unobserved department-specific trends, and that identification relies on within-municipality deviations relative to neighboring municipalities in the same department.</p>
+</section>
+<section id="d.-heterogeneity-by-urbanization-terciles-interaction-model" class="level2">
+<h2 class="anchored" data-anchor-id="d.-heterogeneity-by-urbanization-terciles-interaction-model">d.&nbsp;Heterogeneity by urbanization terciles (interaction model)</h2>
+<p>To check whether demographic effects differ between urban and rural areas, we create an urbanisation indicator by dividing municipalities into tertiles of the share of apartments, used as a proxy for urban density. The demographic variables are interacted with these urbanization groups. This allows the marginal effect of each demographic variable to vary between less dense and more dense areas. Due to collinearity, fixest removes some interaction terms.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                                            m_het
+Dependent Var.:                        ln_prix_m2
+                                                 
+TauxCSPsup                       -0.0017 (0.0019)
+TauxChom                        -0.0026* (0.0013)
+TauxDem                           0.0017 (0.0012)
+urb_tercile = 2                 -0.0318* (0.0160)
+urb_tercile = 3                  -0.0097 (0.0201)
+SurfaceMoy                   -0.0016*** (9.81e-5)
+ln_mut                         0.0346*** (0.0050)
+TauxCSPsup x urb_tercile = 1      0.0009 (0.0016)
+TauxCSPsup x urb_tercile = 2     0.0043* (0.0019)
+TauxCSPsup x urb_tercile = 3     0.0036. (0.0020)
+TauxChom x urb_tercile = 1     0.0071*** (0.0014)
+TauxChom x urb_tercile = 2       0.0026. (0.0015)
+TauxDem x urb_tercile = 1       -0.0029. (0.0016)
+TauxDem x urb_tercile = 2         0.0020 (0.0017)
+Fixed-Effects:               --------------------
+INSEE_COM                                     Yes
+Annee                                         Yes
+____________________________ ____________________
+S.E.: Clustered                     by: INSEE_COM
+Observations                               54,496
+R2                                        0.86848
+Within R2                                 0.02815
+---
+Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>The results indicate significant heterogeneity across space. The effect of unemployment is significantly positive in the most urban tercile, while it is weaker or insignificant in less dense municipalities. This suggests that in dense urban areas, changes in unemployment may coincide with stronger housing demand pressures or compositional changes rather than pure economic distress. The effect of the share of CSP+ is also stronger in more urban municipalities, consistent with the idea that high-income households exert greater price pressure in already dense and constrained housing markets. In contrast, residential mobility does not display strong or systematic heterogeneity across terciles. These findings suggest that demographic composition matters more for prices in dense urban areas, where housing supply constraints are tighter.</p>
+</section>
+<section id="e.-explicit-age-structure-children-vs-seniors" class="level2">
+<h2 class="anchored" data-anchor-id="e.-explicit-age-structure-children-vs-seniors">e. Explicit age structure (children vs seniors)</h2>
+<p>As our research question is about demographic composition, we introduce age composition by adding the share of children (0–14) and the share of elderly residents (60+), alongside the baseline demographic controls.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                               m_age
+Dependent Var.:           ln_prix_m2
+                                    
+share_0_14         -0.0020. (0.0011)
+share_60p           -0.0004 (0.0009)
+TauxCSPsup          0.0014* (0.0006)
+TauxChom             0.0014 (0.0009)
+TauxDem              0.0010 (0.0008)
+SurfaceMoy      -0.0016*** (9.84e-5)
+PropAppart       -0.0016*** (0.0003)
+ln_mut            0.0331*** (0.0049)
+Fixed-Effects:  --------------------
+INSEE_COM                        Yes
+Annee                            Yes
+_______________ ____________________
+S.E.: Clustered        by: INSEE_COM
+Observations                  54,496
+R2                           0.86813
+Within R2                    0.02554
+---
+Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Neither age variable is statistically significant, and their coefficients are small. This suggests that, conditional on income composition, unemployment, and mobility, changes in age structure alone do not play a major role in explaining within-municipality price dynamics over this period. Importantly, the inclusion of age variables leaves the coefficients on CSP+, surface, apartment share, and market activity virtually unchanged, indicating that earlier results are not confounded by omitted age-composition effects.</p>
+</section>
+<section id="f.-liquidity-restriction-nb_mutations-30" class="level2">
+<h2 class="anchored" data-anchor-id="f.-liquidity-restriction-nb_mutations-30">f.&nbsp;Liquidity restriction (Nb_mutations ≥ 30)</h2>
+<p>Finally, we restrict the analysis to municipalities with at least 30 transactions, reducing measurement error in average prices and focusing on more liquid markets.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                              m_twfe          m_twfe_liq
+Dependent Var.:           ln_prix_m2          ln_prix_m2
+                                                        
+TauxCSPsup          0.0014* (0.0006)  0.0058*** (0.0011)
+TauxChom             0.0014 (0.0009) -0.0055*** (0.0014)
+TauxDem              0.0010 (0.0008)     0.0011 (0.0007)
+SurfaceMoy      -0.0016*** (9.85e-5) -0.0022*** (0.0003)
+PropAppart       -0.0016*** (0.0003) -0.0016*** (0.0003)
+ln_mut            0.0331*** (0.0049) -0.0976*** (0.0094)
+Fixed-Effects:  -------------------- -------------------
+INSEE_COM                        Yes                 Yes
+Annee                            Yes                 Yes
+_______________ ____________________ ___________________
+S.E.: Clustered        by: INSEE_COM       by: INSEE_COM
+Observations                  54,496               7,076
+R2                           0.86810             0.98298
+Within R2                    0.02535             0.06505
+---
+Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>The results change when we focus on liquid markets. The CSP+ coefficient becomes much larger and significant, implying a stronger socioeconomic gradient in places where the market is active and prices are measured more reliably. Unemployment becomes negative and significant at the 1% level, suggesting that the baseline positive coefficient partly reflected noise in thin markets. Mobility remains low and insignificant. We notice that the coefficient on market activity becomes negative, which likely reflects mechanical mean-reversion or selection effects in already highly liquid municipalities. The within R² increases, indicating that the model explains a larger share of price variation in liquid markets. This restriction highlights that measurement error and market thinness matter and that demographic effects are more clearly identified in municipalities with sufficient transaction volumes.</p>
+</section>
+</section>
+<section id="vi---conclusion" class="level1">
+<h1>VI - Conclusion</h1>
+<p>The objective of this project was to examine the relationship between socio-demographic characteristics of French municipalities and housing prices, as well as how these relationships evolved between 2016 and 2022. Exploring municipality-level data from population censuses and real estate transaction databases, the analysis highlights the relationships between local socio-economic structures and average housing prices.</p>
+<p>The results show that municipalities with a higher share of higher-skilled occupations tend to exhibit higher prices per square meter, all else equal. On the other hand, higher unemployment rates are generally associated with lower housing prices. Indicators related to residential mobility are also positively correlated with prices, suggesting that more attractive and dynamic areas face stronger housing demand. These findings are consistent with economic intuition: housing prices reflect expected income levels, labor-market conditions, and the overall attractiveness of locations.</p>
+<p>However, we were unable to establish a significant relationship between the unemployment rate and the average price per square metre of property, or between the mobility rate and the average price per square metre for properties. Graphical and cartographic analyses complement the econometric analysis by illustrating that the relationship between demographic variables and housing prices is neither uniform nor strictly linear across space.</p>
+<p>In addition, even if the two-way fixed effects specification controls for time-invariant unobserved heterogeneity across municipalities (such as persistent differences in climate or geography) and for common time shocks, our analysis remains incomplete as it does not capture unobserved factors that may vary over time inside municipalities, such as changes in local amenities, improvements in transport infrastructure or access to employment centers, or tourism development.</p>
+</section>
+<section id="vii---discussion-and-limits" class="level1">
+<h1>VII - Discussion and limits</h1>
+<p>Several limitations should be acknowledged. First, the econometric model relies on only two years of observation (2016 and 2022), corresponding to census years. This constraint limits the use of richer panel-data methods and prevents a detailed analysis of price dynamics over time. Access to annual and harmonized data would allow for more robust panel estimations, better control for municipality fixed effects, and a clearer identification of structural changes in housing markets.</p>
+<p>The analysis focuses mainly on socio-professional categories, unemployment, and mobility indicators. Other demographic dimensions could have been explored in greater depth, such as age structure (e.g.&nbsp;student cities, ageing populations), the presence of coastal or tourist areas with a high share of retirees and secondary residences, or gender composition. These factors are likely to shape local housing demand and could refine the analysis.</p>
+<p>It is important to note that potential endogeneity issues arise. Demographic variables may be both determinants and outcomes of housing prices: for instance, high prices can attract higher-income households while simultaneously excluding others. As a result, estimated coefficients are interpreted as conditional correlations rather than strictly causal effects. Future research could address this issue using more advanced identification strategies, such as instrumental variables or quasi-experimental approaches.</p>
+<p>Finally, the measurement of housing markets itself is imperfect. Average prices per square meter aggregate highly heterogeneous properties and may generate substantial noise, especially in small municipalities with few transactions. In addition, the lack of detailed information on housing characteristics and local amenities limits the precision of the estimates.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
