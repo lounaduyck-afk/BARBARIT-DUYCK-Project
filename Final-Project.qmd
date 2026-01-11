@@ -1382,9 +1382,7 @@ We observe an inverted-sign dynamic between the scatter plot and the regression 
 To make the interpretation within change even more straightforward, we reshape the data into a wide format and calculate the differences between 2016 and 2022:
 
 $$
-
-\Delta\ln(P_i) = \ln(P_{i,2022}) - \ln(P_{i,2016})
-
+\Delta \ln(P_i) = \ln(P_{i,2022}) - \ln(P_{i,2016})
 $$
 
 , and we do the same for the regressors. We then perform a cross-sectional regression of price growth on changes in demographic composition and market conditions.
