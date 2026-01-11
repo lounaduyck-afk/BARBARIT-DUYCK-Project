@@ -2068,10 +2068,13 @@ m_depyear <- feols(
 etable(m_twfe, m_depyear)
 
 ```
+Compared to the reference TWFE, the CSP+ coefficient becomes weaker and is no longer significant (≈ 0.0009), while unemployment becomes positive and significant (≈ 0.0017). The effect of market activity, average surface, and apartment share is almost unchanged and highly significant, indicating that these relationships are not driven by department-level shocks. 
+This specification confirms that the baseline results are not driven by unobserved department-specific trends, and that identification relies on within-municipality deviations relative to neighboring municipalities in the same department.
+
 
 ## d. Heterogeneity by urbanization terciles (interaction model)
 
-To check whether demographic effects differ between urban and rural areas, we create an urbanisation indicator by dividing municipalities into tertiles of PropAppart. We then estimate a TWFE model in which TauxCSPsup, TauxChom and TauxDem interact with the urban tertile. This allows the marginal effect of each demographic variable to vary between municipalities with low, medium, and high proportions of flats, in other words between less dense and more dense areas. Due to collinearity, fixest removes some interaction terms.
+To check whether demographic effects differ between urban and rural areas, we create an urbanisation indicator by dividing municipalities into tertiles of the share of apartments, used as a proxy for urban density. The demographic variables are interacted with these urbanization groups. This allows the marginal effect of each demographic variable to vary between less dense and more dense areas. Due to collinearity, fixest removes some interaction terms.
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge_reg <- Merge_reg |>
@@ -2087,10 +2090,13 @@ m_het <- feols(
 
 etable(m_het)
 ```
+The results indicate significant heterogeneity across space. The effect of unemployment is significantly positive in the most urban tercile, while it is weaker or insignificant in less dense municipalities. This suggests that in dense urban areas, changes in unemployment may coincide with stronger housing demand pressures or compositional changes rather than pure economic distress. The effect of the share of CSP+ is also stronger in more urban municipalities, consistent with the idea that high-income households exert greater price pressure in already dense and constrained housing markets. In contrast, residential mobility does not display strong or systematic heterogeneity across terciles.
+These findings suggest that demographic composition matters more for prices in dense urban areas, where housing supply constraints are tighter.
+
 
 ## e. Explicit age structure (children vs seniors)
 
-As our research question is about demographic composition, we add a simple block on age structure: the share of children and the share of elderly people (combining those aged 60-74, 75-89 and 90 and over). We estimate a TWFE model with the same controls and fixed effects as before.
+As our research question is about demographic composition, we introduce age composition by adding the share of children (0–14) and the share of elderly residents (60+), alongside the baseline demographic controls.
 
 ```{r, warning=FALSE, message=FALSE, echo=FALSE}
 Merge_reg <- Merge_reg |>
@@ -2109,6 +2115,7 @@ m_age <- feols(
 
 etable(m_age)
 ```
+Neither age variable is statistically significant, and their coefficients are small. This suggests that, conditional on income composition, unemployment, and mobility, changes in age structure alone do not play a major role in explaining within-municipality price dynamics over this period. Importantly, the inclusion of age variables leaves the coefficients on CSP+, surface, apartment share, and market activity virtually unchanged, indicating that earlier results are not confounded by omitted age-composition effects.
 
 ## f. Liquidity restriction (Nb_mutations ≥ 30)
 
