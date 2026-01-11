@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Duyck Barbarit">
+
+<title>Data cleaning and description</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="Data-cleaning_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Data-cleaning_files/libs/quarto-html/quarto.js"></script>
+<script src="Data-cleaning_files/libs/quarto-html/popper.min.js"></script>
+<script src="Data-cleaning_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Data-cleaning_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Data-cleaning_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Data-cleaning_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Data-cleaning_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Data-cleaning_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Data-cleaning_files/libs/bootstrap/bootstrap-c0367b04c37547644fece4185067e4a7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="Data-cleaning.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Data cleaning and description</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Duyck Barbarit </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="i---loading-and-describing-the-data" class="level1">
+<h1>I - Loading and describing the data</h1>
+<section id="a.-residential-property-market-data" class="level2">
+<h2 class="anchored" data-anchor-id="a.-residential-property-market-data">a. Residential property market data</h2>
+<p><a href="https://www.data.gouv.fr/datasets/indicateurs-immobiliers-par-commune-et-par-annee-prix-et-volumes-sur-la-periode-2014-2024" class="uri">https://www.data.gouv.fr/datasets/indicateurs-immobiliers-par-commune-et-par-annee-prix-et-volumes-sur-la-periode-2014-2024</a></p>
+<p>From this website, we downloaded 11 csv files, each file corresponding to a specific year from 2014 to 2024. Each file gathers aggregate variables related to residential property market at the municipality scale.</p>
+<p>The data have been collected by the government, from 2014 to 2024. The latest update was on the 7th of July 2025.</p>
+<section id="i.-methodology" class="level3">
+<h3 class="anchored" data-anchor-id="i.-methodology">i. Methodology</h3>
+<p>Data come from the treatment of another datagouv database regarding the Request for Property Values. From this initial database, they took only single-sale transfers, for which the values lied between 15,000€ and 10,000,000€, the surface between 10m² and 250m² for apartments, and between 10m² and 400m² for houses.</p>
+<p>The population is the residential property transactions in Mainland France. The transactions have been aggregated at the municipalities level, which means that each line corresponds to a municipality for a unique year. Each municipality is identified by its INSEE code.</p>
+<p>It is important to note that this database covers the whole of metropolitan France, with the exception of the departments of Bas-Rhin, Haut-Rhin, and Moselle, where the relevant data fall under the <em>livre foncier</em> (land registry) system.</p>
+<p>One of the main strengths of this database is that it provides a common reference framework over a near-national geographical scope, making it possible to compare territories with one another, to understand their specific characteristics, and to produce studies and indicators based on homogeneous methods.</p>
+</section>
+<section id="ii.-data-cleaning-and-merging" class="level3">
+<h3 class="anchored" data-anchor-id="ii.-data-cleaning-and-merging">ii. Data cleaning and merging</h3>
+<p>After standardizing the labels, we merge our data using bind_rows in order to get panel data.</p>
+</section>
+<section id="iii.-data-descriptions" class="level3">
+<h3 class="anchored" data-anchor-id="iii.-data-descriptions">iii. Data descriptions</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Type</th>
+<th style="text-align: right;">Number</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Columns</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Total Rows</td>
+<td style="text-align: right;">320598</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Observations 2014</td>
+<td style="text-align: right;">27691</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Observations 2015</td>
+<td style="text-align: right;">28201</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Observations 2016</td>
+<td style="text-align: right;">28385</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Observations 2017</td>
+<td style="text-align: right;">26687</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Observations 2018</td>
+<td style="text-align: right;">27074</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Observations 2019</td>
+<td style="text-align: right;">30231</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Observations 2020</td>
+<td style="text-align: right;">30470</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Observations 2021</td>
+<td style="text-align: right;">31101</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Observations 2022</td>
+<td style="text-align: right;">30915</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Observations 2023</td>
+<td style="text-align: right;">30011</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Observations 2024</td>
+<td style="text-align: right;">29832</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="variables" class="level4">
+<h4 class="anchored" data-anchor-id="variables">Variables:</h4>
+<ul>
+<li>INSEE code: a qualitative variable which is unique for each municipality</li>
+<li>Year</li>
+<li>The number of transfers: quantitative variable which is the sum of the house sales and flat sales</li>
+<li>The number of house sales: quantitative variable</li>
+<li>The number of flat sales: quantitative variable</li>
+<li>The proportion of house sales in percentage: quantitative variable</li>
+<li>The proportion of flat sales in percentage: quantitative variable</li>
+<li>The average price of properties sold in €: quantitative variable</li>
+<li>The average price per square metre of properties sold in €: quantitative variable</li>
+<li>The average surface area of properties sold in square metre: quantitative variable</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="b.-population-evolution-and-stucture-by-municipalities" class="level2">
+<h2 class="anchored" data-anchor-id="b.-population-evolution-and-stucture-by-municipalities">b. Population evolution and stucture by municipalities</h2>
+<p><a href="https://www.insee.fr/fr/statistiques/8581696?sommaire=8581933" class="uri">https://www.insee.fr/fr/statistiques/8581696?sommaire=8581933</a></p>
+<section id="i.-methodology-1" class="level3">
+<h3 class="anchored" data-anchor-id="i.-methodology-1">i. Methodology</h3>
+<p>From this website, we downloaded csv file corresponding to “Évolution et structure de la population en 2022 - Commune - France hors Mayotte”</p>
+<p>We have population statistics in 2011, 2016 and 2022 for each municipality in France, except Mayotte, corresponding to the January 2025 geography.</p>
+<p>They have been collected by the INSEE during the census.</p>
+<p>The data cover population distribution by sex, age, occupations but also housing conditions and relocation.</p>
+</section>
+<section id="ii.-data-cleaning-and-merging-1" class="level3">
+<h3 class="anchored" data-anchor-id="ii.-data-cleaning-and-merging-1">ii. Data cleaning and merging</h3>
+<section id="labels" class="level4">
+<h4 class="anchored" data-anchor-id="labels">Labels</h4>
+<p>When we downloaded the data sets, we had two csv files, one with the data we want to look at, in which the labels had a specific code, and the other with the labels’ code and their meaning. Then, we changed the code labels of our data set of interest to get their meaning.</p>
+</section>
+<section id="structure-of-the-dataset" class="level4">
+<h4 class="anchored" data-anchor-id="structure-of-the-dataset">Structure of the dataset</h4>
+<p>Initially, we had one row for each municipality and the variables for each year. For example, we have 3 columns related to the number of men in the municipality, one for 2022, 2016 and 2011 (“Pop Homme en 2022”, “Pop Homme en 2016”, “Pop Homme en 2011”). Therefore, in order to get a panel data structure as the DVF data set we uploaded in the first part, we used at first pivot longer and we extract the year in each initial label. Then we create an additional column “Annee” and we used pivot wider to have the panel structure.</p>
+</section>
+</section>
+<section id="iii.-data-descriptions-1" class="level3">
+<h3 class="anchored" data-anchor-id="iii.-data-descriptions-1">iii. Data descriptions</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Type</th>
+<th style="text-align: right;">Number</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Columns</td>
+<td style="text-align: right;">116</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Total Rows</td>
+<td style="text-align: right;">104709</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Observations 2011</td>
+<td style="text-align: right;">34903</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Observations 2016</td>
+<td style="text-align: right;">34903</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Observations 2022</td>
+<td style="text-align: right;">34903</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="variables-1" class="level4">
+<h4 class="anchored" data-anchor-id="variables-1">Variables:</h4>
+<ul>
+<li>Population: quantitative variable - number of residents in each municipality</li>
+<li>Per age range population (0-14, 15-29, 30-44, 45-59, 60-74, 75-89, 90+)</li>
+<li>Men population</li>
+<li>Per age range men population (0-14, 15-29, 30-44, 45-59, 60-74, 75-89, 90+)</li>
+<li>Women population</li>
+<li>Per age range women population (0-14, 15-29, 30-44, 45-59, 60-74, 75-89, 90+)</li>
+<li>Number of residents who live in the municipality for more than 1 year and who live in the same accommodation than 1 year ago</li>
+<li>Number of residents who live in the municipality for more than 1 year and who live in a different accommodation than 1 year ago</li>
+<li>Number of residents who lived outside the municipality 1 year ago (in a different department, in a different region, in Mainland France or in DOM) and their distribution by age and by sex.</li>
+<li>Number of residents in each CSP for every age range and sex.</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="c.-unemployment" class="level2">
+<h2 class="anchored" data-anchor-id="c.-unemployment">c.&nbsp;Unemployment</h2>
+<p><a href="https://www.observatoire-des-territoires.gouv.fr/taux-de-chomage-des-15-64-ans-rp" class="uri">https://www.observatoire-des-territoires.gouv.fr/taux-de-chomage-des-15-64-ans-rp</a></p>
+<section id="i.-methodology-2" class="level3">
+<h3 class="anchored" data-anchor-id="i.-methodology-2">i. Methodology</h3>
+<p>From this website, we downloaded the file corresponding to “Taux de chômage des 15-64 ans”, which was initially in the xlsx format. We therefore opened it on Excel and stored it as a csv file.</p>
+<p>The data have been collected by the Insee, using the census in 2011, 2012, 2016 and 2022.</p>
+<p>The data set gather, for each municipality and for each year of census, the total number of unemployed residents, the female unemployed residents and the male unemployed residents.</p>
+</section>
+<section id="ii.-data-cleaning-and-merging-2" class="level3">
+<h3 class="anchored" data-anchor-id="ii.-data-cleaning-and-merging-2">ii. Data cleaning and merging</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">na_chomeur</th>
+<th style="text-align: right;">obs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">104625</td>
+<td style="text-align: right;">104625</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Initially, for each year, each municipality had three rows:</p>
+<p>- Total number of unemployed residents</p>
+<p>- The number of female unemployed residents</p>
+<p>- The number of male unemployed residents</p>
+<p>To get a consistent panel structure, we created additional columns, that specify to what each number refers, and we used pivot wider.</p>
+</section>
+<section id="iii.-data-description" class="level3">
+<h3 class="anchored" data-anchor-id="iii.-data-description">iii. Data description</h3>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Type</th>
+<th style="text-align: right;">Number</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Columns</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Total Rows</td>
+<td style="text-align: right;">104625</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Observations 2011</td>
+<td style="text-align: right;">34875</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Observations 2016</td>
+<td style="text-align: right;">34875</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Observations 2022</td>
+<td style="text-align: right;">34875</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="variables-2" class="level4">
+<h4 class="anchored" data-anchor-id="variables-2">Variables:</h4>
+<ul>
+<li>INSEE_COM: as the previous data bases, this one uses the Insee code to classify the municipality</li>
+<li>libgeo: it corresponds to the name of the municipality associated with the INSEE code</li>
+<li>Annee</li>
+<li>Sex: coded as a factor, it expresses the gender category of the observation, distinguishing between females, males, and the total population</li>
+<li>Chomeur: number of unemployed people (based on the INSEE’s definition of unemployment)</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="d.-merging-all-the-databases" class="level2">
+<h2 class="anchored" data-anchor-id="d.-merging-all-the-databases">d.&nbsp;Merging all the databases</h2>
+<p>From the 3 data bases, we only kept data from 2016 and 2022, years of census and common to all bases. Using left join, because we wanted to keep all the observations we have in the initial panel set and match them with additional data we have from the two other data sets, we merged the data sets. Before merging, we ensured that the structure of the three data sets where coherent to be merged. We did this work in previous sections.</p>
+</section>
+<section id="e.-department-labels-data" class="level2">
+<h2 class="anchored" data-anchor-id="e.-department-labels-data">e. Department labels data</h2>
+<p>Source: https://www.data.gouv.fr/datasets/departements-de-france</p>
+<section id="i.-methodology-3" class="level3">
+<h3 class="anchored" data-anchor-id="i.-methodology-3">i. Methodology</h3>
+<p>This file gather: - The department code - The department name - The region code - The region name</p>
+<p>We use it here to add to our Merge data set the name of the department to which each municipality belongs. This will be useful latter to do some data visualization at the department level.</p>
+</section>
+</section>
+<section id="f.-geographical-data" class="level2">
+<h2 class="anchored" data-anchor-id="f.-geographical-data">f.&nbsp;Geographical data</h2>
+<p>​​<a href="https://geoservices.ign.fr/adminexpress" class="uri">https://geoservices.ign.fr/adminexpress</a></p>
+<section id="i.-methodology-and-data-description" class="level3">
+<h3 class="anchored" data-anchor-id="i.-methodology-and-data-description">i. Methodology and data description</h3>
+<p>The ADMIN EXPRESS product line centralizes five related datasets: ADMIN EXPRESS, ADMIN EXPRESS COG, ADMIN EXPRESS COG CARTO, ADMIN EXPRESS COG CARTO Petite Échelle, and ADMIN EXPRESS COG CARTOPLUS PE. Together, these datasets provide detailed administrative boundary layers for France across multiple levels. They include the following geographic units:</p>
+<ul>
+<li><p>Arrondissements (departmental and municipal)</p></li>
+<li><p>Cantons</p></li>
+<li><p>Administrative seats (chef-lieux) at various levels: arrondissement, municipal arrondissement, EPCI, canton, territorial collectivity, commune, associated or delegated commune, département, and region</p></li>
+<li><p>Communes and associated or delegated communes</p></li>
+<li><p>Départements</p></li>
+<li><p>EPCIs (public inter-municipal cooperation bodies)</p></li>
+<li><p>Regions</p></li>
+</ul>
+<p>The main product, ADMIN EXPRESS, provides large-scale administrative boundaries and is updated monthly. An additional edition, ADMIN EXPRESS COG, is aligned with the Code Officiel Géographique (COG) published annually by INSEE.</p>
+<p>This product line facilitates combining administrative boundaries with external datasets to build thematic representations of the French territory at different administrative levels. For our project, we mainly rely on the commune layer, as it gives the spatial unit necessary to merge geographic boundaries with demographic, employment, and real-estate datasets at the municipal level.</p>
+<p>Here, we import both layers using <code>st_read()</code>, then standardize their INSEE municipality codes by trimming extra spaces and ensuring they always have five digits. This harmonization is essential for correctly joining the geographic layers with our DVF database, which also uses INSEE codes as identifiers.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `chef_lieu_de_commune' from data source 
+  `/Users/lounaduyck/Documents/M1/BARBARIT-DUYCK-Project/Data/ADE_4-0_GPKG_LAMB93_FXX-ED2025-10-15.gpkg' 
+  using driver `GPKG'
+Simple feature collection with 34740 features and 9 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: 102330 ymin: 6051834 xmax: 1239156 ymax: 7108510
+Projected CRS: RGF93 v1 / Lambert-93</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `commune' from data source 
+  `/Users/lounaduyck/Documents/M1/BARBARIT-DUYCK-Project/Data/ADE_4-0_GPKG_LAMB93_FXX-ED2025-10-15.gpkg' 
+  using driver `GPKG'
+Simple feature collection with 34746 features and 16 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 99041.5 ymin: 6046547 xmax: 1242424 ymax: 7110497
+Projected CRS: RGF93 v1 / Lambert-93</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
